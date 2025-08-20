@@ -5,8 +5,7 @@ data class Product(val name: String, val production: String,
                    val protein: Double,
                    val carbohydrates: Double,
                    val fat: Double,
-                   val insolubleFiber: Double,
-                   val solubleFiber: Double,
+                   val fiber: Double,
                    val amount: Int,
                    val type: UnitType) {
 
