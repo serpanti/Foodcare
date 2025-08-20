@@ -5,7 +5,10 @@ data class Product(val name: String, val production: String,
                    val protein: Double,
                    val carbohydrates: Double,
                    val fat: Double,
-                   val amount: Int, val type: UnitType) {
+                   val insolubleFiber: Double,
+                   val solubleFiber: Double,
+                   val amount: Int,
+                   val type: UnitType) {
 
     companion object {
         enum class UnitType {
