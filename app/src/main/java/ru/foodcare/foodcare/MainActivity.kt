@@ -23,8 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
@@ -60,15 +62,31 @@ fun UI() {
 fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController, content: @Composable () -> Unit) {
     val drawerContent = @Composable {
         ModalDrawerSheet {
+            val buildNavOptions: NavOptionsBuilder.() -> Unit = {
+                launchSingleTop = true
+            }
+            val navPanelScope = rememberCoroutineScope()
+            val closeNavPanel = {navPanelScope.launch { navPanelState.close() }}
+            val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
             NavigationDrawerItem({Text("Главная")},
-                navController.currentDestination?.route == Route.Main.route,
-                {navController.navigate(Route.Main.route)})
+                currentRoute == Route.Main.route, {
+                    navController.navigate(Route.Main.route) {
+                        popUpTo(Route.Main.route)
+                        buildNavOptions()
+                    }
+                    closeNavPanel()
+                })
             NavigationDrawerItem({Text("Календарь")},
-                navController.currentDestination?.route == Route.Calendar.route,
-                {navController.navigate(Route.Calendar.route)})
+                currentRoute == Route.Calendar.route, {
+                    navController.navigate(Route.Calendar.route, buildNavOptions)
+                    closeNavPanel()
+                })
             NavigationDrawerItem({Text("Продукты")},
-                navController.currentDestination?.route == Route.Products.route,
-                {navController.navigate(Route.Products.route)})
+                currentRoute == Route.Products.route, {
+                    navController.navigate(Route.Products.route, buildNavOptions)
+                    closeNavPanel()
+                })
         }
     }
 
