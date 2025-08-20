@@ -1,13 +1,13 @@
 package ru.foodcare.foodcare.domain
 
 data class Product(val name: String, val production: String,
+                   val amount: Int,
+                   val type: UnitType,
                    val calories: Double,
                    val protein: Double,
-                   val carbohydrates: Double,
                    val fat: Double,
-                   val fiber: Double,
-                   val amount: Int,
-                   val type: UnitType) {
+                   val carbohydrates: Double,
+                   val fiber: Double) {
 
     companion object {
         enum class UnitType {
