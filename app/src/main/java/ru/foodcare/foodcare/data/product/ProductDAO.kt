@@ -25,7 +25,7 @@ interface ProductDAO {
         fat = :fat,
         carbohydrates = :carbohydrates,
         fiber = :fiber
-    WHERE name = :name AND production = :production
+    WHERE name = :oldName AND production = :oldProduction
 """)
     fun updateProduct(name: String,
                       production: String,
