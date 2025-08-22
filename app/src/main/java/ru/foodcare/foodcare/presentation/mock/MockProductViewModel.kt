@@ -1,5 +1,6 @@
 package ru.foodcare.foodcare.presentation.mock
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import ru.foodcare.foodcare.domain.Product
@@ -57,5 +58,5 @@ class MockProductViewModel : ProductViewModel(
         override suspend fun getProductByProduction(production: String): List<Product> {
             TODO("Not yet implemented")
         }
-    }
+    }, Dispatchers.IO
 )
