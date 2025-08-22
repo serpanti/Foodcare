@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
@@ -58,15 +60,29 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.data.database.FoodcareDBProvider
+import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.domain.Product
+import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.ProductViewModelFactory
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var productVM: ProductViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db = FoodcareDBProvider.getInstance(applicationContext)
+        val repository = ProductRepositoryImpl(db.productDAO())
+        val factory = ProductViewModelFactory(repository)
+        productVM = ViewModelProvider(this, factory)[ProductViewModel::class.java]
+
         setContent {
             FoodcareTheme {
-                UI()
+                UI(productVM)
             }
         }
     }
@@ -79,12 +95,12 @@ sealed class Route(val route: String) {
 }
 
 @Composable
-fun UI() {
+fun UI(productViewModel: ProductViewModel) {
     val navPanelState = rememberDrawerState (DrawerValue.Closed)
     val navigationController = rememberNavController()
 
     NavigationPanel(navPanelState, navigationController) {
-        Content(navPanelState, navigationController)
+        Content(navPanelState, navigationController, productViewModel)
     }
 }
 
@@ -127,7 +143,7 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Content(navPanelState: DrawerState, navController: NavHostController) {
+fun Content(navPanelState: DrawerState, navController: NavHostController, productViewModel: ProductViewModel) {
     Scaffold(topBar = {
         TopAppBar({
             Text("Foodcare")
@@ -142,22 +158,17 @@ fun Content(navPanelState: DrawerState, navController: NavHostController) {
         NavHost(navController, Route.Products.route, Modifier.padding(it)) {
             composable(Route.Main.route) {}
             composable(Route.Calendar.route) {}
-            composable(Route.Products.route) {Products()}
+            composable(Route.Products.route) {Products(productViewModel)}
         }
     }
 }
 
 @Composable
-fun Products() {
-    val products = listOf(Product("Томат", "Домашнее производство",
-        100, Product.Companion.UnitType.Gram,
-        24.0, 1.1, 0.2, 3.8, 1.4), Product("Огурец", "Домашнее производство",
-        100, Product.Companion.UnitType.Gram,
-        14.0, 0.8, 0.1, 2.5, 1.0)) + List (10) { Product("Томат", "Домашнее производство",
-        100, Product.Companion.UnitType.Gram,
-        24.0, 1.1, 0.2, 3.8, 1.4) } // вставить работу с БД
-    val productsSorted = remember(products) {
-        products.sortedWith (
+fun Products(viewModel: ProductViewModel) {
+    viewModel.loadProducts()
+    val productsState = viewModel.productsUIState.collectAsState()
+    val productsSorted = remember(productsState) {
+        productsState.value.products.sortedWith (
             compareBy<Product> { it.name }
                 .thenBy { it.production }
         )
