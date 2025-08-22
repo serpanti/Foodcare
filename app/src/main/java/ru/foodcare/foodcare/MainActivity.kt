@@ -26,10 +26,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,16 +47,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
@@ -60,6 +70,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.data.database.FoodcareDBProvider
 import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
@@ -78,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
         val db = FoodcareDBProvider.getInstance(applicationContext)
         val repository = ProductRepositoryImpl(db.productDAO())
-        val factory = ProductViewModelFactory(repository)
+        val factory = ProductViewModelFactory(repository, Dispatchers.IO)
         productVM = ViewModelProvider(this, factory)[ProductViewModel::class.java]
 
         setContent {
@@ -181,7 +192,7 @@ fun Products(viewModel: ProductViewModel) {
         LazyColumn (state = lazyListState) {
             items(productsSorted.size) { idx ->
                 ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
-                    horizontal = 5.dp))
+                    horizontal = 5.dp), viewModel)
             }
         }
 
@@ -201,23 +212,62 @@ fun Products(viewModel: ProductViewModel) {
 }
 
 @Composable
-fun ProductCard(product: Product, modifier: Modifier = Modifier) {
+fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: ProductViewModel) {
     Surface(modifier = modifier, shape = RoundedCornerShape(10.dp),
         border = BorderStroke(2.dp, Color.Black), shadowElevation = 5.dp) {
-        Column(modifier = Modifier.background(Color.Transparent).padding(10.dp)) {
-            Text("Название: " + product.name)
-            Text("Производитель: " + product.production)
-            Nutrients(product, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
-            Row(modifier = Modifier.align(Alignment.End)) {
-                Text("Кол-во: ")
-                val countTypeString = when (product.type) {
-                    Product.Companion.UnitType.Milliliter -> "мл"
-                    Product.Companion.UnitType.Gram -> "г"
-                    Product.Companion.UnitType.Piece -> "шт"
-                }
-                Text("${product.amount} $countTypeString")
+        ProductCardContent(product)
+
+        val width = remember { mutableStateOf(0.dp) }
+        val density = LocalDensity.current
+        Box(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
+            width.value = with(density) {coordinates.size.width.toDp()}
+        }, contentAlignment = Alignment.TopEnd) {
+            val visibleState = remember {mutableStateOf(false)}
+
+            EditMenu(visibleState, {}, {}, offset = DpOffset(width.value, 0.dp))
+            IconButton({visibleState.value = true}) {
+                Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
             }
         }
+    }
+}
+
+@Composable
+fun ProductCardContent(product: Product) {
+    Column(modifier = Modifier.background(Color.Transparent).padding(10.dp)) {
+        Text("Название: " + product.name)
+        Text("Производитель: " + product.production)
+        Nutrients(product, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
+        Row(modifier = Modifier.align(Alignment.End)) {
+            Text("Кол-во: ")
+            val countTypeString = when (product.type) {
+                Product.Companion.UnitType.Milliliter -> "мл"
+                Product.Companion.UnitType.Gram -> "г"
+                Product.Companion.UnitType.Piece -> "шт"
+            }
+            Text("${product.amount} $countTypeString")
+        }
+    }
+}
+
+@Composable
+fun EditMenu(visibleState: MutableState<Boolean>,
+             edit: () -> Unit, remove: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset) {
+    DropdownMenu(visibleState.value, {visibleState.value = false}, modifier = modifier,
+        offset = offset) {
+        DropdownMenuItem({
+            Text("Редактировать")
+        }, {
+            visibleState.value = false
+            edit()
+        }, trailingIcon = {Icon(Icons.Filled.Edit, null)})
+        HorizontalDivider(1.dp, Color.Gray)
+        DropdownMenuItem({
+            Text("Удалить")
+        }, {
+            visibleState.value = false
+            remove()
+        }, trailingIcon = {Icon(Icons.Filled.Delete, null)})
     }
 }
 
