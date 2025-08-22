@@ -9,10 +9,10 @@ import androidx.room.Query
 @Dao
 interface ProductDAO {
     @Insert(onConflict = IGNORE)
-    fun addProduct(product: Product)
+    suspend fun addProduct(product: Product)
 
     @Delete
-    fun removeProduct(product: Product)
+    suspend fun removeProduct(product: Product)
 
     @Query("""
     UPDATE products SET 
@@ -27,7 +27,7 @@ interface ProductDAO {
         fiber = :fiber
     WHERE name = :oldName AND production = :oldProduction
 """)
-    fun updateProduct(name: String,
+    suspend fun updateProduct(name: String,
                       production: String,
                       amount: Int,
                       type: String,
@@ -41,14 +41,14 @@ interface ProductDAO {
     )
 
     @Query("SELECT * FROM products")
-    fun getProducts(): List<Product>
+    suspend fun getProducts(): List<Product>
 
     @Query("SELECT * FROM products WHERE name = :name AND production = :production")
-    fun getProduct(name: String, production: String): List<Product>
+    suspend fun getProduct(name: String, production: String): List<Product>
 
     @Query("SELECT * FROM products WHERE name LIKE :name || '%' COLLATE NOCASE")
-    fun getProductByName(name: String): List<Product>
+    suspend fun getProductByName(name: String): List<Product>
 
     @Query("SELECT * FROM products WHERE production LIKE :production || '%' COLLATE NOCASE")
-    fun getProductByProduction(production: String): List<Product>
+    suspend fun getProductByProduction(production: String): List<Product>
 }
