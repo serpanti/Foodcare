@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.IGNORE
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface ProductDAO {
@@ -14,31 +15,8 @@ interface ProductDAO {
     @Delete
     suspend fun removeProduct(product: Product)
 
-    @Query("""
-    UPDATE products SET 
-        name = :name,
-        production = :production,
-        amount = :amount,
-        type = :type,
-        calories = :calories,
-        protein = :protein,
-        fat = :fat,
-        carbohydrates = :carbohydrates,
-        fiber = :fiber
-    WHERE name = :oldName AND production = :oldProduction
-""")
-    suspend fun updateProduct(name: String,
-                      production: String,
-                      amount: Int,
-                      type: String,
-                      calories: Double,
-                      protein: Double,
-                      fat: Double,
-                      carbohydrates: Double,
-                      fiber: Double,
-                      oldName: String,
-                      oldProduction: String
-    )
+    @Update(onConflict = IGNORE)
+    suspend fun updateProduct(product: Product)
 
     @Query("SELECT * FROM products")
     suspend fun getProducts(): List<Product>
