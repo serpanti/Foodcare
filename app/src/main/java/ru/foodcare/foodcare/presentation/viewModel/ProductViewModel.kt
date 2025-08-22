@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.domain.Product
 import ru.foodcare.foodcare.domain.ProductRepository
 import kotlin.coroutines.CoroutineContext
 
@@ -15,4 +17,34 @@ open class ProductViewModel(private val repository: ProductRepository, private v
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
     )
+
+    fun getProductByName(name: String) {
+        viewModelScope.launch(context) {
+            repository.getProductByName(name)
+        }
+    }
+
+    fun getProductByProduction(production: String) {
+        viewModelScope.launch(context) {
+            repository.getProductByProduction(production)
+        }
+    }
+
+    fun addProduct(product: Product) {
+        viewModelScope.launch(context) {
+            repository.addProduct(product)
+        }
+    }
+
+    fun removeProduct(product: Product) {
+        viewModelScope.launch(context) {
+            repository.removeProduct(product)
+        }
+    }
+
+    fun updateProduct(newProduct: Product, oldProduct: Product) {
+        viewModelScope.launch(context) {
+            repository.updateProduct(newProduct, oldProduct)
+        }
+    }
 }
