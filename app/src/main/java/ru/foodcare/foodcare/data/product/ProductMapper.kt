@@ -15,7 +15,8 @@ object ProductMapper {
             fiber = entity.fiber
         )
 
-    fun fromDomain(domain: ProductDomain): Product = Product(
+    fun fromDomain(domain: ProductDomain, idOptional: Int = 0): Product = Product(
+            id = idOptional,
             name = domain.name,
             production = domain.production,
             amount = domain.amount,

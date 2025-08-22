@@ -1,27 +1,24 @@
 package ru.foodcare.foodcare.data.product
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.Product
 import ru.foodcare.foodcare.domain.ProductRepository
 
 class ProductRepositoryImpl(private val dao: ProductDAO) : ProductRepository {
-    val scope = CoroutineScope(Dispatchers.IO)
-
-    override fun addProduct(product: Product) {
-        scope.launch { dao.addProduct(ProductMapper.fromDomain(product)) }
+    override suspend fun addProduct(product: Product) {
+        dao.addProduct(ProductMapper.fromDomain(product))
     }
 
-    override fun removeProduct(product: Product) {
-        scope.launch { dao.removeProduct(ProductMapper.fromDomain(product))}
+    override suspend fun removeProduct(product: Product) {
+        val id = dao.getProduct(product.name, product.production).firstOrNull()?.id
+        id?.let { id ->
+            dao.removeProduct(ProductMapper.fromDomain(product, id))}
     }
 
-    override fun updateProduct(newProduct: Product, oldProduct: Product) {
+    override suspend fun updateProduct(newProduct: Product, oldProduct: Product) {
         val product = ProductMapper.fromDomain(newProduct)
-        scope.launch { dao.updateProduct(product.name, product.production, product.amount, product.type,
+        dao.updateProduct(product.name, product.production, product.amount, product.type,
             product.calories, product.protein, product.fat, product.carbohydrates, product.fiber,
-            oldProduct.name, oldProduct.production)}
+            oldProduct.name, oldProduct.production)
     }
 
     override suspend fun getProducts(): List<Product> {
