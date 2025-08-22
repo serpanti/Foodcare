@@ -15,10 +15,10 @@ class ProductRepositoryImpl(private val dao: ProductDAO) : ProductRepository {
     }
 
     override suspend fun updateProduct(newProduct: Product, oldProduct: Product) {
-        val product = ProductMapper.fromDomain(newProduct)
-        dao.updateProduct(product.name, product.production, product.amount, product.type,
-            product.calories, product.protein, product.fat, product.carbohydrates, product.fiber,
-            oldProduct.name, oldProduct.production)
+        val id = dao.getProduct(oldProduct.name, oldProduct.production).firstOrNull()?.id
+        id?.let { id ->
+            dao.updateProduct(ProductMapper.fromDomain(newProduct, id))
+        }
     }
 
     override suspend fun getProducts(): List<Product> {
