@@ -10,7 +10,7 @@ import ru.foodcare.foodcare.domain.Product
 import ru.foodcare.foodcare.domain.ProductRepository
 import java.lang.Exception
 
-class ProductViewModel(private val repository: ProductRepository): ViewModel() {
+open class ProductViewModel(private val repository: ProductRepository): ViewModel() {
     private val _productsUIState = MutableStateFlow<ProductsUIState>(ProductsUIState())
     val productsUIState = _productsUIState.asStateFlow()
 

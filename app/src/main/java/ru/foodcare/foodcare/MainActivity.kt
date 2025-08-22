@@ -1,5 +1,6 @@
 package ru.foodcare.foodcare
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -63,7 +64,7 @@ import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.data.database.FoodcareDBProvider
 import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.domain.Product
-import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.presentation.mock.MockProductViewModel
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModelFactory
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
@@ -272,6 +273,7 @@ fun HorizontalDivider(height: Dp, color: Color) {
 @Composable
 fun Preview() {
     FoodcareTheme {
-        UI()
+        @SuppressLint("ViewModelConstructorInComposable")
+        UI(MockProductViewModel())
     }
 }
