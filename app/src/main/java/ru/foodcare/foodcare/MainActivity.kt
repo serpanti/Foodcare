@@ -166,10 +166,9 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
 
 @Composable
 fun Products(viewModel: ProductViewModel) {
-    viewModel.loadProducts()
-    val productsState = viewModel.productsUIState.collectAsState()
-    val productsSorted = remember(productsState) {
-        productsState.value.products.sortedWith (
+    val products by viewModel.products.collectAsState()
+    val productsSorted = remember(products) {
+        products.sortedWith (
             compareBy<Product> { it.name }
                 .thenBy { it.production }
         )

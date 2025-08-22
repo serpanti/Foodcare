@@ -2,36 +2,14 @@ package ru.foodcare.foodcare.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import ru.foodcare.foodcare.domain.Product
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import ru.foodcare.foodcare.domain.ProductRepository
-import java.lang.Exception
 
 open class ProductViewModel(private val repository: ProductRepository): ViewModel() {
-    private val _productsUIState = MutableStateFlow<ProductsUIState>(ProductsUIState())
-    val productsUIState = _productsUIState.asStateFlow()
-
-    fun loadProducts() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _productsUIState.value = try {
-                ProductsUIState(ProductsStatus.Loaded, repository.getProducts())
-            } catch (_: Exception) {
-                ProductsUIState(ProductsStatus.Error)
-            }
-        }
-    }
+    val products = repository.observeProducts().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 }
-
-sealed class ProductsStatus {
-    object Loading : ProductsStatus()
-    object Loaded : ProductsStatus()
-    object Error : ProductsStatus()
-}
-
-data class ProductsUIState(
-    val status: ProductsStatus = ProductsStatus.Loading,
-    val products: List<Product> = emptyList()
-)
