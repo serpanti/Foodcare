@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.IGNORE
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductDAO {
@@ -20,6 +21,9 @@ interface ProductDAO {
 
     @Query("SELECT * FROM products")
     suspend fun getProducts(): List<Product>
+
+    @Query("SELECT * FROM products")
+    fun observeProducts(): Flow<List<Product>>
 
     @Query("SELECT * FROM products WHERE name = :name AND production = :production")
     suspend fun getProduct(name: String, production: String): List<Product>

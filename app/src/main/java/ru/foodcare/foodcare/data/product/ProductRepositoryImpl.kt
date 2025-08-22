@@ -1,5 +1,7 @@
 package ru.foodcare.foodcare.data.product
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import ru.foodcare.foodcare.domain.Product
 import ru.foodcare.foodcare.domain.ProductRepository
 
@@ -23,6 +25,12 @@ class ProductRepositoryImpl(private val dao: ProductDAO) : ProductRepository {
 
     override suspend fun getProducts(): List<Product> {
         return dao.getProducts().map{ProductMapper.toDomain(it)}
+    }
+
+    override fun observeProducts(): Flow<List<Product>> {
+        return dao.observeProducts().map{list ->
+            list.map{ProductMapper.toDomain(it)}
+        }
     }
 
     override suspend fun getProduct(
