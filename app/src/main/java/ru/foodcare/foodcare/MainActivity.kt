@@ -562,9 +562,9 @@ fun SaveProductButton(
         if (!inputProduct.isCorrect()) {
             showAlert = true
         } else {
-            oldProduct?.let {
-                viewModel.updateProduct(inputProduct.toProduct(), it)
-            } ?: {
+            if (oldProduct != null) {
+                viewModel.updateProduct(inputProduct.toProduct(), oldProduct)
+            } else {
                 viewModel.addProduct(inputProduct.toProduct())
             }
             close()
