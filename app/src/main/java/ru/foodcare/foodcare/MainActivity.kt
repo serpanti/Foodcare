@@ -139,15 +139,8 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Продукты")},
-                currentRoute == Route.Products.route || currentRoute == Route.ProductEditor.route, {
-                    if (false) {
-                        navController.navigate(Route.ProductEditor.route) {
-                            popUpTo(Route.ProductEditor.route)
-                        }
-                    } else {
-                        navController.navigate(Route.Products.route, buildNavOptions)
-                    }
-
+                currentRoute == Route.Products.route, {
+                    navController.navigate(Route.Products.route, buildNavOptions)
                     closeNavPanel()
                 }
             )
