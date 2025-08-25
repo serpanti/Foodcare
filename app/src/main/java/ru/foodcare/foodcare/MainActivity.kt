@@ -128,6 +128,7 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
         ModalDrawerSheet {
             val buildNavOptions: NavOptionsBuilder.() -> Unit = {
                 launchSingleTop = true
+                restoreState = true
             }
             val navPanelScope = rememberCoroutineScope()
             val closeNavPanel = {navPanelScope.launch { navPanelState.close() }}
@@ -135,7 +136,12 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
 
             NavigationDrawerItem({Text("Главная")},
                 currentRoute == Route.Main.route, {
-                    navController.navigate(Route.Main.route, buildNavOptions)
+                    navController.navigate(Route.Main.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        apply(buildNavOptions)
+                    }
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Календарь")},
