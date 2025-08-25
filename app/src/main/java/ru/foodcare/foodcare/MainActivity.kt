@@ -5,12 +5,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +27,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,6 +42,11 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -51,6 +61,9 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -62,6 +75,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,6 +85,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -82,6 +97,7 @@ import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.data.database.FoodcareDBProvider
 import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.domain.Product
+import ru.foodcare.foodcare.domain.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.mock.MockProductViewModel
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModelFactory
@@ -215,7 +231,8 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
 
         SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
 
-        AddProductButton(modifier = Modifier.align(Alignment.BottomEnd)
+        AddProductButton(modifier = Modifier
+            .align(Alignment.BottomEnd)
             .offset((-10).dp, (-10).dp), openEditor)
     }
 }
@@ -274,15 +291,16 @@ fun AddProductButton(modifier: Modifier = Modifier, openEditor: () -> Unit = {})
 @Composable
 fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: ProductViewModel,
                 openEditor: () -> Unit = {}) {
-    Surface(modifier = modifier, shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(2.dp, Color.Black), shadowElevation = 5.dp) {
+    ProductCardSurface(modifier) {
         ProductCardContent(product)
 
         val width = remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
-        Box(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
-            width.value = with(density) {coordinates.size.width.toDp()}
-        }, contentAlignment = Alignment.TopEnd) {
+        Box(Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned { coordinates ->
+                width.value = with(density) { coordinates.size.width.toDp() }
+            }, contentAlignment = Alignment.TopEnd) {
             val visibleState = remember {mutableStateOf(false)}
 
             EditMenu(visibleState, openEditor, {viewModel.removeProduct(product)},
@@ -295,8 +313,18 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
 }
 
 @Composable
+fun ProductCardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(modifier = modifier, shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, Color.Black), shadowElevation = 5.dp) {
+        content()
+    }
+}
+
+@Composable
 fun ProductCardContent(product: Product) {
-    Column(modifier = Modifier.background(Color.Transparent).padding(10.dp)) {
+    Column(modifier = Modifier
+        .background(Color.Transparent)
+        .padding(10.dp)) {
         Text("Название: " + product.name)
         Text("Производитель: " + product.production)
         Nutrients(product, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
@@ -337,7 +365,9 @@ fun EditMenu(visibleState: MutableState<Boolean>,
 fun Nutrients(product: Product, modifier: Modifier = Modifier) {
     Column(modifier) {
         NutrientsHorizontalDivider()
-        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween) {
             NutrientsVerticalDivider()
             Nutrient("Ценность", product.calories, "ккал")
@@ -372,25 +402,288 @@ fun NutrientsVerticalDivider() {VerticalDivider(2.dp, Color.Gray)}
 
 @Composable
 fun VerticalDivider(width: Dp, color: Color) {
-    Box(modifier = Modifier.width(width).fillMaxHeight().background(color))
+    Box(modifier = Modifier
+        .width(width)
+        .fillMaxHeight()
+        .background(color))
 }
 
 @Composable
 fun HorizontalDivider(height: Dp, color: Color) {
-    Box(modifier = Modifier.height(height).fillMaxWidth().background(color))
+    Box(modifier = Modifier
+        .height(height)
+        .fillMaxWidth()
+        .background(color))
 }
 
 @Composable
 fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
-    // TODO: написать редактор
+    val product = remember {viewModel.productObserved}
     Column {
         IconButton(close) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
         }
-        viewModel.productObserved?.let {
-            ProductCard(it, viewModel = viewModel)
+
+        ProductCardSurface(Modifier
+            .fillMaxSize()
+            .padding(bottom = 15.dp)
+            .padding(5.dp)
+            .background(Color.Transparent)
+            .padding(10.dp)) {
+            ProductEditCard(product, viewModel, close)
         }
     }
+}
+
+@Composable
+fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: () -> Unit) {
+    val name = remember { mutableStateOf(oldProduct?.name ?: "") }
+    val production = remember { mutableStateOf(oldProduct?.production ?: "") }
+    val type = remember { mutableStateOf(UnitType.Piece) }
+    val calories = remember { mutableStateOf(oldProduct?.calories?.toString() ?: "") }
+    val protein = remember { mutableStateOf(oldProduct?.protein?.toString() ?: "") }
+    val fat = remember { mutableStateOf(oldProduct?.fat?.toString() ?: "") }
+    val carbohydrates = remember { mutableStateOf(oldProduct?.carbohydrates?.toString() ?: "") }
+    val fiber = remember { mutableStateOf(oldProduct?.fiber?.toString() ?: "") }
+
+    LazyColumn {
+        itemWithUnderLine {NameEdit(name)}
+        itemWithUnderLine {ProductionEdit(production)}
+        itemWithUnderLine {CaloriesEdit(calories)}
+        itemWithUnderLine {ProteinEdit(protein)}
+        itemWithUnderLine {FatEdit(fat)}
+        itemWithUnderLine {CarbohydratesEdit(carbohydrates)}
+        itemWithUnderLine {FiberEdit(fiber)}
+        itemWithUnderLine {ProductTypeSelector(type)}
+        item {
+            val caloriesNum = parseOrNull(calories.value)
+            val proteinNum = parseOrNull(protein.value)
+            val fatNum = parseOrNull(fat.value)
+            val carbohydratesNum = parseOrNull(carbohydrates.value)
+            val fiberNum = parseOrNull(fiber.value)
+
+            SaveProductButton(oldProduct, InputProduct(name.value, production.value,
+                if (type.value == UnitType.Piece) 1 else 100, type.value,
+                caloriesNum, proteinNum, fatNum, carbohydratesNum,
+                fiberNum),
+                viewModel, close)
+        }
+    }
+}
+
+class InputProduct(var name: String = "",
+                           var production: String  = "",
+                           var amount: Int = 1,
+                           var type: UnitType = UnitType.Piece,
+                           var calories: Double? = null,
+                           var protein: Double? = null,
+                           var fat: Double? = null,
+                           var carbohydrates: Double? = null,
+                           var fiber: Double? = null) {
+    fun isCorrect(): Boolean {
+        return (calories != null && protein != null && fat != null &&
+                carbohydrates != null && fiber != null &&
+                name.isNotEmpty() && production.isNotEmpty())
+    }
+    
+    fun toProduct(): Product {
+        return Product(name, production, amount, type,
+            calories ?: 0.0, protein ?: 0.0, fat ?: 0.0, carbohydrates ?: 0.0, fiber ?: 0.0)
+    }
+}
+
+private fun parseOrNull(str: String): Double? {
+    return str.replace(',', '.').trim().toDoubleOrNull()
+}
+
+@Composable
+fun NameEdit(name: MutableState<String>) {
+    ProductTextField(name.value, {name.value = it},
+        prefix = {Text("Название: ")},
+        placeholder = {Text("Название продукта")})
+}
+
+@Composable
+fun ProductionEdit(production: MutableState<String>) {
+    ProductTextField(production.value, {production.value = it},
+        prefix = {Text("Производитель: ")},
+        placeholder = {Text("Имя производителя")})
+}
+
+@Composable
+fun CaloriesEdit(calories: MutableState<String>) {
+    NutrientTextField("Калорийность: ", calories.value, "ккал"
+    ) { calories.value = it }
+}
+
+@Composable
+fun ProteinEdit(protein: MutableState<String>) {
+    NutrientTextField("Белок: ", protein.value, "грамм"
+    ) { protein.value = it }
+}
+
+@Composable
+fun FatEdit(fat: MutableState<String>) {
+    NutrientTextField("Жир: ", fat.value, "грамм"
+    ) { fat.value = it }
+}
+
+@Composable
+fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
+    NutrientTextField("Углеводы: ", carbohydrates.value, "грамм"
+    ) { carbohydrates.value = it }
+}
+
+@Composable
+fun FiberEdit(fiber: MutableState<String>) {
+    NutrientTextField("Волокна: ", fiber.value, "грамм"
+    ) { fiber.value = it }
+}
+
+private fun LazyListScope.itemWithUnderLine(content: @Composable (LazyItemScope.() -> Unit)) {
+    item {
+        content()
+        HorizontalDivider(2.dp, Color.Black)
+    }
+}
+
+@Composable
+fun SaveProductButton(
+    oldProduct: Product?,
+    inputProduct: InputProduct,
+    viewModel: ProductViewModel,
+    close: () -> Unit
+) {
+    var showAlert by remember { mutableStateOf(false) }
+    if (showAlert) {
+        AlertWrongInput ({ WrongInputProductPreview(inputProduct) }) { showAlert = false }
+    }
+    TextButton({
+        if (!inputProduct.isCorrect()) {
+            showAlert = true
+        } else {
+            oldProduct?.let {
+                viewModel.updateProduct(inputProduct.toProduct(), it)
+            } ?: {
+                viewModel.addProduct(inputProduct.toProduct())
+            }
+            close()
+        }
+    }, modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp),
+        colors = ButtonColors(Color.Transparent, Color.Black,
+            Color.Transparent, Color.Transparent)) {
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.Save, "")
+            Text("Сохранить", fontSize = 20.sp)
+        }
+    }
+}
+
+@Composable
+fun WrongInputProductPreview(inputProduct: InputProduct) {
+    Column {
+        if (inputProduct.name.isEmpty()) Text("Имя не указано")
+        if (inputProduct.production.isEmpty()) Text("Производитель не указан")
+        if (inputProduct.calories == null) Text("Ошибка в калориях")
+        if (inputProduct.protein == null) Text("Ошибка в белках")
+        if (inputProduct.fat == null) Text("Ошибка в жирах")
+        if (inputProduct.carbohydrates == null) Text("Ошибка в углеводах")
+        if (inputProduct.fiber == null) Text("Ошибка в волокнах")
+    }
+}
+
+@Composable
+fun AlertWrongInput(preview: @Composable (() -> Unit) = {}, closeAlert: () -> Unit) {
+    AlertDialog(closeAlert,
+        {TextButton(closeAlert) {Text("Исправлю")} },
+        modifier = Modifier.fillMaxWidth(),
+        title = {Text("В вводе ошибки")},
+        text = preview)
+}
+
+@Composable
+fun ProductTypeSelector(type: MutableState<UnitType>) {
+    Row (modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 7.dp, vertical = 5.dp)
+        .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+        .padding(horizontal = 20.dp, vertical = 15.dp)
+    ) {
+        Text("Кол-во:")
+        Column (verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.height(90.dp)) {
+            ProductTypeSelectRow("1 шт - на 1 предмет", type.value == UnitType.Piece) {
+                type.value = UnitType.Piece
+            }
+            ProductTypeSelectRow("100 г - на 100 грамм", type.value == UnitType.Gram) {
+                type.value = UnitType.Gram
+            }
+            ProductTypeSelectRow("100 мл - на 0.1 литра", type.value == UnitType.Milliliter) {
+                type.value = UnitType.Milliliter
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductTypeSelectRow(type: String, selected: Boolean, onSelect: () -> Unit) {
+    Row (modifier = Modifier
+        .padding(start = 50.dp)
+        .fillMaxWidth()
+        .selectable(selected) {
+            onSelect()
+        }) {
+        CheckCircle(selected)
+        Text(type)
+    }
+}
+
+@Composable
+fun CheckCircle(selected: Boolean) {
+    Crossfade (selected) { isSelected ->
+        Icon(if (isSelected) {
+            Icons.Filled.RadioButtonChecked
+        } else {
+            Icons.Filled.RadioButtonUnchecked
+        }, "")
+    }
+}
+
+@Composable
+fun NutrientTextField(description: String, value: String, type: String,
+                      onValueChange: (String) -> Unit) {
+    ProductTextField((value), onValueChange,
+        placeholder = {Text("Позволены символы: [0-9 и .]")},
+        prefix = {Text(description)},
+        suffix = {Text(type)})
+}
+
+@Composable
+fun ProductTextField(startText: String, onValueChange: (String) -> Unit,
+                     modifier: Modifier = Modifier,
+                     placeholder: @Composable () -> Unit = {},
+                     prefix: @Composable () -> Unit = {},
+                     suffix: @Composable () -> Unit = {}) {
+    TextField(startText, onValueChange,
+        placeholder = placeholder,
+        prefix = prefix,
+        suffix = suffix,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
 }
 
 @Preview(showBackground = true)
