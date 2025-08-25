@@ -191,6 +191,8 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
 fun ProductsWindow(viewModel: ProductViewModel) {
     val products by viewModel.products.collectAsState()
     val editorIsOpened = remember {mutableStateOf(false)}
+    val lazyListState = rememberLazyListState()
+
     val openProductEditor: () -> Unit = {
         editorIsOpened.value = true
     }
@@ -201,14 +203,13 @@ fun ProductsWindow(viewModel: ProductViewModel) {
     if (editorIsOpened.value) {
         ProductEditWindow(viewModel, closeProductEditor)
     } else {
-        Products(viewModel, products, openProductEditor)
+        Products(viewModel, products, openProductEditor, lazyListState)
     }
 }
 
 @Composable
 fun Products(viewModel: ProductViewModel, products: List<Product>,
-             openEditor: () -> Unit = {}) {
-    val lazyListState = rememberLazyListState()
+             openEditor: () -> Unit = {}, lazyListState: LazyListState = rememberLazyListState()) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         ProductsList(viewModel, products, openEditor, lazyListState)
