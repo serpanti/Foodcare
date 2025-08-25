@@ -18,6 +18,13 @@ open class ProductViewModel(private val repository: ProductRepository, private v
             initialValue = emptyList()
     )
 
+    var productObserved: Product? = null
+        get() {
+            val retField = field
+            field = null
+            return retField
+        }
+
     fun getProductByName(name: String) {
         viewModelScope.launch(context) {
             repository.getProductByName(name)

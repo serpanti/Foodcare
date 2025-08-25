@@ -104,6 +104,7 @@ sealed class Route(val route: String) {
     object Main: Route("main")
     object Calendar: Route("calendar")
     object Products: Route("products")
+    object ProductEditor: Route("productEditor")
 }
 
 @Composable
@@ -129,10 +130,7 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
 
             NavigationDrawerItem({Text("Главная")},
                 currentRoute == Route.Main.route, {
-                    navController.navigate(Route.Main.route) {
-                        popUpTo(Route.Main.route)
-                        buildNavOptions()
-                    }
+                    navController.navigate(Route.Main.route, buildNavOptions)
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Календарь")},
@@ -141,10 +139,18 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Продукты")},
-                currentRoute == Route.Products.route, {
-                    navController.navigate(Route.Products.route, buildNavOptions)
+                currentRoute == Route.Products.route || currentRoute == Route.ProductEditor.route, {
+                    if (false) {
+                        navController.navigate(Route.ProductEditor.route) {
+                            popUpTo(Route.ProductEditor.route)
+                        }
+                    } else {
+                        navController.navigate(Route.Products.route, buildNavOptions)
+                    }
+
                     closeNavPanel()
-                })
+                }
+            )
         }
     }
 
@@ -170,14 +176,27 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
         NavHost(navController, Route.Products.route, Modifier.padding(it)) {
             composable(Route.Main.route) {}
             composable(Route.Calendar.route) {}
-            composable(Route.Products.route) {Products(productViewModel)}
+            composable(Route.Products.route) {ProductsWindow(productViewModel, navController)}
+            composable(Route.ProductEditor.route) {
+                ProductEditWindow(productViewModel, navController)
+            }
         }
     }
 }
 
 @Composable
-fun Products(viewModel: ProductViewModel) {
+fun ProductsWindow(viewModel: ProductViewModel, navController: NavHostController) {
     val products by viewModel.products.collectAsState()
+    val openProductEditor: () -> Unit = {
+        navController.navigate(Route.ProductEditor.route) {launchSingleTop = true}
+    }
+
+    Products(viewModel, products, openProductEditor)
+}
+
+@Composable
+fun Products(viewModel: ProductViewModel, products: List<Product>,
+             openEditor: () -> Unit = {}) {
     val productsSorted = remember(products) {
         products.sortedWith (
             compareBy<Product> { it.name }
@@ -192,7 +211,11 @@ fun Products(viewModel: ProductViewModel) {
         LazyColumn (state = lazyListState) {
             items(productsSorted.size) { idx ->
                 ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
-                    horizontal = 5.dp), viewModel)
+                    horizontal = 5.dp), viewModel
+                ) {
+                    viewModel.productObserved = productsSorted[idx]
+                    openEditor()
+                }
             }
         }
 
@@ -212,7 +235,8 @@ fun Products(viewModel: ProductViewModel) {
 }
 
 @Composable
-fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: ProductViewModel) {
+fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: ProductViewModel,
+                openEditor: () -> Unit = {}) {
     Surface(modifier = modifier, shape = RoundedCornerShape(10.dp),
         border = BorderStroke(2.dp, Color.Black), shadowElevation = 5.dp) {
         ProductCardContent(product)
@@ -224,7 +248,8 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
         }, contentAlignment = Alignment.TopEnd) {
             val visibleState = remember {mutableStateOf(false)}
 
-            EditMenu(visibleState, {}, {}, offset = DpOffset(width.value, 0.dp))
+            EditMenu(visibleState, openEditor, {viewModel.removeProduct(product)},
+                offset = DpOffset(width.value, 0.dp))
             IconButton({visibleState.value = true}) {
                 Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
             }
@@ -316,6 +341,14 @@ fun VerticalDivider(width: Dp, color: Color) {
 @Composable
 fun HorizontalDivider(height: Dp, color: Color) {
     Box(modifier = Modifier.height(height).fillMaxWidth().background(color))
+}
+
+@Composable
+fun ProductEditWindow(viewModel: ProductViewModel, navController: NavHostController) {
+    // TODO: написать редактор
+    viewModel.productObserved?.let {
+        ProductCard(it, viewModel = viewModel)
+    }
 }
 
 @Preview(showBackground = true)
