@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -104,7 +105,6 @@ sealed class Route(val route: String) {
     object Main: Route("main")
     object Calendar: Route("calendar")
     object Products: Route("products")
-    object ProductEditor: Route("productEditor")
 }
 
 @Composable
@@ -169,22 +169,27 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
         NavHost(navController, Route.Products.route, Modifier.padding(it)) {
             composable(Route.Main.route) {}
             composable(Route.Calendar.route) {}
-            composable(Route.Products.route) {ProductsWindow(productViewModel, navController)}
-            composable(Route.ProductEditor.route) {
-                ProductEditWindow(productViewModel, navController)
-            }
+            composable(Route.Products.route) {ProductsWindow(productViewModel)}
         }
     }
 }
 
 @Composable
-fun ProductsWindow(viewModel: ProductViewModel, navController: NavHostController) {
+fun ProductsWindow(viewModel: ProductViewModel) {
     val products by viewModel.products.collectAsState()
+    val editorIsOpened = remember {mutableStateOf(false)}
     val openProductEditor: () -> Unit = {
-        navController.navigate(Route.ProductEditor.route) {launchSingleTop = true}
+        editorIsOpened.value = true
+    }
+    val closeProductEditor: () -> Unit = {
+        editorIsOpened.value = false
     }
 
-    Products(viewModel, products, openProductEditor)
+    if (editorIsOpened.value) {
+        ProductEditWindow(viewModel, closeProductEditor)
+    } else {
+        Products(viewModel, products, openProductEditor)
+    }
 }
 
 @Composable
@@ -337,10 +342,15 @@ fun HorizontalDivider(height: Dp, color: Color) {
 }
 
 @Composable
-fun ProductEditWindow(viewModel: ProductViewModel, navController: NavHostController) {
+fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
     // TODO: написать редактор
-    viewModel.productObserved?.let {
-        ProductCard(it, viewModel = viewModel)
+    Column {
+        IconButton(close) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
+        }
+        viewModel.productObserved?.let {
+            ProductCard(it, viewModel = viewModel)
+        }
     }
 }
 
