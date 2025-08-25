@@ -20,13 +20,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -42,6 +46,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -195,6 +200,20 @@ fun ProductsWindow(viewModel: ProductViewModel) {
 @Composable
 fun Products(viewModel: ProductViewModel, products: List<Product>,
              openEditor: () -> Unit = {}) {
+    val lazyListState = rememberLazyListState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            ProductsList(viewModel, products, openEditor, lazyListState)
+        }
+
+        SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
+    }
+}
+
+@Composable
+fun ProductsList(viewModel: ProductViewModel, products: List<Product>,
+                 openEditor: () -> Unit = {}, lazyListState: LazyListState) {
     val productsSorted = remember(products) {
         products.sortedWith (
             compareBy<Product> { it.name }
@@ -202,33 +221,33 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
         )
     }
 
-    val lazyListState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn (state = lazyListState) {
-            items(productsSorted.size) { idx ->
-                ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
-                    horizontal = 5.dp), viewModel
-                ) {
-                    viewModel.productObserved = productsSorted[idx]
-                    openEditor()
-                }
+    LazyColumn (state = lazyListState) {
+        items(productsSorted.size) { idx ->
+            ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
+                horizontal = 5.dp), viewModel
+            ) {
+                viewModel.productObserved = productsSorted[idx]
+                openEditor()
             }
         }
+    }
+}
 
-        val showButton by remember {
-            derivedStateOf { lazyListState.firstVisibleItemIndex >= 4 }
-        }
-        AnimatedVisibility(visible = showButton,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            enter = slideInVertically() + fadeIn(), exit = slideOutVertically() + fadeOut()) {
-            IconButton({
-                scope.launch {
-                    lazyListState.scrollToItem(0)
-                }
-            }) { Icon(Icons.Filled.KeyboardArrowUp, "Переместиться наверх") }
-        }
+@Composable
+fun SwipeToStartButton(modifier: Modifier = Modifier, lazyListState: LazyListState) {
+    val scope = rememberCoroutineScope()
+    val showButton by remember {
+        derivedStateOf { lazyListState.firstVisibleItemIndex >= 4 }
+    }
+
+    AnimatedVisibility(visible = showButton,
+        modifier = modifier,
+        enter = slideInVertically() + fadeIn(), exit = slideOutVertically() + fadeOut()) {
+        IconButton({
+            scope.launch {
+                lazyListState.scrollToItem(0)
+            }
+        }) { Icon(Icons.Filled.KeyboardArrowUp, "Переместиться наверх") }
     }
 }
 
