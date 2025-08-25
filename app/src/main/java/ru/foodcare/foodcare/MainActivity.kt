@@ -331,9 +331,9 @@ fun ProductCardContent(product: Product) {
         Row(modifier = Modifier.align(Alignment.End)) {
             Text("Кол-во: ")
             val countTypeString = when (product.type) {
-                Product.Companion.UnitType.Milliliter -> "мл"
-                Product.Companion.UnitType.Gram -> "г"
-                Product.Companion.UnitType.Piece -> "шт"
+                UnitType.Milliliter -> "мл"
+                UnitType.Gram -> "г"
+                UnitType.Piece -> "шт"
             }
             Text("${product.amount} $countTypeString")
         }
