@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +61,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,7 +73,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -128,32 +127,24 @@ fun UI(productViewModel: ProductViewModel) {
 fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController, content: @Composable () -> Unit) {
     val drawerContent = @Composable {
         ModalDrawerSheet {
-            val buildNavOptions: NavOptionsBuilder.() -> Unit = {
-                launchSingleTop = true
-                restoreState = true
-            }
             val navPanelScope = rememberCoroutineScope()
             val closeNavPanel = {navPanelScope.launch { navPanelState.close() }}
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+            val startRoute = Route.Main.route
 
             NavigationDrawerItem({Text("Главная")},
                 currentRoute == Route.Main.route, {
-                    navController.navigate(Route.Main.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        apply(buildNavOptions)
-                    }
+                    navController.navigateWithPopTo(Route.Main.route, startRoute)
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Календарь")},
                 currentRoute == Route.Calendar.route, {
-                    navController.navigate(Route.Calendar.route, buildNavOptions)
+                    navController.navigateWithPopTo(Route.Calendar.route, startRoute)
                     closeNavPanel()
                 })
             NavigationDrawerItem({Text("Продукты")},
                 currentRoute == Route.Products.route, {
-                    navController.navigate(Route.Products.route, buildNavOptions)
+                    navController.navigateWithPopTo(Route.Products.route, startRoute)
                     closeNavPanel()
                 }
             )
@@ -162,6 +153,14 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
 
     ModalNavigationDrawer(drawerContent, drawerState = navPanelState) {
         content()
+    }
+}
+
+private fun NavHostController.navigateWithPopTo(route: String, startRoute: String) {
+    navigate(route) {
+        popUpTo(startRoute) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
@@ -179,7 +178,7 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
             }) { Icon(Icons.Default.Menu, "Меню") }
         })
     }) {
-        NavHost(navController, Route.Products.route, Modifier.padding(it)) {
+        NavHost(navController, Route.Main.route, Modifier.padding(it)) {
             composable(Route.Main.route) {}
             composable(Route.Calendar.route) {}
             composable(Route.Products.route) {ProductsWindow(productViewModel)}
@@ -190,7 +189,7 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
 @Composable
 fun ProductsWindow(viewModel: ProductViewModel) {
     val products by viewModel.products.collectAsState()
-    val editorIsOpened = remember {mutableStateOf(false)}
+    val editorIsOpened = rememberSaveable {mutableStateOf(false)}
     val lazyListState = rememberLazyListState()
 
     val openProductEditor: () -> Unit = {
