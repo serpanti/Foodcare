@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -34,9 +35,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -45,8 +48,10 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
@@ -187,6 +192,9 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
     val productEditorIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.ProductEditor.route
     }}
+    val productIsOpened = remember {derivedStateOf {
+        currentBackStackEntry.value?.destination?.route == Route.Products.route
+    }}
 
     Scaffold(topBar = {
         TopAppBar({
@@ -202,10 +210,94 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
                     navPanelScope.launch { navPanelState.open() }
                 }) { Icon(Icons.Default.Menu, "Меню") }
             }
-        })
+        },
+            actions = {
+                if (productIsOpened.value) {
+                    SearchProductField(productViewModel)
+                }
+            })
     }) {
         FoodcareNavHost(navController, productViewModel, Modifier.padding(it))
     }
+}
+
+@Composable
+fun SearchProductField(productViewModel: ProductViewModel) {
+    val startValue = productViewModel.key.value ?: ""
+    val endSearch = null
+
+    val search: () -> Unit = {
+        productViewModel.key.value?.let {
+            productViewModel.getProductByNameOrProduction(it)
+        }
+    }
+    val onStartSearching: () -> Unit = {
+        productViewModel.key.value = startValue
+        search()
+    }
+    val onStopSearching: () -> Unit = {
+        productViewModel.key.value = endSearch
+        productViewModel.productsStatic.value = endSearch
+    }
+    val onValueChange: (String) -> Unit = {
+        productViewModel.key.value = it
+        search()
+    }
+
+    SearchField(onStartSearching, onStopSearching, startValue, onValueChange
+    ) { productViewModel.key.value != null }
+}
+
+@Composable
+fun SearchField(onStartSearching: () -> Unit,
+                onStopSearching: () -> Unit,
+                startValue: String,
+                onValueChange: (String) -> Unit,
+                isOpened: () -> Boolean) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.offset(y = 2.dp).padding(5.dp)
+            .border(1.dp, Color.Black, RoundedCornerShape(15.dp)).height(55.dp)
+            .padding(5.dp)) {
+        if (isOpened()) {
+            SearchTextField(startValue, onValueChange)
+        }
+        IconButton({
+            if (isOpened()) onStopSearching() else onStartSearching()
+        }) {
+            if (isOpened()) {
+                Icon(Icons.Filled.Close, "Закрыть поиск")
+            } else {
+                Icon(Icons.Filled.Search, "Открыть поиск")
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchTextField(startText: String, onValueChange: (String) -> Unit,
+                     modifier: Modifier = Modifier) {
+    SimpleTextField(startText, onValueChange,
+        placeholder = {Text("Поиск")},
+        modifier = modifier.width(150.dp).padding(start = 5.dp)
+    )
+}
+
+@Composable
+fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
+                    modifier: Modifier = Modifier,
+                    placeholder: @Composable () -> Unit) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        decorationBox = @Composable { innerTextField ->
+        if (value.isEmpty()) {
+                placeholder()
+            } else {
+                innerTextField()
+            }
+        }
+    )
 }
 
 @Composable
@@ -230,10 +322,38 @@ fun ProductsWindow(
     viewModel: ProductViewModel,
     openProductEditor: () -> Unit
 ) {
-    val products by viewModel.products.collectAsState()
-    val lazyListState = rememberLazyListState()
+    var products = if (viewModel.key.value == null) {
+        viewModel.products.collectAsState()
+    } else {
+        remember { viewModel.productsStatic }
+    }
 
-    Products(viewModel, products, openProductEditor, lazyListState)
+    if (products.value == null) {
+        ProductsLoading()
+    } else {
+        products.value?.let {
+            Products(viewModel, it, openProductEditor)
+        }
+    }
+}
+
+@Composable
+fun ProductsLoading() {
+    var indicatorSize by remember {mutableStateOf(40.dp)}
+    val density = LocalDensity.current
+
+    Box(modifier = Modifier.fillMaxSize()
+        .padding(70.dp)
+        .onGloballyPositioned {coordinates ->
+            with(density) {
+                val minSize = minOf(coordinates.size.width, coordinates.size.height).toDp()
+                if (minSize != indicatorSize) indicatorSize = minSize
+            }
+        },
+        contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(modifier = Modifier
+            .size(indicatorSize), strokeWidth = 20.dp)
+    }
 }
 
 @Composable

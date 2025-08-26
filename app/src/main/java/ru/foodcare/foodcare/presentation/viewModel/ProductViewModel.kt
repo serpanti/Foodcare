@@ -1,5 +1,7 @@
 package ru.foodcare.foodcare.presentation.viewModel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,15 +27,27 @@ open class ProductViewModel(private val repository: ProductRepository, private v
             return retField
         }
 
+    var key: MutableState<String?> = mutableStateOf(null)
+
+    var productsStatic: MutableState<List<Product>?> = mutableStateOf(null)
+
     fun getProductByName(name: String) {
         viewModelScope.launch(context) {
-            repository.getProductByName(name)
+            productsStatic.value = repository.getProductByName(name)
         }
     }
 
     fun getProductByProduction(production: String) {
         viewModelScope.launch(context) {
-            repository.getProductByProduction(production)
+            productsStatic.value = repository.getProductByProduction(production)
+        }
+    }
+
+    fun getProductByNameOrProduction(nameOrProduction: String) {
+        viewModelScope.launch(context) {
+            productsStatic.value =
+                (repository.getProductByName(nameOrProduction) +
+                repository.getProductByProduction(nameOrProduction)).distinct()
         }
     }
 
