@@ -74,7 +74,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -184,15 +183,10 @@ private fun NavHostController.navigateWithPopTo(route: String, startRoute: Strin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Content(navPanelState: DrawerState, navController: NavHostController, productViewModel: ProductViewModel) {
-    val productEditorIsOpened = rememberSaveable {mutableStateOf(false)}
-    val closeProductEditor = {
-        navController.popBackStack()
-        productEditorIsOpened.value = false
-    }
-    val openProductEditor = {
-        productEditorIsOpened.value = true
-        navController.navigate(Route.ProductEditor.route)
-    }
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val productEditorIsOpened = remember {derivedStateOf {
+        currentBackStackEntry.value?.destination?.route == Route.ProductEditor.route
+    }}
 
     Scaffold(topBar = {
         TopAppBar({
@@ -200,7 +194,7 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
             if (productEditorIsOpened.value) {
-                IconButton(closeProductEditor) {
+                IconButton({navController.popBackStack()}) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
                 }
             } else {
@@ -210,24 +204,23 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
             }
         })
     }) {
-        FoodcareNavHost(navController, productViewModel, Modifier.padding(it),
-            openProductEditor, closeProductEditor)
+        FoodcareNavHost(navController, productViewModel, Modifier.padding(it))
     }
 }
 
 @Composable
 fun FoodcareNavHost(navController: NavHostController, productViewModel: ProductViewModel,
-    modifier: Modifier = Modifier,
-    openProductEditor: () -> Unit = {},
-    closeProductEditor: () -> Unit = {}) {
+    modifier: Modifier = Modifier) {
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {}
         composable(Route.Calendar.route) {}
         composable(Route.Products.route) {
-            ProductsWindow(productViewModel, openProductEditor)
+            ProductsWindow(productViewModel) {
+                navController.navigate(Route.ProductEditor.route)
+            }
         }
         composable(Route.ProductEditor.route) {
-            ProductEditWindow(productViewModel, closeProductEditor)
+            ProductEditWindow(productViewModel) {navController.popBackStack()}
         }
     }
 }
