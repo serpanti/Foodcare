@@ -197,7 +197,7 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
     Scaffold(topBar = {
         TopAppBar({
             Text("Foodcare")
-        }, navigationIcon =  {
+        }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
             if (productEditorIsOpened.value) {
                 IconButton(closeProductEditor) {
@@ -210,15 +210,24 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
             }
         })
     }) {
-        NavHost(navController, Route.Main.route, Modifier.padding(it)) {
-            composable(Route.Main.route) {}
-            composable(Route.Calendar.route) {}
-            composable(Route.Products.route) {
-                ProductsWindow(productViewModel, openProductEditor)
-            }
-            composable(Route.ProductEditor.route) {
-                ProductEditWindow(productViewModel, closeProductEditor)
-            }
+        FoodcareNavHost(navController, productViewModel, Modifier.padding(it),
+            openProductEditor, closeProductEditor)
+    }
+}
+
+@Composable
+fun FoodcareNavHost(navController: NavHostController, productViewModel: ProductViewModel,
+    modifier: Modifier = Modifier,
+    openProductEditor: () -> Unit = {},
+    closeProductEditor: () -> Unit = {}) {
+    NavHost(navController, Route.Main.route, modifier) {
+        composable(Route.Main.route) {}
+        composable(Route.Calendar.route) {}
+        composable(Route.Products.route) {
+            ProductsWindow(productViewModel, openProductEditor)
+        }
+        composable(Route.ProductEditor.route) {
+            ProductEditWindow(productViewModel, closeProductEditor)
         }
     }
 }
