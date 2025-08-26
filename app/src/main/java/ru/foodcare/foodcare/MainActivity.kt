@@ -127,6 +127,7 @@ sealed class Route(val route: String) {
     object Main: Route("main")
     object Calendar: Route("calendar")
     object Products: Route("products")
+    object ProductEditor: Route("productEditor")
 }
 
 @Composable
@@ -183,43 +184,54 @@ private fun NavHostController.navigateWithPopTo(route: String, startRoute: Strin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Content(navPanelState: DrawerState, navController: NavHostController, productViewModel: ProductViewModel) {
+    val productEditorIsOpened = rememberSaveable {mutableStateOf(false)}
+    val closeProductEditor = {
+        navController.popBackStack()
+        productEditorIsOpened.value = false
+    }
+    val openProductEditor = {
+        productEditorIsOpened.value = true
+        navController.navigate(Route.ProductEditor.route)
+    }
+
     Scaffold(topBar = {
         TopAppBar({
             Text("Foodcare")
         }, navigationIcon =  {
             val navPanelScope = rememberCoroutineScope()
-
-            IconButton({
-                navPanelScope.launch { navPanelState.open() }
-            }) { Icon(Icons.Default.Menu, "Меню") }
+            if (productEditorIsOpened.value) {
+                IconButton(closeProductEditor) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
+                }
+            } else {
+                IconButton({
+                    navPanelScope.launch { navPanelState.open() }
+                }) { Icon(Icons.Default.Menu, "Меню") }
+            }
         })
     }) {
         NavHost(navController, Route.Main.route, Modifier.padding(it)) {
             composable(Route.Main.route) {}
             composable(Route.Calendar.route) {}
-            composable(Route.Products.route) {ProductsWindow(productViewModel)}
+            composable(Route.Products.route) {
+                ProductsWindow(productViewModel, openProductEditor)
+            }
+            composable(Route.ProductEditor.route) {
+                ProductEditWindow(productViewModel, closeProductEditor)
+            }
         }
     }
 }
 
 @Composable
-fun ProductsWindow(viewModel: ProductViewModel) {
+fun ProductsWindow(
+    viewModel: ProductViewModel,
+    openProductEditor: () -> Unit
+) {
     val products by viewModel.products.collectAsState()
-    val editorIsOpened = rememberSaveable {mutableStateOf(false)}
     val lazyListState = rememberLazyListState()
 
-    val openProductEditor: () -> Unit = {
-        editorIsOpened.value = true
-    }
-    val closeProductEditor: () -> Unit = {
-        editorIsOpened.value = false
-    }
-
-    if (editorIsOpened.value) {
-        ProductEditWindow(viewModel, closeProductEditor)
-    } else {
-        Products(viewModel, products, openProductEditor, lazyListState)
-    }
+    Products(viewModel, products, openProductEditor, lazyListState)
 }
 
 @Composable
@@ -419,19 +431,14 @@ fun HorizontalDivider(height: Dp, color: Color) {
 @Composable
 fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
     val product = remember {viewModel.productObserved}
-    Column {
-        IconButton(close) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
-        }
 
-        ProductCardSurface(Modifier
-            .fillMaxSize()
-            .padding(bottom = 15.dp)
-            .padding(5.dp)
-            .background(Color.Transparent)
-            .padding(10.dp)) {
-            ProductEditCard(product, viewModel, close)
-        }
+    ProductCardSurface(Modifier
+        .fillMaxSize()
+        .padding(bottom = 15.dp)
+        .padding(5.dp)
+        .background(Color.Transparent)
+        .padding(10.dp)) {
+        ProductEditCard(product, viewModel, close)
     }
 }
 
