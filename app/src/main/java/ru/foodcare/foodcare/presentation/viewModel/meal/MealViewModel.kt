@@ -26,7 +26,6 @@ open class MealViewModel(private val repository: MealRepository,
     var observedYear = mutableStateOf<Int?>(null)
     var observedMonth = mutableStateOf<Int?>(null)
     var observedDay = mutableStateOf<Int?>(null)
-    var observedMeal = mutableStateOf<Meal?>(null)
 
     fun observeMonths(year: Int): StateFlow<List<Int>> {
         return repository.observeMonths(year).flowOn(context)
