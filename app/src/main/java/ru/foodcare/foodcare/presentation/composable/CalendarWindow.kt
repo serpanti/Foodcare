@@ -29,7 +29,27 @@ fun CalendarWindow() {
         CalendarTypeSelector(formatType, Modifier
             .align(Alignment.BottomEnd)
             .offset((-10).dp, (-10).dp))
+        when (formatType.value) {
+            CalendarShowType.Week -> {WeeksWindow()}
+            CalendarShowType.Month -> {MonthsWindow()}
+            CalendarShowType.Year -> {YearsWindow()}
+        }
     }
+}
+
+@Composable
+fun WeeksWindow() {
+
+}
+
+@Composable
+fun MonthsWindow() {
+
+}
+
+@Composable
+fun YearsWindow() {
+
 }
 
 @Composable
