@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.viewModel
+package ru.foodcare.foodcare.presentation.viewModel.product
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,7 @@ open class ProductViewModel(private val repository: ProductRepository, private v
     val products = repository.observeProducts().flowOn(context)
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Companion.WhileSubscribed(5000),
             initialValue = emptyList()
     )
 

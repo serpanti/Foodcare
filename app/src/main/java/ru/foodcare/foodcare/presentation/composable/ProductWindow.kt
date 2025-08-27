@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
-import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
 fun ProductsWindow(

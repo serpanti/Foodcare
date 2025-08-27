@@ -16,8 +16,8 @@ import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.presentation.composable.Content
 import ru.foodcare.foodcare.presentation.composable.NavigationPanel
 import ru.foodcare.foodcare.presentation.mock.MockProductViewModel
-import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
-import ru.foodcare.foodcare.presentation.viewModel.ProductViewModelFactory
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModelFactory
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
 
 class MainActivity : ComponentActivity() {

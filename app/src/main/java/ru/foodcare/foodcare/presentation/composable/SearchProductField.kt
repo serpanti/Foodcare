@@ -1,7 +1,7 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.runtime.Composable
-import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
 fun SearchProductField(productViewModel: ProductViewModel) {

@@ -24,7 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
-import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 sealed class Route(val route: String) {
     object Main: Route("main")
