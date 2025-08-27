@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 sealed class Route(val route: String) {
@@ -76,7 +77,12 @@ private fun NavHostController.navigateWithPopTo(route: String, startRoute: Strin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Content(navPanelState: DrawerState, navController: NavHostController, productViewModel: ProductViewModel) {
+fun Content(
+    navPanelState: DrawerState,
+    navController: NavHostController,
+    productViewModel: ProductViewModel,
+    mealViewModel: MealViewModel
+) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
     val productEditorIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.ProductEditor.route
@@ -106,17 +112,20 @@ fun Content(navPanelState: DrawerState, navController: NavHostController, produc
                 }
             })
     }) {
-        FoodcareNavHost(navController, productViewModel, Modifier.padding(it))
+        FoodcareNavHost(navController, productViewModel, mealViewModel, Modifier.padding(it))
     }
 }
 
 @Composable
-fun FoodcareNavHost(navController: NavHostController, productViewModel: ProductViewModel,
-                    modifier: Modifier = Modifier) {
+fun FoodcareNavHost(
+    navController: NavHostController, productViewModel: ProductViewModel,
+    mealViewModel: MealViewModel,
+    modifier: Modifier = Modifier
+) {
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {}
         composable(Route.Calendar.route) {
-            CalendarWindow()
+            CalendarWindow(mealViewModel)
         }
         composable(Route.Products.route) {
             ProductsWindow(productViewModel) {

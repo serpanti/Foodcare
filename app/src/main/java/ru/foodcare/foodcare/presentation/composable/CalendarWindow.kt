@@ -24,9 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
 @Composable
-fun CalendarWindow() {
+fun CalendarWindow(mealViewModel: MealViewModel) {
     val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Week) }
     Box(modifier = Modifier.fillMaxSize()) {
         CalendarTypeSelector(formatType, Modifier
@@ -35,7 +36,7 @@ fun CalendarWindow() {
         when (formatType.value) {
             CalendarShowType.Week -> {WeeksWindow()}
             CalendarShowType.Month -> {MonthsWindow()}
-            CalendarShowType.Year -> {YearsWindow(formatType)}
+            CalendarShowType.Year -> {YearsWindow(formatType, )}
         }
     }
 }
