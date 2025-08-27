@@ -115,7 +115,9 @@ fun FoodcareNavHost(navController: NavHostController, productViewModel: ProductV
                     modifier: Modifier = Modifier) {
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {}
-        composable(Route.Calendar.route) {}
+        composable(Route.Calendar.route) {
+            CalendarWindow()
+        }
         composable(Route.Products.route) {
             ProductsWindow(productViewModel) {
                 navController.navigate(Route.ProductEditor.route)
