@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,7 +37,7 @@ fun CalendarWindow(mealViewModel: MealViewModel) {
         when (formatType.value) {
             CalendarShowType.Week -> {WeeksWindow()}
             CalendarShowType.Month -> {MonthsWindow()}
-            CalendarShowType.Year -> {YearsWindow(formatType, )}
+            CalendarShowType.Year -> {YearsWindow(formatType, mealViewModel)}
         }
     }
 }
@@ -69,13 +70,13 @@ fun MonthsWindow() {
 }
 
 @Composable
-fun YearsWindow(formatType: MutableState<CalendarShowType>) {
-    val years = (2024..2040).toList().sorted()  // TODO: настроить на реальный список годов
+fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+    val years = mealViewModel.observeYears().collectAsState(emptyList())
 
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(years.size) { idx ->
-            SquareButton(years[idx].toString()) { formatType.value = CalendarShowType.Month }
+        items(years.value.size) { idx ->
+            SquareButton(years.value[idx].toString()) { formatType.value = CalendarShowType.Month }
         }
     }
 }
