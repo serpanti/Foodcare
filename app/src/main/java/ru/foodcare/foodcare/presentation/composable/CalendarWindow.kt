@@ -3,6 +3,7 @@ package ru.foodcare.foodcare.presentation.composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,58 +28,105 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
 @Composable
 fun CalendarWindow(mealViewModel: MealViewModel) {
-    val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Week) }
+    val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Years) }
     Box(modifier = Modifier.fillMaxSize()) {
         CalendarTypeSelector(formatType, Modifier
             .align(Alignment.BottomEnd)
             .offset((-10).dp, (-10).dp))
         when (formatType.value) {
-            CalendarShowType.Week -> {WeeksWindow()}
-            CalendarShowType.Month -> {MonthsWindow()}
-            CalendarShowType.Year -> {YearsWindow(formatType, mealViewModel)}
+            CalendarShowType.Day -> {DayWindow(mealViewModel)}
+            CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
+            CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
+            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
         }
     }
 }
 
 @Composable
-fun WeeksWindow() {
-
+fun DayWindow(mealViewModel: MealViewModel) {
+    if (mealViewModel.observedMonth.value == null ||
+        mealViewModel.observedYear.value == null ||
+        mealViewModel.observedDay.value == null) {
+        InfiniteLoading()
+    }
+    mealViewModel.observedYear.value ?. let { year ->
+        mealViewModel.observedMonth.value ?. let { month ->
+            mealViewModel.observedDay.value ?. let { day ->
+                val observedDay = mealViewModel.observeDay(year, month, day).collectAsState()
+                Meals(observedDay)
+            }
+        }
+    }
 }
 
-private fun sortMonths(months: List<String>): List<String> {
-    val order = listOf(
+@Composable
+fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+    if (mealViewModel.observedMonth.value == null || mealViewModel.observedYear.value == null) {
+        InfiniteLoading()
+    }
+    mealViewModel.observedYear.value ?. let { year ->
+        mealViewModel.observedMonth.value ?. let { month ->
+            val days = mealViewModel.observeDays(year, month).collectAsState()
+
+            LazyVerticalGrid(GridCells.Fixed(5),
+                contentPadding = PaddingValues(bottom = 50.dp)) {
+                items(days.value.size) { idx ->
+                    SquareButton(days.value[idx].toString()) {
+                        mealViewModel.observedDay.value = days.value[idx]
+                        formatType.value = CalendarShowType.Day
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun Int.toMonth(): String {
+    val year = listOf(
         "январь", "февраль", "март", "апрель",
         "май", "июнь", "июль", "август",
         "сентябрь", "октябрь", "ноябрь", "декабрь"
     )
 
-    return months.sortedBy { order.indexOf(it.lowercase()) }
+    return year[(this - 1) % year.size]
 }
 
 @Composable
-fun MonthsWindow() {
-    val months = sortMonths(listOf("июнь", "июль", "август", "июнь", "июль", "август")) // TODO: настроить на реальный список месяцев
+fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+    if (mealViewModel.observedYear.value == null) {
+        InfiniteLoading()
+    }
+    mealViewModel.observedYear.value ?. let {
+        val months = mealViewModel.observeMonths(it).collectAsState()
 
-    LazyVerticalGrid(GridCells.Fixed(5),
-        contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(months.size) { idx ->
-            SquareButton(months[idx]) { }
+        LazyVerticalGrid(GridCells.Fixed(3),
+            contentPadding = PaddingValues(bottom = 50.dp)) {
+            items(months.value.size) { idx ->
+                SquareButton(months.value[idx].toMonth()) {
+                    mealViewModel.observedMonth.value = months.value[idx]
+                    formatType.value = CalendarShowType.Days
+                }
+            }
         }
     }
 }
 
 @Composable
 fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    val years = mealViewModel.observeYears().collectAsState(emptyList())
+    val years = mealViewModel.observedYears.collectAsState()
 
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.value.size) { idx ->
-            SquareButton(years.value[idx].toString()) { formatType.value = CalendarShowType.Month }
+            SquareButton(years.value[idx].toString()) {
+                mealViewModel.observedYear.value = years.value[idx]
+                formatType.value = CalendarShowType.Months
+            }
         }
     }
 }
@@ -88,16 +138,20 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
         .clip(RoundedCornerShape(10.dp))
         .padding(2.dp)
     ) {
-        CalendarTypeButton("7Д.", type.value == CalendarShowType.Week) {
-            type.value = CalendarShowType.Week
+        CalendarTypeButton("Г.", type.value == CalendarShowType.Years) {
+            type.value = CalendarShowType.Years
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("1М.", type.value == CalendarShowType.Month) {
-            type.value = CalendarShowType.Month
+        CalendarTypeButton("М.", type.value == CalendarShowType.Months) {
+            type.value = CalendarShowType.Months
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("1Г.", type.value == CalendarShowType.Year) {
-            type.value = CalendarShowType.Year
+        CalendarTypeButton("Д.", type.value == CalendarShowType.Days) {
+            type.value = CalendarShowType.Days
+        }
+        VerticalDivider(2.dp, Color.Black)
+        CalendarTypeButton("1Д.", type.value == CalendarShowType.Day) {
+            type.value = CalendarShowType.Day
         }
     }
 }
@@ -116,7 +170,32 @@ fun CalendarTypeButton(text: String, selected: Boolean, onSelect: () -> Unit) {
 }
 
 sealed class CalendarShowType() {
-    object Week: CalendarShowType()
-    object Month: CalendarShowType()
-    object Year: CalendarShowType()
+    object Day: CalendarShowType()
+    object Days: CalendarShowType()
+    object Months: CalendarShowType()
+    object Years: CalendarShowType()
+}
+
+@Composable
+fun Meals(meals: State<List<Meal>>) {
+    LazyColumn {
+        items(meals.value.size) { idx ->
+            MealCard(meals.value[idx])
+        }
+    }
+}
+
+@Composable
+fun MealCard(meal: Meal) {
+    val product = meal.product
+    Row {
+        Column {
+            Text("Имя: " + product.name)
+            Text("Производитель: " + product.production)
+        }
+        Column {
+            Text("Б/Ж/У: ${product.protein}/${product.fat}/${product.carbohydrates}")
+            Text("Время: ${meal.year}/${meal.month}/${meal.day}")
+        }
+    }
 }
