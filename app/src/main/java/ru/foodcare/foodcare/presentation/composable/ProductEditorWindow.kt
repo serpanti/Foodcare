@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -215,6 +216,7 @@ fun ProductTypeSelector(type: MutableState<UnitType>) {
         .fillMaxWidth()
         .padding(horizontal = 7.dp, vertical = 5.dp)
         .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+        .clip(RoundedCornerShape(10.dp))
         .padding(horizontal = 20.dp, vertical = 15.dp)
     ) {
         Text("Кол-во:")
