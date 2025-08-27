@@ -2,7 +2,6 @@ package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
@@ -47,31 +45,37 @@ fun WeeksWindow() {
 
 }
 
-@Composable
-fun MonthsWindow() {
+private fun sortMonths(months: List<String>): List<String> {
+    val order = listOf(
+        "январь", "февраль", "март", "апрель",
+        "май", "июнь", "июль", "август",
+        "сентябрь", "октябрь", "ноябрь", "декабрь"
+    )
 
+    return months.sortedBy { order.indexOf(it.lowercase()) }
 }
 
 @Composable
-fun YearsWindow(formatType: MutableState<CalendarShowType>) {
-    val years = (2024..2040).toList()  // TODO: настроить на реальный список годов
+fun MonthsWindow() {
+    val months = sortMonths(listOf("июнь", "июль", "август", "июнь", "июль", "август")) // TODO: настроить на реальный список месяцев
+
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(years.size) { idx ->
-            Year(years[idx]) { formatType.value = CalendarShowType.Month }
+        items(months.size) { idx ->
+            SquareButton(months[idx]) { }
         }
     }
 }
 
 @Composable
-fun Year(value: Int, onClick: () -> Unit) {
-    Box(modifier = Modifier.padding(5.dp)
-        .border(2.dp, Color.Black, RoundedCornerShape(5.dp))
-        .clip(RoundedCornerShape(5.dp))
-        .clickable{onClick()}
-        .padding(5.dp)
-        .size(40.dp)) {
-        Text(value.toString(), modifier = Modifier.align(Alignment.Center))
+fun YearsWindow(formatType: MutableState<CalendarShowType>) {
+    val years = (2024..2040).toList().sorted()  // TODO: настроить на реальный список годов
+
+    LazyVerticalGrid(GridCells.Fixed(5),
+        contentPadding = PaddingValues(bottom = 50.dp)) {
+        items(years.size) { idx ->
+            SquareButton(years[idx].toString()) { formatType.value = CalendarShowType.Month }
+        }
     }
 }
 
