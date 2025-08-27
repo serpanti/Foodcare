@@ -2,13 +2,18 @@ package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -32,7 +37,7 @@ fun CalendarWindow() {
         when (formatType.value) {
             CalendarShowType.Week -> {WeeksWindow()}
             CalendarShowType.Month -> {MonthsWindow()}
-            CalendarShowType.Year -> {YearsWindow()}
+            CalendarShowType.Year -> {YearsWindow(formatType)}
         }
     }
 }
@@ -48,8 +53,26 @@ fun MonthsWindow() {
 }
 
 @Composable
-fun YearsWindow() {
+fun YearsWindow(formatType: MutableState<CalendarShowType>) {
+    val years = (2024..2040).toList()  // TODO: настроить на реальный список годов
+    LazyVerticalGrid(GridCells.Fixed(5),
+        contentPadding = PaddingValues(bottom = 50.dp)) {
+        items(years.size) { idx ->
+            Year(years[idx]) { formatType.value = CalendarShowType.Month }
+        }
+    }
+}
 
+@Composable
+fun Year(value: Int, onClick: () -> Unit) {
+    Box(modifier = Modifier.padding(5.dp)
+        .border(2.dp, Color.Black, RoundedCornerShape(5.dp))
+        .clip(RoundedCornerShape(5.dp))
+        .clickable{onClick()}
+        .padding(5.dp)
+        .size(40.dp)) {
+        Text(value.toString(), modifier = Modifier.align(Alignment.Center))
+    }
 }
 
 @Composable
