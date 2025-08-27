@@ -1,6 +1,6 @@
 package ru.foodcare.foodcare.data.product
 
-import ru.foodcare.foodcare.domain.Product as ProductDomain
+import ru.foodcare.foodcare.domain.product.Product as ProductDomain
 
 object ProductMapper {
     fun toDomain(entity: Product) = ProductDomain(

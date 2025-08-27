@@ -3,8 +3,8 @@ package ru.foodcare.foodcare.presentation.mock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import ru.foodcare.foodcare.domain.Product
-import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.domain.product.ProductRepository
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
 
 class MockProductViewModel : ProductViewModel(

@@ -1,6 +1,6 @@
 package ru.foodcare.foodcare.presentation.input
 
-import ru.foodcare.foodcare.domain.Product
+import ru.foodcare.foodcare.domain.product.Product
 
 class InputProduct(var name: String = "",
                    var production: String  = "",

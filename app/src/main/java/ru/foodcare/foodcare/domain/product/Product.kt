@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.domain
+package ru.foodcare.foodcare.domain.product
 
 data class Product(val name: String, val production: String,
                    val amount: Int,
@@ -17,5 +17,3 @@ data class Product(val name: String, val production: String,
         }
     }
 }
-
-

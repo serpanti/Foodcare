@@ -2,8 +2,8 @@ package ru.foodcare.foodcare.data.product
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.foodcare.foodcare.domain.Product
-import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.domain.product.ProductRepository
 
 class ProductRepositoryImpl(private val dao: ProductDAO) : ProductRepository {
     override suspend fun addProduct(product: Product) {

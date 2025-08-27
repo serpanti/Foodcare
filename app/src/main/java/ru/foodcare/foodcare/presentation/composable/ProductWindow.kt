@@ -31,8 +31,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ru.foodcare.foodcare.domain.Product
-import ru.foodcare.foodcare.domain.Product.Companion.UnitType
+import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.viewModel.ProductViewModel
 
 @Composable

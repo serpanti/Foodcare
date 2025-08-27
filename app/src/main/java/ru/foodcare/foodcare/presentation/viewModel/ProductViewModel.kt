@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.foodcare.foodcare.domain.Product
-import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.domain.product.ProductRepository
 import kotlin.coroutines.CoroutineContext
 
 open class ProductViewModel(private val repository: ProductRepository, private val context: CoroutineContext): ViewModel() {

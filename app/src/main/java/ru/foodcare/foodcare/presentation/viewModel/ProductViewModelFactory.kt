@@ -2,7 +2,7 @@ package ru.foodcare.foodcare.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.foodcare.foodcare.domain.ProductRepository
+import ru.foodcare.foodcare.domain.product.ProductRepository
 import kotlin.coroutines.CoroutineContext
 
 class ProductViewModelFactory(private val repository: ProductRepository,

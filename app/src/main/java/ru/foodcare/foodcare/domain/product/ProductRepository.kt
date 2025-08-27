@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.domain
+package ru.foodcare.foodcare.domain.product
 
 import kotlinx.coroutines.flow.Flow
 
