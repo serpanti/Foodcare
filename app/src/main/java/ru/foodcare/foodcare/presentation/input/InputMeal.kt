@@ -1,0 +1,37 @@
+package ru.foodcare.foodcare.presentation.input
+
+import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.domain.product.Product
+
+class InputMeal(val id: Int,
+                val product: Product?,
+                val year: Int? = null,
+                val month: Int? = null,
+                val day: Int? = null,
+                val hours: Int? = null,
+                val minutes: Int? = null,
+                val seconds: Int? = null) : Input
+{
+    override fun isCorrect(): Boolean {
+        return (year != null && month != null && day != null &&
+                hours != null && minutes != null && seconds != null
+                && product != null)
+    }
+
+    fun toMeal(): Meal {
+        return Meal(id, product ?: Product(
+            name = "",
+            production = "",
+            amount = 1,
+            type = Product.Companion.UnitType.Piece,
+            calories = 0.0,
+            protein = 0.0,
+            fat = 0.0,
+            carbohydrates = 0.0,
+            fiber = 0.0
+        ),
+            year ?: 0, month ?: 0, day ?: 0,
+            hours ?: 0, minutes ?: 0, seconds ?: 0
+        )
+    }
+}

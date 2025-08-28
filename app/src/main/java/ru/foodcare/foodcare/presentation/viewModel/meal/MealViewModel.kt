@@ -23,6 +23,13 @@ open class MealViewModel(private val repository: MealRepository,
             initialValue = emptyList()
         )
 
+    var mealObserved: Meal? = null
+        get() {
+            val retField = field
+            field = null
+            return retField
+        }
+
     var observedYear = mutableStateOf<Int?>(null)
     var observedMonth = mutableStateOf<Int?>(null)
     var observedDay = mutableStateOf<Int?>(null)
