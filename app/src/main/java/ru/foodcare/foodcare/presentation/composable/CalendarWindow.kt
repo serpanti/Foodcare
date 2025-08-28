@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
@@ -65,7 +64,11 @@ fun DayWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealVie
         mealViewModel.observedMonth.value ?. let { month ->
             mealViewModel.observedDay.value ?. let { day ->
                 val observedDay = mealViewModel.observeDay(year, month, day).collectAsState()
-                Meals(observedDay)
+                ElementWithHeader({
+                    Header("%02d/%02d/%d".format(day, month, year))
+                }) {
+                    Meals(observedDay)
+                }
             }
         }
     }
@@ -82,14 +85,27 @@ fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealVi
         mealViewModel.observedMonth.value ?. let { month ->
             val days = mealViewModel.observeDays(year, month).collectAsState()
 
-            LazyVerticalGrid(GridCells.Fixed(5),
-                contentPadding = PaddingValues(bottom = 50.dp)) {
-                items(days.value.size) { idx ->
-                    SquareButton(days.value[idx].toString()) {
-                        mealViewModel.observedDay.value = days.value[idx]
-                        formatType.value = CalendarShowType.Day
-                    }
-                }
+            ElementWithHeader({
+                Header("%s  %d г.".format(month.toMonth(), year))
+            }) {
+                DaysTable(days, formatType, mealViewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun DaysTable(
+    days: State<List<Int>>,
+    formatType: MutableState<CalendarShowType>,
+    mealViewModel: MealViewModel
+) {
+    LazyVerticalGrid(GridCells.Fixed(5),
+        contentPadding = PaddingValues(bottom = 50.dp)) {
+        items(days.value.size) { idx ->
+            SquareButton(days.value[idx].toString()) {
+                mealViewModel.observedDay.value = days.value[idx]
+                formatType.value = CalendarShowType.Day
             }
         }
     }
@@ -115,13 +131,26 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: Meal
     mealViewModel.observedYear.value ?. let {
         val months = mealViewModel.observeMonths(it).collectAsState()
 
-        LazyVerticalGrid(GridCells.Fixed(3),
-            contentPadding = PaddingValues(bottom = 50.dp)) {
-            items(months.value.size) { idx ->
-                SquareButton(months.value[idx].toMonth()) {
-                    mealViewModel.observedMonth.value = months.value[idx]
-                    formatType.value = CalendarShowType.Days
-                }
+        ElementWithHeader({
+            Header("%d год".format(it))
+        }) {
+            MonthsTable(months, formatType, mealViewModel)
+        }
+    }
+}
+
+@Composable
+fun MonthsTable(
+    months: State<List<Int>>,
+    formatType: MutableState<CalendarShowType>,
+    mealViewModel: MealViewModel
+) {
+    LazyVerticalGrid(GridCells.Fixed(3),
+        contentPadding = PaddingValues(bottom = 50.dp)) {
+        items(months.value.size) { idx ->
+            SquareButton(months.value[idx].toMonth()) {
+                mealViewModel.observedMonth.value = months.value[idx]
+                formatType.value = CalendarShowType.Days
             }
         }
     }
