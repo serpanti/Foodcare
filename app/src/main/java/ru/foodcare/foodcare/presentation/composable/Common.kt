@@ -41,6 +41,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -236,4 +237,15 @@ fun SquareButton(value: String, onClick: () -> Unit) {
 @Composable
 fun Dp.withLayoutDirection(): Dp {
     return if (LocalLayoutDirection.current == LayoutDirection.Rtl) this * -1 else this
+}
+
+@Composable
+fun AdviceButton(advice: String, onCLick: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        TextButton(onCLick,
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Text(advice)
+        }
+    }
 }

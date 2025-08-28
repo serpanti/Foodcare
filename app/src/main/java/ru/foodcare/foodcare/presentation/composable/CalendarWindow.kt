@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -44,7 +43,7 @@ fun CalendarWindow(mealViewModel: MealViewModel) {
             .align(Alignment.BottomEnd)
             .offset(offset.withLayoutDirection(), offset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(mealViewModel)}
+            CalendarShowType.Day -> {DayWindow(formatType, mealViewModel)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
             CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
             CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
@@ -53,11 +52,13 @@ fun CalendarWindow(mealViewModel: MealViewModel) {
 }
 
 @Composable
-fun DayWindow(mealViewModel: MealViewModel) {
+fun DayWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     if (mealViewModel.observedMonth.value == null ||
         mealViewModel.observedYear.value == null ||
         mealViewModel.observedDay.value == null) {
-        InfiniteLoading()
+        AdviceButton("Сначала выберите день") {
+            formatType.value = CalendarShowType.Days
+        }
     }
     mealViewModel.observedYear.value ?. let { year ->
         mealViewModel.observedMonth.value ?. let { month ->
@@ -72,7 +73,9 @@ fun DayWindow(mealViewModel: MealViewModel) {
 @Composable
 fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     if (mealViewModel.observedMonth.value == null || mealViewModel.observedYear.value == null) {
-        InfiniteLoading()
+        AdviceButton("Сначала выберите месяц") {
+            formatType.value = CalendarShowType.Months
+        }
     }
     mealViewModel.observedYear.value ?. let { year ->
         mealViewModel.observedMonth.value ?. let { month ->
@@ -104,7 +107,9 @@ private fun Int.toMonth(): String {
 @Composable
 fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     if (mealViewModel.observedYear.value == null) {
-        InfiniteLoading()
+        AdviceButton("Сначала выберите год") {
+            formatType.value = CalendarShowType.Years
+        }
     }
     mealViewModel.observedYear.value ?. let {
         val months = mealViewModel.observeMonths(it).collectAsState()
@@ -136,14 +141,8 @@ fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealV
             }
         }
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
-            TextButton({
-                    // TODO отправить делать запись
-                },
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                Text("Пока еще не было сделано ни одной записи")
-            }
+        AdviceButton("Пока еще не было сделано ни одной записи") {
+            // TODO отправить делать запись
         }
     }
 }
