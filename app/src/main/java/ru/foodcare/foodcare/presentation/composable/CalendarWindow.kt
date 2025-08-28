@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -186,16 +187,17 @@ fun Meals(meals: State<List<Meal>>) {
 }
 
 @Composable
-fun MealCard(meal: Meal) {
+fun MealCard(meal: Meal, modifier: Modifier = Modifier) {
     val product = meal.product
-    Row {
-        Column {
-            Text("Имя: " + product.name)
-            Text("Производитель: " + product.production)
-        }
-        Column {
-            Text("Б/Ж/У: ${product.protein}/${product.fat}/${product.carbohydrates}")
-            Text("Время: ${meal.year}/${meal.month}/${meal.day}")
+    CardSurface(modifier.fillMaxWidth().padding(10.dp)) {
+        Box(Modifier.fillMaxSize().padding(10.dp)) {
+            Column {
+                Text("Имя: " + product.name)
+                Text("Производитель: " + product.production)
+            }
+            Text("Время: ${meal.year}/${meal.month}/${meal.day}",
+                modifier.align(Alignment.BottomEnd)
+            )
         }
     }
 }
