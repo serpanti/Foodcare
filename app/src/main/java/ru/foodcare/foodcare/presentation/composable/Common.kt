@@ -56,8 +56,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -229,4 +231,9 @@ fun SquareButton(value: String, onClick: () -> Unit) {
         .size(40.dp)) {
         Text(value, modifier = Modifier.align(Alignment.Center))
     }
+}
+
+@Composable
+fun Dp.withLayoutDirection(): Dp {
+    return if (LocalLayoutDirection.current == LayoutDirection.Rtl) this * -1 else this
 }

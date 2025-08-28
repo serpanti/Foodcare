@@ -35,10 +35,12 @@ import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 @Composable
 fun CalendarWindow(mealViewModel: MealViewModel) {
     val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Years) }
+    val offset = (-10).dp
+
     Box(modifier = Modifier.fillMaxSize()) {
         CalendarTypeSelector(formatType, Modifier
             .align(Alignment.BottomEnd)
-            .offset((-10).dp, (-10).dp))
+            .offset(offset.withLayoutDirection(), offset))
         when (formatType.value) {
             CalendarShowType.Day -> {DayWindow(mealViewModel)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}

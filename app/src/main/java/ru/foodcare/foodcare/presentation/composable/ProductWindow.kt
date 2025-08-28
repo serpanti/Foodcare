@@ -64,9 +64,10 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
 
         SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
 
+        val offset = (-10).dp
         AddProductButton(modifier = Modifier
             .align(Alignment.BottomEnd)
-            .offset((-10).dp, (-10).dp), openEditor)
+            .offset(offset.withLayoutDirection(), offset), openEditor)
     }
 }
 
@@ -109,7 +110,7 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
             val visibleState = remember {mutableStateOf(false)}
 
             EditMenu(visibleState, openEditor, {viewModel.removeProduct(product)},
-                offset = DpOffset(width.value, 0.dp))
+                offset = DpOffset(width.value.withLayoutDirection(), 0.dp))
             IconButton({visibleState.value = true}) {
                 Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
             }
