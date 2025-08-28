@@ -210,7 +210,7 @@ fun MealCard(meal: Meal, modifier: Modifier = Modifier) {
                 Text("Имя: " + product.name)
                 Text("Производитель: " + product.production)
             }
-            Text("Время: ${meal.year}/${meal.month}/${meal.day}",
+            Text("%02d:%02d".format(meal.hours, meal.minutes),
                 modifier.align(Alignment.BottomEnd)
             )
         }
