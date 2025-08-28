@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -217,9 +218,12 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
 
 @Composable
 fun SquareButton(value: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(5.dp)
     Box(modifier = Modifier.padding(5.dp)
-        .border(2.dp, Color.Black, RoundedCornerShape(5.dp))
-        .clip(RoundedCornerShape(5.dp))
+        .shadow(5.dp, shape, clip = true)
+        .border(2.dp, Color.Black, shape)
+        .clip(shape)
+        .background(Color.White)
         .clickable{onClick()}
         .padding(5.dp)
         .size(40.dp)) {
