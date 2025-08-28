@@ -5,37 +5,24 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.foodcare.foodcare.presentation.input.InputProduct
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
@@ -78,25 +65,25 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
         itemWithUnderLine {FiberEdit(fiber)}
         itemWithUnderLine {ProductTypeSelector(type)}
         item {
-            val caloriesNum = parseOrNull(calories.value)
-            val proteinNum = parseOrNull(protein.value)
-            val fatNum = parseOrNull(fat.value)
-            val carbohydratesNum = parseOrNull(carbohydrates.value)
-            val fiberNum = parseOrNull(fiber.value)
-
-            SaveProductButton(oldProduct, InputProduct(name.value, production.value,
+            val caloriesNum = calories.value.parseToDoubleOrNull()
+            val proteinNum = protein.value.parseToDoubleOrNull()
+            val fatNum = fat.value.parseToDoubleOrNull()
+            val carbohydratesNum = carbohydrates.value.parseToDoubleOrNull()
+            val fiberNum = fiber.value.parseToDoubleOrNull()
+            val inputProduct = InputProduct(name.value, production.value,
                 if (type.value == UnitType.Piece) 1 else 100, type.value,
                 caloriesNum, proteinNum, fatNum, carbohydratesNum,
-                fiberNum),
-                viewModel, close)
+                fiberNum)
+
+            SaveButton(oldProduct == null, inputProduct, close,
+                add = {viewModel.addProduct(inputProduct.toProduct())},
+                update = {
+                    oldProduct?.let{viewModel.updateProduct(inputProduct.toProduct(), it)}
+                }) {
+                    WrongInputProductPreview(inputProduct)
+                }
         }
     }
-}
-
-
-
-private fun parseOrNull(str: String): Double? {
-    return str.replace(',', '.').trim().toDoubleOrNull()
 }
 
 @Composable
@@ -143,51 +130,6 @@ fun FiberEdit(fiber: MutableState<String>) {
     ) { fiber.value = it }
 }
 
-private fun LazyListScope.itemWithUnderLine(content: @Composable (LazyItemScope.() -> Unit)) {
-    item {
-        content()
-        HorizontalDivider(2.dp, Color.Black)
-    }
-}
-
-@Composable
-fun SaveProductButton(
-    oldProduct: Product?,
-    inputProduct: InputProduct,
-    viewModel: ProductViewModel,
-    close: () -> Unit
-) {
-    var showAlert by remember { mutableStateOf(false) }
-    if (showAlert) {
-        AlertWrongInput ({ WrongInputProductPreview(inputProduct) }) { showAlert = false }
-    }
-    TextButton({
-        if (!inputProduct.isCorrect()) {
-            showAlert = true
-        } else {
-            if (oldProduct != null) {
-                viewModel.updateProduct(inputProduct.toProduct(), oldProduct)
-            } else {
-                viewModel.addProduct(inputProduct.toProduct())
-            }
-            close()
-        }
-    }, modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp),
-        colors = ButtonColors(Color.Transparent, Color.Black,
-            Color.Transparent, Color.Transparent)) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Save, "")
-            Text("Сохранить", fontSize = 20.sp)
-        }
-    }
-}
-
 @Composable
 fun WrongInputProductPreview(inputProduct: InputProduct) {
     Column {
@@ -199,15 +141,6 @@ fun WrongInputProductPreview(inputProduct: InputProduct) {
         if (inputProduct.carbohydrates == null) Text("Ошибка в углеводах")
         if (inputProduct.fiber == null) Text("Ошибка в волокнах")
     }
-}
-
-@Composable
-fun AlertWrongInput(preview: @Composable (() -> Unit) = {}, closeAlert: () -> Unit) {
-    AlertDialog(closeAlert,
-        {TextButton(closeAlert) {Text("Исправлю")} },
-        modifier = Modifier.fillMaxWidth(),
-        title = {Text("В вводе ошибки")},
-        text = preview)
 }
 
 @Composable

@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +36,10 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -65,6 +71,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.presentation.input.Input
 
 @Composable
 fun VerticalDivider(width: Dp, color: Color) {
@@ -270,5 +277,69 @@ fun Header(text: String) {
         .height(50.dp),
         contentAlignment = Alignment.Center) {
         Text(text, fontSize = 32.sp)
+    }
+}
+
+fun LazyListScope.itemWithUnderLine(content: @Composable (LazyItemScope.() -> Unit)) {
+    item {
+        content()
+        HorizontalDivider(2.dp, Color.Black)
+    }
+}
+
+@Composable
+fun AlertWrongInput(preview: @Composable (() -> Unit) = {}, closeAlert: () -> Unit) {
+    AlertDialog(closeAlert,
+        {TextButton(closeAlert) {Text("Исправлю")} },
+        modifier = Modifier.fillMaxWidth(),
+        title = {Text("В вводе ошибки")},
+        text = preview)
+}
+
+fun String.parseToDoubleOrNull(): Double? {
+    return replace(',', '.').trim().toDoubleOrNull()
+}
+
+fun String.parseToIntOrNull(): Int? {
+    return trim().toIntOrNull()
+}
+
+@Composable
+fun SaveButton(
+    isNewRecord: Boolean,
+    input: Input,
+    close: () -> Unit,
+    add: () -> Unit,
+    update: () -> Unit,
+    alertMessage: @Composable () -> Unit
+) {
+    var showAlert by remember { mutableStateOf(false) }
+    if (showAlert) {
+        AlertWrongInput (alertMessage) { showAlert = false }
+    }
+    TextButton({
+        if (!input.isCorrect()) {
+            showAlert = true
+        } else {
+            if (isNewRecord) {
+                add()
+            } else {
+                update()
+            }
+            close()
+        }
+    }, modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp),
+        colors = ButtonColors(Color.Transparent, Color.Black,
+            Color.Transparent, Color.Transparent)) {
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.Save, "")
+            Text("Сохранить", fontSize = 20.sp)
+        }
     }
 }
