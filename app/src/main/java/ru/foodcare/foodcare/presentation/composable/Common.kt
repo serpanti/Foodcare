@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -247,5 +249,26 @@ fun AdviceButton(advice: String, onCLick: () -> Unit) {
         ) {
             Text(advice)
         }
+    }
+}
+
+@Composable
+fun ElementWithHeader(header: @Composable () -> Unit, modifier: Modifier = Modifier,
+                      content: @Composable () -> Unit) {
+    Column(modifier = modifier
+        .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        header()
+        content()
+    }
+}
+
+@Composable
+fun Header(text: String) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp),
+        contentAlignment = Alignment.Center) {
+        Text(text, fontSize = 32.sp)
     }
 }
