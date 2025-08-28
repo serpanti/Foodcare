@@ -213,7 +213,9 @@ fun SearchTextField(startText: String, onValueChange: (String) -> Unit,
 @Composable
 fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
                     modifier: Modifier = Modifier,
-                    placeholder: @Composable () -> Unit) {
+                    placeholder: @Composable () -> Unit,
+                    prefix: @Composable () -> Unit = {},
+                    suffix: @Composable () -> Unit = {}) {
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -222,7 +224,11 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
             if (value.isEmpty()) {
                 placeholder()
             } else {
-                innerTextField()
+                Row {
+                    prefix()
+                    innerTextField()
+                    suffix()
+                }
             }
         }
     )
