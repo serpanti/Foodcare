@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -149,37 +150,39 @@ fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealV
 
 @Composable
 fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifier = Modifier) {
-    Row(modifier = modifier.height(IntrinsicSize.Max)
+    Row(modifier = modifier.height(IntrinsicSize.Max).width(160.dp)
         .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
         .clip(RoundedCornerShape(10.dp))
         .padding(2.dp)
     ) {
-        CalendarTypeButton("Г.", type.value == CalendarShowType.Years) {
+        CalendarTypeButton("Г.", type.value == CalendarShowType.Years, Modifier.weight(1f)) {
             type.value = CalendarShowType.Years
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("М.", type.value == CalendarShowType.Months) {
+        CalendarTypeButton("М.", type.value == CalendarShowType.Months, Modifier.weight(1f)) {
             type.value = CalendarShowType.Months
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("Д.", type.value == CalendarShowType.Days) {
+        CalendarTypeButton("Д.", type.value == CalendarShowType.Days, Modifier.weight(1f)) {
             type.value = CalendarShowType.Days
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("1Д.", type.value == CalendarShowType.Day) {
+        CalendarTypeButton("1Д.", type.value == CalendarShowType.Day, Modifier.weight(1f)) {
             type.value = CalendarShowType.Day
         }
     }
 }
 
 @Composable
-fun CalendarTypeButton(text: String, selected: Boolean, onSelect: () -> Unit) {
-    Box(modifier = Modifier
+fun CalendarTypeButton(text: String, selected: Boolean, modifier: Modifier = Modifier,
+                       onSelect: () -> Unit) {
+    Box(modifier = modifier
         .selectable(selected) {
             onSelect()
         }
         .background(if (selected) Color.DarkGray else Color.Gray)
-        .padding(5.dp)
+        .padding(5.dp),
+        contentAlignment = Alignment.Center
     ) {
         Text(text, color = if (selected) Color.White else Color.Black)
     }
