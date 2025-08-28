@@ -62,7 +62,7 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel, close: () -> Unit) {
             SaveButton(oldMeal == null, inputMeal, close,
                 {viewModel.addMeal(inputMeal.toMeal())},
                 {viewModel.updateMeal(inputMeal.toMeal())}) {
-                WrongInputMealPreview(inputMeal.toMeal())
+                WrongInputMealPreview(inputMeal)
             }
         }
     }
@@ -172,7 +172,7 @@ private fun setSystemTime(year: MutableState<String>,
 }
 
 @Composable
-fun WrongInputMealPreview(inputMeal: Meal) {
+fun WrongInputMealPreview(inputMeal: InputMeal) {
     Column {
         if (inputMeal.product == null) Text("Продукт не выбран")
         if (inputMeal.year == null) Text("Ошибка в году")
