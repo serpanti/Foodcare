@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -123,12 +124,24 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: Meal
 fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     val years = mealViewModel.observedYears.collectAsState()
 
-    LazyVerticalGrid(GridCells.Fixed(5),
-        contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(years.value.size) { idx ->
-            SquareButton(years.value[idx].toString()) {
-                mealViewModel.observedYear.value = years.value[idx]
-                formatType.value = CalendarShowType.Months
+    if (years.value.isNotEmpty()) {
+        LazyVerticalGrid(GridCells.Fixed(5),
+            contentPadding = PaddingValues(bottom = 50.dp)) {
+            items(years.value.size) { idx ->
+                SquareButton(years.value[idx].toString()) {
+                    mealViewModel.observedYear.value = years.value[idx]
+                    formatType.value = CalendarShowType.Months
+                }
+            }
+        }
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            TextButton({
+                    // TODO отправить делать запись
+                },
+                modifier = Modifier.align(Alignment.Center)
+            ) {
+                Text("Пока еще не было сделано ни одной записи")
             }
         }
     }
