@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
@@ -130,19 +131,32 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: Meal
 fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     val years = mealViewModel.observedYears.collectAsState()
 
-    if (years.value.isNotEmpty()) {
-        LazyVerticalGrid(GridCells.Fixed(5),
-            contentPadding = PaddingValues(bottom = 50.dp)) {
-            items(years.value.size) { idx ->
-                SquareButton(years.value[idx].toString()) {
-                    mealViewModel.observedYear.value = years.value[idx]
-                    formatType.value = CalendarShowType.Months
-                }
+    ElementWithHeader({
+        Header("Все года")
+    }) {
+        if (years.value.isNotEmpty()) {
+            YearsTable(years, formatType, mealViewModel)
+        } else {
+            AdviceButton("Пока еще не было сделано ни одной записи") {
+                // TODO отправить делать запись
             }
         }
-    } else {
-        AdviceButton("Пока еще не было сделано ни одной записи") {
-            // TODO отправить делать запись
+    }
+}
+
+@Composable
+fun YearsTable(
+    years: State<List<Int>>,
+    formatType: MutableState<CalendarShowType>,
+    mealViewModel: MealViewModel
+) {
+    LazyVerticalGrid(GridCells.Fixed(5),
+        contentPadding = PaddingValues(bottom = 50.dp)) {
+        items(years.value.size) { idx ->
+            SquareButton(years.value[idx].toString()) {
+                mealViewModel.observedYear.value = years.value[idx]
+                formatType.value = CalendarShowType.Months
+            }
         }
     }
 }
