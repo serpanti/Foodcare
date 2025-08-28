@@ -181,5 +181,15 @@ fun WrongInputMealPreview(inputMeal: InputMeal) {
         if (inputMeal.hours == null) Text("Ошибка в часах")
         if (inputMeal.minutes == null) Text("Ошибка в минутах")
         if (inputMeal.seconds == null) Text("Ошибка в секундах")
+        if (inputMeal.year != null && inputMeal.month != null && inputMeal.day != null &&
+            inputMeal.hours != null && inputMeal.minutes != null && inputMeal.seconds != null
+            && inputMeal.product != null) {
+                try {
+                    LocalDateTime.of(inputMeal.year, inputMeal.month, inputMeal.day,
+                        inputMeal.hours, inputMeal.minutes, inputMeal.seconds)
+                } catch (_: Exception) {
+                    Text("Такой даты не существует")
+                }
+            }
     }
 }
