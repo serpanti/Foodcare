@@ -10,8 +10,8 @@ class InputProduct(var name: String = "",
                    var protein: Double? = null,
                    var fat: Double? = null,
                    var carbohydrates: Double? = null,
-                   var fiber: Double? = null) {
-    fun isCorrect(): Boolean {
+                   var fiber: Double? = null) : Input {
+    override fun isCorrect(): Boolean {
         return (calories != null && protein != null && fat != null &&
                 carbohydrates != null && fiber != null &&
                 name.isNotEmpty() && production.isNotEmpty())
