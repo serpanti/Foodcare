@@ -109,7 +109,7 @@ fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) 
 }
 
 @Composable
-fun AddProductButton(modifier: Modifier = Modifier, openEditor: () -> Unit = {}) {
+fun FloatingAddButton(modifier: Modifier = Modifier, openEditor: () -> Unit = {}) {
     FloatingActionButton(openEditor,
         shape = CircleShape,
         modifier = modifier,

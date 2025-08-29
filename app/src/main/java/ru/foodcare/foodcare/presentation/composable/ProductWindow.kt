@@ -65,7 +65,7 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
         SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
 
         val offset = (-10).dp
-        AddProductButton(modifier = Modifier
+        FloatingAddButton(modifier = Modifier
             .align(Alignment.BottomEnd)
             .offset(offset.withLayoutDirection(), offset), openEditor)
     }

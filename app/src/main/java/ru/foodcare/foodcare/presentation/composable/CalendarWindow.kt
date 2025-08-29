@@ -40,12 +40,13 @@ fun CalendarWindow(
     openMealEditor: () -> Unit
 ) {
     val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Years) }
-    val offset = (-10).dp
+    val yOffset = (-15).dp
+    val xOffset = 15.dp
 
     Box(modifier = Modifier.fillMaxSize()) {
         CalendarTypeSelector(formatType, Modifier
-            .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset))
+            .align(Alignment.BottomStart)
+            .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
             CalendarShowType.Day -> {DayWindow(formatType, mealViewModel, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
@@ -72,10 +73,16 @@ fun DayWindow(
         mealViewModel.observedMonth.value ?. let { month ->
             mealViewModel.observedDay.value ?. let { day ->
                 val observedDay = mealViewModel.observeDay(year, month, day).collectAsState()
-                ElementWithHeader({
-                    Header("%02d/%02d/%d".format(day, month, year))
-                }) {
-                    Meals(observedDay, mealViewModel, openMealEditor)
+                Box(Modifier.fillMaxSize()) {
+                    ElementWithHeader({
+                        Header("%02d/%02d/%d".format(day, month, year))
+                    }) {
+                        Meals(observedDay, mealViewModel, openMealEditor)
+                    }
+                    val offset = (-10).dp
+                    FloatingAddButton(modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(offset.withLayoutDirection(), offset), openMealEditor)
                 }
             }
         }
