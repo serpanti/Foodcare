@@ -98,15 +98,16 @@ fun TimeEdit(
     seconds: MutableState<String>
 ) {
     Column {
-        SquareButton("Установить Текущее время") {
+        CustomButton("Установить Текущее время", Modifier.fillMaxWidth()) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
-        YearTextField(year)
-        MonthTextField(month)
-        DayTextField(day)
-        HoursTextField(hours)
-        MinutesTextField(minutes)
-        SecondsTextField(seconds)
+        val fieldModifier = Modifier.fillMaxWidth().padding(5.dp)
+        YearTextField(year, modifier = fieldModifier)
+        MonthTextField(month, modifier = fieldModifier)
+        DayTextField(day, modifier = fieldModifier)
+        HoursTextField(hours, modifier = fieldModifier)
+        MinutesTextField(minutes, modifier = fieldModifier)
+        SecondsTextField(seconds, modifier = fieldModifier)
     }
 }
 

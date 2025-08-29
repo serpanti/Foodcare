@@ -221,30 +221,36 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
         onValueChange = onValueChange,
         modifier = modifier,
         decorationBox = @Composable { innerTextField ->
-            if (value.isEmpty()) {
-                placeholder()
-            } else {
-                Row {
-                    prefix()
+            Row(verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxSize()) {
+                prefix()
+                if (value.isEmpty()) {
+                    placeholder()
+                } else {
                     innerTextField()
-                    suffix()
                 }
+                suffix()
             }
         }
     )
 }
 
 @Composable
-fun SquareButton(value: String, onClick: () -> Unit) {
+fun SquareButton(value: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    CustomButton(value, modifier.size(40.dp), onClick)
+}
+
+@Composable
+fun CustomButton(value: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(5.dp)
-    Box(modifier = Modifier.padding(5.dp)
+    Box(modifier = modifier.padding(5.dp)
         .shadow(5.dp, shape, clip = true)
         .border(2.dp, Color.Black, shape)
         .clip(shape)
         .background(Color.White)
         .clickable{onClick()}
-        .padding(5.dp)
-        .size(40.dp)) {
+        .padding(5.dp)) {
         Text(value, modifier = Modifier.align(Alignment.Center))
     }
 }
