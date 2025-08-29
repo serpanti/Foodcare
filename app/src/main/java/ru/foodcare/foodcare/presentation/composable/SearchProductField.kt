@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
-fun SearchProductField(productViewModel: ProductViewModel) {
+fun SearchProductField(productViewModel: ProductViewModel,
+                       dropDownList: @Composable () -> Unit = {}) {
     val startValue = productViewModel.key.value ?: ""
     val endSearch = null
 
@@ -28,4 +29,5 @@ fun SearchProductField(productViewModel: ProductViewModel) {
 
     SearchField(onStartSearching, onStopSearching, startValue, onValueChange
     ) { productViewModel.key.value != null }
+    dropDownList()
 }
