@@ -1,7 +1,7 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -84,10 +87,14 @@ fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewMo
     var width = 0.dp
     var height = 0
 
-    Box(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
+    Column(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
         width = with(density) { coordinates.size.width.toDp() }
         height = coordinates.size.height
     }) {
+        val selectedProductDelegate = remember { derivedStateOf { product.value } }
+        SelectedProductText(selectedProductDelegate.value, Modifier.fillMaxWidth()
+            .padding(horizontal = 10.dp).padding(top = 10.dp))
+
         SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
         { visible, close, products ->
             DropdownProducts(visible, close, products,
@@ -97,6 +104,20 @@ fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewMo
             }
         }
     }
+}
+
+@Composable
+fun SelectedProductText(product: Product?, modifier: Modifier = Modifier) {
+    val innerModifier = modifier
+        .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
+        .clip(RoundedCornerShape(10.dp))
+        .padding(10.dp)
+    val text = if (product != null) {
+        "%s %s".format(product.name, product.production)
+    } else {
+        "Продукт не выбран"
+    }
+    Text(text, innerModifier)
 }
 
 @Composable
