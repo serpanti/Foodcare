@@ -1,6 +1,7 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -19,6 +20,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -85,6 +87,9 @@ fun Content(
     mealViewModel: MealViewModel
 ) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val onMainWindow = remember {derivedStateOf {
+        currentBackStackEntry.value?.destination?.route == Route.Main.route
+    }}
     val productEditorIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.ProductEditor.route
     }}
@@ -97,7 +102,7 @@ fun Content(
 
     Scaffold(topBar = {
         TopAppBar({
-            Text("Foodcare")
+            if (onMainWindow.value) Text("Foodcare")
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
             if (productEditorIsOpened.value || mealEditorIsOpened.value) {
@@ -112,7 +117,7 @@ fun Content(
         },
             actions = {
                 if (productIsOpened.value) {
-                    SearchProductField(productViewModel)
+                    SearchProductField(productViewModel, Modifier.widthIn(50.dp, 200.dp))
                 }
             })
     }) {
