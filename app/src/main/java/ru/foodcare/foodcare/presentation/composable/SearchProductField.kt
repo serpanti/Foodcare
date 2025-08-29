@@ -31,3 +31,27 @@ fun SearchProductField(productViewModel: ProductViewModel,
     ) { productViewModel.key.value != null }
     dropDownList()
 }
+
+@Composable
+fun DropdownProducts(visible: Boolean, close: () -> Unit, products: List<Product>?,
+                     modifier: Modifier = Modifier, offset: DpOffset,
+                     onSelected: (Product) -> Unit) {
+    DropdownMenu(visible, close, modifier = modifier,
+        offset = offset) {
+        if (products == null) {
+            InfiniteLoading()
+        } else {
+            LazyColumn {
+                items(products.size) { idx ->
+                    TextButton({
+                        onSelected(products[idx])
+                        close()
+                    }) {
+                        val product = products[idx]
+                        Text("%s %s".format(product.name, product.production))
+                    }
+                }
+            }
+        }
+    }
+}
