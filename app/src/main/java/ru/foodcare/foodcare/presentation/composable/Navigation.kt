@@ -32,6 +32,7 @@ sealed class Route(val route: String) {
     object Calendar: Route("calendar")
     object Products: Route("products")
     object ProductEditor: Route("productEditor")
+    object MealEditor: Route("mealEditor")
 }
 
 @Composable
@@ -90,13 +91,16 @@ fun Content(
     val productIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.Products.route
     }}
+    val mealEditorIsOpened = remember {derivedStateOf {
+        currentBackStackEntry.value?.destination?.route == Route.MealEditor.route
+    }}
 
     Scaffold(topBar = {
         TopAppBar({
             Text("Foodcare")
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
-            if (productEditorIsOpened.value) {
+            if (productEditorIsOpened.value || mealEditorIsOpened.value) {
                 IconButton({navController.popBackStack()}) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
                 }
@@ -125,7 +129,9 @@ fun FoodcareNavHost(
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {}
         composable(Route.Calendar.route) {
-            CalendarWindow(mealViewModel)
+            CalendarWindow(mealViewModel) {
+                navController.navigate(Route.MealEditor.route)
+            }
         }
         composable(Route.Products.route) {
             ProductsWindow(productViewModel) {
@@ -134,6 +140,9 @@ fun FoodcareNavHost(
         }
         composable(Route.ProductEditor.route) {
             ProductEditWindow(productViewModel) {navController.popBackStack()}
+        }
+        composable(Route.MealEditor.route) {
+            MealEditWindow(mealViewModel, productViewModel) {navController.popBackStack()}
         }
     }
 }

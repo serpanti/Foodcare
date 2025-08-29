@@ -2,6 +2,7 @@ package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -34,7 +35,10 @@ import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
 @Composable
-fun CalendarWindow(mealViewModel: MealViewModel) {
+fun CalendarWindow(
+    mealViewModel: MealViewModel,
+    openMealEditor: () -> Unit
+) {
     val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Years) }
     val offset = (-10).dp
 
@@ -43,7 +47,7 @@ fun CalendarWindow(mealViewModel: MealViewModel) {
             .align(Alignment.BottomEnd)
             .offset(offset.withLayoutDirection(), offset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(formatType, mealViewModel)}
+            CalendarShowType.Day -> {DayWindow(formatType, mealViewModel, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
             CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
             CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
@@ -52,7 +56,11 @@ fun CalendarWindow(mealViewModel: MealViewModel) {
 }
 
 @Composable
-fun DayWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+fun DayWindow(
+    formatType: MutableState<CalendarShowType>,
+    mealViewModel: MealViewModel,
+    openMealEditor: () -> Unit
+) {
     if (mealViewModel.observedMonth.value == null ||
         mealViewModel.observedYear.value == null ||
         mealViewModel.observedDay.value == null) {
@@ -67,7 +75,7 @@ fun DayWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealVie
                 ElementWithHeader({
                     Header("%02d/%02d/%d".format(day, month, year))
                 }) {
-                    Meals(observedDay)
+                    Meals(observedDay, mealViewModel, openMealEditor)
                 }
             }
         }
@@ -238,19 +246,23 @@ sealed class CalendarShowType() {
 }
 
 @Composable
-fun Meals(meals: State<List<Meal>>) {
+fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor: () -> Unit) {
     LazyColumn {
         items(meals.value.size) { idx ->
-            MealCard(meals.value[idx])
+            MealCard(meals.value[idx], mealViewModel, openMealEditor = openMealEditor)
         }
     }
 }
 
 @Composable
-fun MealCard(meal: Meal, modifier: Modifier = Modifier) {
+fun MealCard(meal: Meal, mealViewModel: MealViewModel,
+             modifier: Modifier = Modifier, openMealEditor: () -> Unit) {
     val product = meal.product
     CardSurface(modifier.fillMaxWidth().padding(10.dp)) {
-        Box(Modifier.fillMaxSize().padding(10.dp)) {
+        Box(Modifier.fillMaxSize().padding(10.dp).clickable{
+            mealViewModel.mealObserved = meal
+            openMealEditor()
+        }) {
             Column {
                 Text("Имя: " + product.name)
                 Text("Производитель: " + product.production)
