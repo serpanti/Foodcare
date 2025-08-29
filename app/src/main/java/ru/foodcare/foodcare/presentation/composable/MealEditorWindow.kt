@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
@@ -82,15 +82,17 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
 fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewModel) {
     val density = LocalDensity.current
     var width = 0.dp
+    var height = 0
 
     Box(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
         width = with(density) { coordinates.size.width.toDp() }
+        height = coordinates.size.height
     }) {
         SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
         { visible, close, products ->
             DropdownProducts(visible, close, products,
-                Modifier.width(width).height(100.dp),
-                offset = DpOffset(0.dp, 0.dp)) { newProduct ->
+                Modifier.width(width).heightIn(0.dp, 200.dp),
+                offset = IntOffset(0, height)) { newProduct ->
                 product.value = newProduct
             }
         }
