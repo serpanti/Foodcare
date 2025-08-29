@@ -1,26 +1,44 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.input.InputMeal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
+import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 import java.time.LocalDateTime
 
 @Composable
-fun MealEditWindow(viewModel: MealViewModel, close: () -> Unit) {
+fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
+                   close: () -> Unit) {
     val meal = remember {viewModel.mealObserved}
 
     CardSurface(
@@ -31,12 +49,13 @@ fun MealEditWindow(viewModel: MealViewModel, close: () -> Unit) {
             .background(Color.Transparent)
             .padding(10.dp)
     ) {
-        MealEditCard(meal, viewModel, close)
+        MealEditCard(meal, viewModel, productViewModel, close)
     }
 }
 
 @Composable
-fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel, close: () -> Unit) {
+fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
+                 productViewModel: ProductViewModel, close: () -> Unit) {
     val id = remember { oldMeal?.id ?: 0 }
     val product = remember { mutableStateOf<Product?>(oldMeal?.product) }
     val year = remember { mutableStateOf(oldMeal?.year?.toString() ?: "") }
@@ -47,7 +66,7 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel, close: () -> Unit) {
     val seconds = remember { mutableStateOf(oldMeal?.seconds?.toString() ?: "") }
 
     LazyColumn {
-        itemWithUnderLine {ProductEdit(product)}
+        itemWithUnderLine {ProductEdit(product, productViewModel)}
         itemWithUnderLine {TimeEdit(year, month, day, hours, minutes, seconds)}
         item {
             val yearNum = year.value.parseToIntOrNull()
@@ -63,6 +82,19 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel, close: () -> Unit) {
                 {viewModel.addMeal(inputMeal.toMeal())},
                 {viewModel.updateMeal(inputMeal.toMeal())}) {
                 WrongInputMealPreview(inputMeal)
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewModel) {
+    Box {
+        SearchProductFieldWithList(productViewModel) { visible, close, products ->
+            DropdownProducts(visible, close, products,
+                Modifier.fillMaxWidth().height(100.dp),
+                offset = DpOffset(0.dp, 0.dp)) { newProduct ->
+                product.value = newProduct
             }
         }
     }
