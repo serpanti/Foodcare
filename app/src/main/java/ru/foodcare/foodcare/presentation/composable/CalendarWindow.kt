@@ -19,14 +19,23 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -289,19 +298,62 @@ fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor
 @Composable
 fun MealCard(meal: Meal, mealViewModel: MealViewModel,
              modifier: Modifier = Modifier, openMealEditor: () -> Unit) {
-    val product = meal.product
     CardSurface(modifier.fillMaxWidth().padding(10.dp)) {
-        Box(Modifier.fillMaxSize().padding(10.dp).clickable{
+        var showAlert by remember { mutableStateOf(false) }
+        if (showAlert) {
+            AlertDeleteMealDialog({showAlert = false}, meal) {
+                mealViewModel.removeMeal(meal)
+            }
+        }
+        MealCardContent(meal, Modifier.fillMaxSize()
+            .padding(10.dp)
+            .clickable {
             mealViewModel.mealObserved = meal
             openMealEditor()
         }) {
+            showAlert = true
+        }
+    }
+}
+
+@Composable
+fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
+                   delete: () -> Unit = {}) {
+    val product = meal.product
+    Box(modifier) {
+        Text("Имя: " + product.name, Modifier.align(Alignment.TopStart))
+        Text("Производитель: " + product.production, Modifier.align(Alignment.BottomStart))
+        IconButton(delete, Modifier.align(Alignment.TopEnd)
+            .offset(x = 10.dp.withLayoutDirection(), y = (-15).dp)) {
+            Icon(Icons.Filled.Delete, "Удалить запись")
+        }
+        Text("%02d:%02d".format(meal.hours, meal.minutes),
+            Modifier.align(Alignment.BottomEnd))
+    }
+}
+
+@Composable
+fun AlertDeleteMealDialog(close: () -> Unit, meal: Meal, delete: () -> Unit) {
+    AlertDialog (
+        onDismissRequest = close,
+        dismissButton = {TextButton(close) {
+            Text("Отмена")
+        }},
+        confirmButton = {TextButton({
+            delete()
+            close()
+        }) { Text("Подтвердить") }},
+        title = {
+            Text("Вы уверены, что хотите удалить этот прием пищи?")
+        },
+        text = {
+            val product = meal.product
             Column {
                 Text("Имя: " + product.name)
                 Text("Производитель: " + product.production)
+                Text("%02d/%02d/%02d".format(meal.day, meal.month, meal.year))
+                Text("%02d:%02d:%02d".format(meal.hours, meal.minutes, meal.seconds))
             }
-            Text("%02d:%02d".format(meal.hours, meal.minutes),
-                modifier.align(Alignment.BottomEnd)
-            )
-        }
-    }
+        },
+    )
 }
