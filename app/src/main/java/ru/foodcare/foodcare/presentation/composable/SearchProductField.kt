@@ -14,7 +14,7 @@ import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
-fun SearchProductField(productViewModel: ProductViewModel) {
+fun SearchProductField(productViewModel: ProductViewModel, modifier: Modifier = Modifier) {
     val startValue = productViewModel.key.value ?: ""
     val endSearch = null
 
@@ -36,12 +36,12 @@ fun SearchProductField(productViewModel: ProductViewModel) {
         search()
     }
 
-    SearchField(onStartSearching, onStopSearching, startValue, onValueChange
+    SearchField(onStartSearching, onStopSearching, startValue, onValueChange, modifier
     ) { productViewModel.key.value != null }
 }
 
 @Composable
-fun SearchProductFieldWithList(productViewModel: ProductViewModel,
+fun SearchProductFieldWithList(productViewModel: ProductViewModel, modifier: Modifier = Modifier,
                                    list: @Composable (visible: Boolean, close: () -> Unit,
                                                               products: List<Product>?) -> Unit) {
     val startValue = productViewModel.key.value ?: ""
@@ -65,7 +65,7 @@ fun SearchProductFieldWithList(productViewModel: ProductViewModel,
         search()
     }
 
-    SearchField(onStartSearching, onStopSearching, startValue, onValueChange
+    SearchField(onStartSearching, onStopSearching, startValue, onValueChange, modifier
     ) { productViewModel.key.value != null }
 
     val products = remember { productViewModel.productsStatic }

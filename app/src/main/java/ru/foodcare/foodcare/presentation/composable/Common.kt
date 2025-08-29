@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -181,13 +182,18 @@ fun SearchField(onStartSearching: () -> Unit,
                 onStopSearching: () -> Unit,
                 startValue: String,
                 onValueChange: (String) -> Unit,
+                modifier: Modifier = Modifier,
                 isOpened: () -> Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.offset(y = 2.dp).padding(5.dp)
-            .border(1.dp, Color.Black, RoundedCornerShape(15.dp)).height(55.dp)
+        horizontalArrangement = Arrangement.End,
+        modifier = modifier.offset(y = 2.dp).padding(5.dp)
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .border(1.dp, Color.Black, RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(15.dp))
             .padding(5.dp)) {
         if (isOpened()) {
-            SearchTextField(startValue, onValueChange)
+            SearchTextField(startValue, onValueChange, Modifier.weight(1f))
         }
         IconButton({
             if (isOpened()) onStopSearching() else onStartSearching()
@@ -206,7 +212,7 @@ fun SearchTextField(startText: String, onValueChange: (String) -> Unit,
                     modifier: Modifier = Modifier) {
     SimpleTextField(startText, onValueChange,
         placeholder = {Text("Поиск")},
-        modifier = modifier.width(150.dp).padding(start = 5.dp)
+        modifier = modifier.padding(start = 5.dp)
     )
 }
 
