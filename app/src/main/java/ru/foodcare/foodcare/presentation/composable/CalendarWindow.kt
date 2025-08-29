@@ -51,7 +51,7 @@ fun CalendarWindow(
             CalendarShowType.Day -> {DayWindow(formatType, mealViewModel, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
             CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
-            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
+            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel, openMealEditor)}
         }
     }
 }
@@ -172,7 +172,8 @@ fun MonthsTable(
 }
 
 @Composable
-fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel,
+                openMealEditor: () -> Unit) {
     val years = mealViewModel.observedYears.collectAsState()
 
     ElementWithHeader({
@@ -182,7 +183,7 @@ fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealV
             YearsTable(years, formatType, mealViewModel)
         } else {
             AdviceButton("Пока еще не было сделано ни одной записи") {
-                // TODO отправить делать запись
+                openMealEditor()
             }
         }
     }
