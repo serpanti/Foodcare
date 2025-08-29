@@ -25,7 +25,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +40,9 @@ fun CalendarWindow(
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    val formatType = remember { mutableStateOf<CalendarShowType>(CalendarShowType.Years) }
+    val formatType = rememberSaveable(stateSaver = CalendarShowTypeSaver) {
+        mutableStateOf<CalendarShowType>(CalendarShowType.Years)
+    }
     val yOffset = (-15).dp
     val xOffset = 15.dp
 
@@ -252,6 +255,27 @@ sealed class CalendarShowType() {
     object Months: CalendarShowType()
     object Years: CalendarShowType()
 }
+
+val CalendarShowTypeSaver = Saver<CalendarShowType, String>(
+    save = { type ->
+        when (type) {
+            CalendarShowType.Day -> "Day"
+            CalendarShowType.Days -> "Days"
+            CalendarShowType.Months -> "Months"
+            CalendarShowType.Years -> "Years"
+        }
+    },
+    restore = { name ->
+        when (name) {
+            "Day" -> CalendarShowType.Day
+            "Days" -> CalendarShowType.Days
+            "Months" -> CalendarShowType.Months
+            "Years" -> CalendarShowType.Years
+            else -> CalendarShowType.Years
+        }
+    }
+)
+
 
 @Composable
 fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor: () -> Unit) {
