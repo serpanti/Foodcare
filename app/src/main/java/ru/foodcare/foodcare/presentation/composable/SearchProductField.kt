@@ -7,8 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,62 +22,51 @@ import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
 fun SearchProductField(productViewModel: ProductViewModel, modifier: Modifier = Modifier) {
-    val startValue = productViewModel.key.value ?: ""
-    val endSearch = null
+    val key = productViewModel.key.collectAsState()
+    val isOpened = remember { derivedStateOf { key.value.isNotEmpty() } }
+    val defaultKey = ""
 
-    val search: () -> Unit = {
-        productViewModel.key.value?.let {
-            productViewModel.getProductByNameOrProduction(it)
-        }
-    }
-    val onStartSearching: () -> Unit = {
-        productViewModel.key.value = startValue
-        search()
-    }
+    val onStartSearching: () -> Unit = {}
     val onStopSearching: () -> Unit = {
-        productViewModel.key.value = endSearch
-        productViewModel.productsStatic.value = endSearch
+        productViewModel.onKeyChanged(defaultKey)
     }
-    val onValueChange: (String) -> Unit = {
-        productViewModel.key.value = it
-        search()
+    val onValueChange: (String) -> Unit = { newKey ->
+        productViewModel.onKeyChanged(newKey)
     }
 
-    SearchField(onStartSearching, onStopSearching, startValue, onValueChange, modifier
-    ) { productViewModel.key.value != null }
+    SearchField(onStartSearching = onStartSearching,
+        onStopSearching = onStopSearching,
+        startValue = key.value,
+        onValueChange = onValueChange,
+        modifier = modifier
+    ) { isOpened.value }
 }
 
 @Composable
 fun SearchProductFieldWithList(productViewModel: ProductViewModel, modifier: Modifier = Modifier,
                                    list: @Composable (visible: Boolean, close: () -> Unit,
                                                               products: List<Product>?) -> Unit) {
-    val startValue = productViewModel.key.value ?: ""
-    val endSearch = null
+    val key = productViewModel.key.collectAsState()
+    val productsByQuery = productViewModel.productsByQuery.collectAsState()
+    val isOpened = remember { derivedStateOf { key.value.isNotEmpty() } }
+    val defaultKey = ""
 
-    val search: () -> Unit = {
-        productViewModel.key.value?.let {
-            productViewModel.getProductByNameOrProduction(it)
-        }
-    }
-    val onStartSearching: () -> Unit = {
-        productViewModel.key.value = startValue
-        search()
-    }
+    val onStartSearching: () -> Unit = {}
     val onStopSearching: () -> Unit = {
-        productViewModel.key.value = endSearch
-        productViewModel.productsStatic.value = endSearch
+        productViewModel.onKeyChanged(defaultKey)
     }
-    val onValueChange: (String) -> Unit = {
-        productViewModel.key.value = it
-        search()
+    val onValueChange: (String) -> Unit = { newKey ->
+        productViewModel.onKeyChanged(newKey)
     }
 
-    SearchField(onStartSearching, onStopSearching, startValue, onValueChange, modifier
-    ) { productViewModel.key.value != null }
+    SearchField(onStartSearching = onStartSearching,
+        onStopSearching = onStopSearching,
+        startValue = key.value,
+        onValueChange = onValueChange,
+        modifier = modifier
+    ) { isOpened.value }
 
-    val products = remember { productViewModel.productsStatic }
-    val visible by remember { derivedStateOf { productViewModel.key.value != null } }
-    list(visible, onStopSearching, products.value)
+    list(isOpened.value, onStopSearching, productsByQuery.value)
 }
 
 @Composable

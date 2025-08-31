@@ -193,9 +193,7 @@ fun SearchField(onStartSearching: () -> Unit,
             .border(1.dp, Color.Black, RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
             .padding(5.dp)) {
-        if (isOpened()) {
-            SearchTextField(startValue, onValueChange, Modifier.weight(1f))
-        }
+        SearchTextField(startValue, onValueChange, Modifier.weight(1f))
         IconButton({
             if (isOpened()) onStopSearching() else onStartSearching()
         }) {

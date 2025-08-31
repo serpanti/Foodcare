@@ -41,19 +41,13 @@ fun ProductsWindow(
     viewModel: ProductViewModel,
     openProductEditor: () -> Unit
 ) {
-    var products = if (viewModel.key.value == null) {
-        viewModel.products.collectAsState()
+    var products = if (viewModel.key.collectAsState().value == "") {
+        viewModel.products
     } else {
-        remember { viewModel.productsStatic }
-    }
+        viewModel.productsByQuery
+    }.collectAsState()
 
-    if (products.value == null) {
-        InfiniteLoading()
-    } else {
-        products.value?.let {
-            Products(viewModel, it, openProductEditor)
-        }
-    }
+    Products(viewModel, products.value, openProductEditor)
 }
 
 @Composable
@@ -68,7 +62,10 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
         val offset = (-10).dp
         FloatingAddButton(modifier = Modifier
             .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset), openEditor)
+            .offset(offset.withLayoutDirection(), offset)) {
+            viewModel.onAddProduct()
+            openEditor()
+        }
     }
 }
 
@@ -88,7 +85,7 @@ fun ProductsList(viewModel: ProductViewModel, products: List<Product>,
             ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
                 horizontal = 5.dp), viewModel
             ) {
-                viewModel.productObserved = productsSorted[idx]
+                viewModel.onUpdateProduct(productsSorted[idx])
                 openEditor()
             }
         }

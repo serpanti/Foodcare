@@ -1,10 +1,14 @@
 package ru.foodcare.foodcare.presentation.viewModel.product
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -12,7 +16,8 @@ import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.ProductRepository
 import kotlin.coroutines.CoroutineContext
 
-open class ProductViewModel(private val repository: ProductRepository, private val context: CoroutineContext): ViewModel() {
+open class ProductViewModel(private val repository: ProductRepository,
+                            private val context: CoroutineContext): ViewModel() {
     val products = repository.observeProducts().flowOn(context)
         .stateIn(
             scope = viewModelScope,
@@ -20,23 +25,39 @@ open class ProductViewModel(private val repository: ProductRepository, private v
             initialValue = emptyList()
     )
 
-    var productObserved: Product? = null
-        get() {
-            val retField = field
-            field = null
-            return retField
-        }
+    private val _lastChosenProduct: MutableStateFlow<Product?> = MutableStateFlow(null)
+    val lastChosenProduct: StateFlow<Product?> = _lastChosenProduct.asStateFlow()
 
-    var key: MutableState<String?> = mutableStateOf(null)
+    fun onUpdateProduct(product: Product) {
+        _lastChosenProduct.value = product
+    }
 
-    var productsStatic: MutableState<List<Product>?> = mutableStateOf(null)
+    fun onAddProduct() {
+        _lastChosenProduct.value = null
+    }
 
-    fun getProductByNameOrProduction(nameOrProduction: String) {
+    private val _productsByQuery: MutableStateFlow<List<Product>> = MutableStateFlow(emptyList())
+    val productsByQuery: StateFlow<List<Product>> = _productsByQuery.asStateFlow()
+
+    private val _key: MutableStateFlow<String> = MutableStateFlow("")
+    val key: StateFlow<String> = _key.asStateFlow()
+
+    init {
         viewModelScope.launch(context) {
-            productsStatic.value =
-                (repository.getProductByName(nameOrProduction) +
-                repository.getProductByProduction(nameOrProduction)).distinct()
+            @OptIn(FlowPreview::class)
+            key.debounce(300)
+                .distinctUntilChanged()
+                .collect { query ->
+                    _productsByQuery.value =
+                        (repository.getProductByName(query) +
+                        repository.getProductByProduction(query))
+                        .distinct()
+                }
         }
+    }
+
+    fun onKeyChanged(newKey: String) {
+        _key.value = newKey
     }
 
     fun addProduct(product: Product) {

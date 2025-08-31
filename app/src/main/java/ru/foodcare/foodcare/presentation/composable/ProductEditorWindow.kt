@@ -17,6 +17,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,7 +31,7 @@ import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
 fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
-    val product = remember {viewModel.productObserved}
+    val product = viewModel.lastChosenProduct.collectAsState().value
 
     CardSurface(
         Modifier
