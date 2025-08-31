@@ -82,18 +82,7 @@ fun DayWindow(
     mealViewModel.observedYear.value ?. let { year ->
         mealViewModel.observedMonth.value ?. let { month ->
             mealViewModel.observedDay.value ?. let { day ->
-                val observedDay = mealViewModel.observeDay(year, month, day).collectAsState()
-                Box(Modifier.fillMaxSize()) {
-                    ElementWithHeader({
-                        Header("%02d/%02d/%d".format(day, month, year))
-                    }) {
-                        Meals(observedDay, mealViewModel, openMealEditor)
-                    }
-                    val offset = (-10).dp
-                    FloatingAddButton(modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset(offset.withLayoutDirection(), offset), openMealEditor)
-                }
+                DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
             }
         }
     }
