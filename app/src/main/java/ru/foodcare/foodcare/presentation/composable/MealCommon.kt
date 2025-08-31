@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,7 +51,15 @@ fun DayMealWindowByDate(mealViewModel: MealViewModel,
 
 @Composable
 fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor: () -> Unit) {
-    LazyColumn {
+    val listState = rememberLazyListState()
+    LaunchedEffect(meals.value.size) {
+        if (meals.value.isNotEmpty()) {
+            listState.scrollToItem(meals.value.lastIndex)
+        }
+    }
+
+    LazyColumn (state = listState,
+        contentPadding = PaddingValues(bottom = 600.dp)) {
         items(meals.value.size) { idx ->
             MealCard(meals.value[idx], mealViewModel, openMealEditor = openMealEditor)
         }
