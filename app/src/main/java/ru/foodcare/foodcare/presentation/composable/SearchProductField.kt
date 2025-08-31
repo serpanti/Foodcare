@@ -1,7 +1,12 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -102,11 +107,17 @@ fun ProductButtonsLazyColumn(products: List<Product>,
                       onSelected: (Product) -> Unit) {
     LazyColumn {
         items(products.size) { idx ->
-            TextButton({
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .clickable {
                 onSelected(products[idx])
-            }) {
+            }
+                .padding(10.dp)) {
                 val product = products[idx]
-                Text("%s %s".format(product.name, product.production))
+                Row(modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Start) {
+                    Text("%s %s".format(product.name, product.production))
+                }
             }
             if (idx < products.size - 1) HorizontalDivider(1.dp, Color.Gray)
         }
