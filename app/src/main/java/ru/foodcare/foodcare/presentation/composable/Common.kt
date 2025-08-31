@@ -132,7 +132,7 @@ fun SwipeToStartButton(modifier: Modifier = Modifier, lazyListState: LazyListSta
         enter = slideInVertically() + fadeIn(), exit = slideOutVertically() + fadeOut()) {
         IconButton({
             scope.launch {
-                lazyListState.scrollToItem(0)
+                lazyListState.animateScrollToItem(0)
             }
         }) { Icon(Icons.Filled.KeyboardArrowUp, "Переместиться наверх") }
     }

@@ -54,7 +54,7 @@ fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor
     val listState = rememberLazyListState()
     LaunchedEffect(meals.value.size) {
         if (meals.value.isNotEmpty()) {
-            listState.scrollToItem(meals.value.lastIndex)
+            listState.animateScrollToItem(meals.value.lastIndex)
         }
     }
 
