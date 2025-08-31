@@ -45,7 +45,12 @@ fun DayMealWindowByDate(mealViewModel: MealViewModel,
         val offset = (-10).dp
         FloatingAddButton(modifier = Modifier
             .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset), openMealEditor)
+            .offset(offset.withLayoutDirection(), offset),
+            openEditor = {
+                mealViewModel.onAddMeal()
+                openMealEditor()
+            }
+        )
     }
 }
 
@@ -79,7 +84,7 @@ fun MealCard(meal: Meal, mealViewModel: MealViewModel,
         MealCardContent(meal, Modifier.fillMaxSize()
             .padding(10.dp)
             .clickable {
-                mealViewModel.mealObserved = meal
+                mealViewModel.onUpdateMeal(meal)
                 openMealEditor()
             }) {
             showAlert = true

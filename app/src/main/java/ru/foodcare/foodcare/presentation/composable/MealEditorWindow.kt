@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +35,7 @@ import java.time.LocalDateTime
 @Composable
 fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
                    close: () -> Unit) {
-    val meal = remember {viewModel.mealObserved}
+    val meal = viewModel.mealObserved.collectAsState()
 
     CardSurface(
         Modifier
@@ -44,7 +45,7 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
             .background(Color.Transparent)
             .padding(10.dp)
     ) {
-        MealEditCard(meal, viewModel, productViewModel, close)
+        MealEditCard(meal.value, viewModel, productViewModel, close)
     }
 }
 

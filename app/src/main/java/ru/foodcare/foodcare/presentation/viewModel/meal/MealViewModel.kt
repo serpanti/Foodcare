@@ -3,8 +3,10 @@ package ru.foodcare.foodcare.presentation.viewModel.meal
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -23,12 +25,16 @@ open class MealViewModel(private val repository: MealRepository,
             initialValue = emptyList()
         )
 
-    var mealObserved: Meal? = null
-        get() {
-            val retField = field
-            field = null
-            return retField
-        }
+    private val _mealObserved: MutableStateFlow<Meal?> = MutableStateFlow(null)
+    val mealObserved: StateFlow<Meal?> = _mealObserved.asStateFlow()
+
+    fun onUpdateMeal(meal: Meal) {
+        _mealObserved.value = meal
+    }
+
+    fun onAddMeal() {
+        _mealObserved.value = null
+    }
 
     var observedYear = mutableStateOf<Int?>(null)
     var observedMonth = mutableStateOf<Int?>(null)
