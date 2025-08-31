@@ -103,9 +103,6 @@ fun ProductEdit(
 
         SelectedProductText(productConst, Modifier.fillMaxWidth()
             .padding(horizontal = 10.dp).padding(top = 10.dp))
-        if (productConst != null) {
-            ProductCountTextField(productCount, productConst.type)
-        }
 
         SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
         { visible, close, products ->
@@ -114,6 +111,10 @@ fun ProductEdit(
                 offset = IntOffset(0, height)) { newProduct ->
                 product.value = newProduct
             }
+        }
+
+        if (productConst != null) {
+            ProductCountTextField(productCount, productConst.type)
         }
     }
 }
