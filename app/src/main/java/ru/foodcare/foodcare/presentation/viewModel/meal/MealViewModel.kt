@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.meal.MealRepository
+import java.time.LocalDate
 import kotlin.coroutines.CoroutineContext
 
 open class MealViewModel(private val repository: MealRepository,
@@ -35,21 +36,21 @@ open class MealViewModel(private val repository: MealRepository,
         _mealObserved.value = null
     }
 
-    private val _observedYear = MutableStateFlow<Int?>(null)
+    private val _observedYear = MutableStateFlow<Int>(LocalDate.now().year)
     val observedYear = _observedYear.asStateFlow()
 
     fun onObservedYearChanged(year :Int) {
         _observedYear.value = year
     }
 
-    private val _observedMonth = MutableStateFlow<Int?>(null)
+    private val _observedMonth = MutableStateFlow<Int>(LocalDate.now().monthValue)
     val observedMonth = _observedMonth.asStateFlow()
 
     fun onObservedMonthChanged(month :Int) {
         _observedMonth.value = month
     }
 
-    private val _observedDay = MutableStateFlow<Int?>(null)
+    private val _observedDay = MutableStateFlow<Int>(LocalDate.now().dayOfMonth)
     val observedDay = _observedDay.asStateFlow()
 
     fun onObservedDayChanged(day :Int) {

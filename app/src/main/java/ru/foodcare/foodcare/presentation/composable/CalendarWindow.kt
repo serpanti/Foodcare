@@ -18,9 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -30,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
+import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun CalendarWindow(
@@ -47,75 +50,61 @@ fun CalendarWindow(
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(formatType, mealViewModel, openMealEditor)}
+            CalendarShowType.Day -> {DayWindow(mealViewModel, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
             CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
-            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel, openMealEditor)}
+            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
         }
     }
 }
 
 @Composable
 fun DayWindow(
-    formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    if (mealViewModel.observedMonth.collectAsState().value == null ||
-        mealViewModel.observedYear.collectAsState().value == null ||
-        mealViewModel.observedDay.collectAsState().value == null) {
-        AdviceButton("Сначала выберите день") {
-            formatType.value = CalendarShowType.Days
-        }
-    }
-    mealViewModel.observedYear.collectAsState().value ?. let { year ->
-        mealViewModel.observedMonth.value ?. let { month ->
-            mealViewModel.observedDay.value ?. let { day ->
-                DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
-            }
-        }
-    }
+    val month by mealViewModel.observedMonth.collectAsState()
+    val year by mealViewModel.observedYear.collectAsState()
+    val day by mealViewModel.observedDay.collectAsState()
+
+    DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
 }
 
 @Composable
 fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    if (mealViewModel.observedMonth.collectAsState().value == null ||
-        mealViewModel.observedYear.collectAsState().value == null) {
-        AdviceButton("Сначала выберите месяц") {
-            formatType.value = CalendarShowType.Months
-        }
-    }
-    mealViewModel.observedYear.collectAsState().value ?. let { year ->
-        mealViewModel.observedMonth.collectAsState().value ?. let { month ->
-            val days = mealViewModel.observeDays(year, month).collectAsState()
+    val month by mealViewModel.observedMonth.collectAsState()
+    val year by mealViewModel.observedYear.collectAsState()
 
-            ElementWithHeader({
-                Header("%s  %d г.".format(month.toMonth(), year))
-            }) {
-                DaysTable(days, formatType, mealViewModel)
-            }
-        }
+    val daysCount = YearMonth.of(year, month).lengthOfMonth()
+    val days = (1 .. daysCount).toList()
+
+    ElementWithHeader({
+        Header("%s  %d г.".format(month.toMonth(), year))
+    }) {
+        DaysTable(days, formatType, mealViewModel)
     }
 }
 
 @Composable
 fun DaysTable(
-    days: State<List<Int>>,
+    days: List<Int>,
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(days.value.size) { idx ->
-            SquareButton(days.value[idx].toString()) {
-                mealViewModel.onObservedDayChanged(days.value[idx])
+        items(days.size) { idx ->
+            SquareButton(days[idx].toString()) {
+                mealViewModel.onObservedDayChanged(days[idx])
                 formatType.value = CalendarShowType.Day
             }
         }
     }
 }
 
+@Composable
 private fun Int.toMonth(): String {
+    // TODO resources
     val year = listOf(
         "январь", "февраль", "март", "апрель",
         "май", "июнь", "июль", "август",
@@ -127,33 +116,27 @@ private fun Int.toMonth(): String {
 
 @Composable
 fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    if (mealViewModel.observedYear.collectAsState().value == null) {
-        AdviceButton("Сначала выберите год") {
-            formatType.value = CalendarShowType.Years
-        }
-    }
-    mealViewModel.observedYear.collectAsState().value ?. let {
-        val months = mealViewModel.observeMonths(it).collectAsState()
+    val months = remember {(1..12).toList()}
+    val year by mealViewModel.observedYear.collectAsState()
 
-        ElementWithHeader({
-            Header("%d год".format(it))
-        }) {
-            MonthsTable(months, formatType, mealViewModel)
-        }
+    ElementWithHeader({
+        Header("%d год".format(year))
+    }) {
+        MonthsTable(months, formatType, mealViewModel)
     }
 }
 
 @Composable
 fun MonthsTable(
-    months: State<List<Int>>,
+    months: List<Int>,
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
     LazyVerticalGrid(GridCells.Fixed(3),
         contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(months.value.size) { idx ->
-            SquareButton(months.value[idx].toMonth()) {
-                mealViewModel.onObservedMonthChanged(months.value[idx])
+        items(months.size) { idx ->
+            SquareButton(months[idx].toMonth()) {
+                mealViewModel.onObservedMonthChanged(months[idx])
                 formatType.value = CalendarShowType.Days
             }
         }
@@ -161,34 +144,28 @@ fun MonthsTable(
 }
 
 @Composable
-fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel,
-                openMealEditor: () -> Unit) {
-    val years = mealViewModel.observedYears.collectAsState()
+fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+    val years by mealViewModel.observedYears.collectAsState()
+    val currentYear = LocalDate.now().year
 
     ElementWithHeader({
         Header("Все года")
     }) {
-        if (years.value.isNotEmpty()) {
-            YearsTable(years, formatType, mealViewModel)
-        } else {
-            AdviceButton("Пока еще не было сделано ни одной записи") {
-                openMealEditor()
-            }
-        }
+        YearsTable((years + currentYear).distinct(), formatType, mealViewModel)
     }
 }
 
 @Composable
 fun YearsTable(
-    years: State<List<Int>>,
+    years: List<Int>,
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
-        items(years.value.size) { idx ->
-            SquareButton(years.value[idx].toString()) {
-                mealViewModel.onObservedYearChanged(years.value[idx])
+        items(years.size) { idx ->
+            SquareButton(years[idx].toString()) {
+                mealViewModel.onObservedYearChanged(years[idx])
                 formatType.value = CalendarShowType.Months
             }
         }
