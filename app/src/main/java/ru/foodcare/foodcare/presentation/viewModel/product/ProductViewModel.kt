@@ -31,18 +31,6 @@ open class ProductViewModel(private val repository: ProductRepository, private v
 
     var productsStatic: MutableState<List<Product>?> = mutableStateOf(null)
 
-    fun getProductByName(name: String) {
-        viewModelScope.launch(context) {
-            productsStatic.value = repository.getProductByName(name)
-        }
-    }
-
-    fun getProductByProduction(production: String) {
-        viewModelScope.launch(context) {
-            productsStatic.value = repository.getProductByProduction(production)
-        }
-    }
-
     fun getProductByNameOrProduction(nameOrProduction: String) {
         viewModelScope.launch(context) {
             productsStatic.value =
