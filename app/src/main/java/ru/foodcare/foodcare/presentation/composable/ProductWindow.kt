@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
-import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
@@ -128,12 +127,7 @@ fun ProductCardContent(product: Product) {
         Nutrients(product, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
         Row(modifier = Modifier.align(Alignment.End)) {
             Text("Кол-во: ")
-            val countTypeString = when (product.type) {
-                UnitType.Milliliter -> "мл"
-                UnitType.Gram -> "г"
-                UnitType.Piece -> "шт"
-            }
-            Text("${product.amount} $countTypeString")
+            Text("${product.amount} ${product.type.toStringWithLanguage()}")
         }
     }
 }

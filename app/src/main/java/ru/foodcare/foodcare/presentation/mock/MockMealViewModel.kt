@@ -31,7 +31,7 @@ class MockMealViewModel : MealViewModel(
             day: Int
         ): Flow<List<Meal>> {
             return flowOf(listOf(Meal(1, Product("Honey", "Farm",
-                100, Product.Companion.UnitType.Milliliter, 584.0, 14.0, 30.0, 78.0, 2.0),
+                100, Product.Companion.UnitType.Milliliter, 584.0, 14.0, 30.0, 78.0, 2.0), 2.6,
                 2023, 4, 18, 22, 56, 34)))
         }
 

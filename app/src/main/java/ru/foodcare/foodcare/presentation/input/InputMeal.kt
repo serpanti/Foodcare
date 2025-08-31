@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 
 class InputMeal(val id: Int,
                 val product: Product?,
+                val productCount: Int? = null,
                 val year: Int? = null,
                 val month: Int? = null,
                 val day: Int? = null,
@@ -15,7 +16,7 @@ class InputMeal(val id: Int,
                 val seconds: Int? = null) : Input
 {
     override fun isCorrect(): Boolean {
-        return if (year != null && month != null && day != null &&
+        return if (productCount != null && year != null && month != null && day != null &&
                 hours != null && minutes != null && seconds != null
                 && product != null) {
             try {
@@ -28,7 +29,7 @@ class InputMeal(val id: Int,
     }
 
     fun toMeal(): Meal {
-        return Meal(id, product ?: Product(
+        val retProduct = product ?: Product(
             name = "",
             production = "",
             amount = 1,
@@ -38,7 +39,9 @@ class InputMeal(val id: Int,
             fat = 0.0,
             carbohydrates = 0.0,
             fiber = 0.0
-        ),
+        )
+        val productRatio = (productCount ?: 0) / retProduct.amount.toDouble()
+        return Meal(id, retProduct, productRatio,
             year ?: 0, month ?: 0, day ?: 0,
             hours ?: 0, minutes ?: 0, seconds ?: 0
         )

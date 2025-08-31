@@ -17,6 +17,9 @@ data class Meal (
     @ColumnInfo("productId")
     val productId: Int,
 
+    @ColumnInfo("productRatio")
+    val productRatio: Double,
+
     @ColumnInfo("year")
     val year: Int,
 

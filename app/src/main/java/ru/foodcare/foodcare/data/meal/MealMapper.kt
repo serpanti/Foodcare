@@ -12,7 +12,8 @@ object MealMapper {
         day = entity.meal.day,
         hours = entity.meal.hours,
         minutes = entity.meal.minutes,
-        seconds = entity.meal.seconds
+        seconds = entity.meal.seconds,
+        productRatio = entity.meal.productRatio
     )
 
     fun fromDomain(domain: MealDomain, productId: Int): Meal = Meal(
@@ -23,6 +24,7 @@ object MealMapper {
         day = domain.day,
         hours = domain.hours,
         minutes = domain.minutes,
-        seconds = domain.seconds
+        seconds = domain.seconds,
+        productRatio = domain.productRatio
     )
 }

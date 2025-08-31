@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.input.InputMeal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
@@ -52,6 +53,7 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
                  productViewModel: ProductViewModel, close: () -> Unit) {
     val id = remember { oldMeal?.id ?: 0 }
     val product = remember { mutableStateOf<Product?>(oldMeal?.product) }
+    val productCount = remember { mutableStateOf(oldMeal?.product?.amount?.toString() ?: "") }
     val year = remember { mutableStateOf(oldMeal?.year?.toString() ?: "") }
     val month = remember { mutableStateOf(oldMeal?.month?.toString() ?: "") }
     val day = remember { mutableStateOf(oldMeal?.day?.toString() ?: "") }
@@ -60,16 +62,17 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
     val seconds = remember { mutableStateOf(oldMeal?.seconds?.toString() ?: "") }
 
     LazyColumn {
-        itemWithUnderLine {ProductEdit(product, productViewModel)}
+        itemWithUnderLine {ProductEdit(product, productCount, productViewModel)}
         itemWithUnderLine {TimeEdit(year, month, day, hours, minutes, seconds)}
         item {
+            val productCountNum = productCount.value.parseToIntOrNull()
             val yearNum = year.value.parseToIntOrNull()
             val monthNum = month.value.parseToIntOrNull()
             val dayNum = day.value.parseToIntOrNull()
             val hoursNum = hours.value.parseToIntOrNull()
             val minutesNum = minutes.value.parseToIntOrNull()
             val secondsNum = seconds.value.parseToIntOrNull()
-            val inputMeal = InputMeal(id, product.value,
+            val inputMeal = InputMeal(id, product.value, productCountNum,
                 yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
 
             SaveButton(oldMeal == null, inputMeal, close,
@@ -82,7 +85,11 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
 }
 
 @Composable
-fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewModel) {
+fun ProductEdit(
+    product: MutableState<Product?>,
+    productCount: MutableState<String>,
+    productViewModel: ProductViewModel
+) {
     val density = LocalDensity.current
     var width = 0.dp
     var height = 0
@@ -92,8 +99,13 @@ fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewMo
         height = coordinates.size.height
     }) {
         val selectedProductDelegate = remember { derivedStateOf { product.value } }
-        SelectedProductText(selectedProductDelegate.value, Modifier.fillMaxWidth()
+        val productConst = selectedProductDelegate.value
+
+        SelectedProductText(productConst, Modifier.fillMaxWidth()
             .padding(horizontal = 10.dp).padding(top = 10.dp))
+        if (productConst != null) {
+            ProductCountTextField(productCount, productConst.type)
+        }
 
         SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
         { visible, close, products ->
@@ -104,6 +116,20 @@ fun ProductEdit(product: MutableState<Product?>, productViewModel: ProductViewMo
             }
         }
     }
+}
+
+@Composable
+fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
+                          modifier: Modifier = Modifier) {
+    SimpleTextField(productCount.value, onValueChange = { newStr ->
+        productCount.value = newStr
+    }, modifier = modifier.padding(10.dp), placeholder = {
+        Text("Введите кол-во полностью")
+    }, prefix = {
+        Text("Год: ")
+    }, suffix = {
+        Text(type.toStringWithLanguage())
+    })
 }
 
 @Composable
@@ -234,6 +260,7 @@ fun WrongInputMealPreview(inputMeal: InputMeal) {
         if (inputMeal.hours == null) Text("Ошибка в часах")
         if (inputMeal.minutes == null) Text("Ошибка в минутах")
         if (inputMeal.seconds == null) Text("Ошибка в секундах")
+        if (inputMeal.productCount == null) Text("Ошибка в кол-ве продукта")
         if (inputMeal.year != null && inputMeal.month != null && inputMeal.day != null &&
             inputMeal.hours != null && inputMeal.minutes != null && inputMeal.seconds != null
             && inputMeal.product != null) {

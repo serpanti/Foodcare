@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.input.Input
 
 @Composable
@@ -359,5 +360,22 @@ fun SaveButton(
             Icon(Icons.Filled.Save, "")
             Text("Сохранить", fontSize = 20.sp)
         }
+    }
+}
+
+@Composable
+fun UnitType.toStringWithLanguage(): String {
+    // TODO интеграция с resources
+    return when (this) {
+        UnitType.Milliliter -> "мл"
+        UnitType.Gram -> "г"
+        UnitType.Piece -> "шт"
+    }
+}
+
+@Composable
+fun IconWithAction(action: () -> Unit, modifier: Modifier = Modifier) {
+    Box(modifier.clickable(onClick = action), contentAlignment = Alignment.Center) {
+        Icon(Icons.Filled.Delete, "Удалить запись")
     }
 }

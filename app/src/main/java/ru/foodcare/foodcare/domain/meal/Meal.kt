@@ -5,6 +5,7 @@ import ru.foodcare.foodcare.domain.product.Product
 data class Meal (
     val id: Int,
     val product: Product,
+    val productRatio: Double,
     val year: Int,
     val month: Int,
     val day: Int,
