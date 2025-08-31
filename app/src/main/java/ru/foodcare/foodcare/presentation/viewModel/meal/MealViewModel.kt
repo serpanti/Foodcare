@@ -36,25 +36,11 @@ open class MealViewModel(private val repository: MealRepository,
         _mealObserved.value = null
     }
 
-    private val _observedYear = MutableStateFlow<Int>(LocalDate.now().year)
-    val observedYear = _observedYear.asStateFlow()
+    private val _observedDate = MutableStateFlow<LocalDate>(LocalDate.now())
+    val observedDate = _observedDate.asStateFlow()
 
-    fun onObservedYearChanged(year :Int) {
-        _observedYear.value = year
-    }
-
-    private val _observedMonth = MutableStateFlow<Int>(LocalDate.now().monthValue)
-    val observedMonth = _observedMonth.asStateFlow()
-
-    fun onObservedMonthChanged(month :Int) {
-        _observedMonth.value = month
-    }
-
-    private val _observedDay = MutableStateFlow<Int>(LocalDate.now().dayOfMonth)
-    val observedDay = _observedDay.asStateFlow()
-
-    fun onObservedDayChanged(day :Int) {
-        _observedDay.value = day
+    fun onObservedDateChanged(date: LocalDate) {
+        _observedDate.value = date
     }
 
     fun observeMonths(year: Int): StateFlow<List<Int>> {
@@ -75,8 +61,8 @@ open class MealViewModel(private val repository: MealRepository,
             )
     }
 
-    fun observeDay(year: Int, month: Int, day: Int): StateFlow<List<Meal>> {
-        return repository.observeDay(year, month, day).flowOn(context)
+    fun observeDay(date: LocalDate): StateFlow<List<Meal>> {
+        return repository.observeDay(date.year, date.monthValue, date.dayOfMonth).flowOn(context)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Companion.WhileSubscribed(5000),

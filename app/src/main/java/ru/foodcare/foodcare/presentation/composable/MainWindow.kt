@@ -9,10 +9,5 @@ fun MainWindow(
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    val today = LocalDate.now()
-    val year = today.year
-    val month = today.month.value
-    val day = today.dayOfMonth
-
-    DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
+    DayMealWindowByDate(mealViewModel, LocalDate.now(), openMealEditor)
 }

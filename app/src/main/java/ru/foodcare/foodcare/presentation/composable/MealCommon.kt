@@ -30,15 +30,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
+import java.time.LocalDate
 
 @Composable
 fun DayMealWindowByDate(mealViewModel: MealViewModel,
-                        year: Int, month: Int, day: Int,
+                        date: LocalDate,
                         openMealEditor: () -> Unit) {
-    val observedDay = mealViewModel.observeDay(year, month, day).collectAsState()
+    val observedDay = mealViewModel.observeDay(date).collectAsState()
     Box(Modifier.fillMaxSize()) {
         ElementWithHeader({
-            Header("%02d/%02d/%d".format(day, month, year))
+            Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year))
         }) {
             Meals(observedDay, mealViewModel, openMealEditor)
         }

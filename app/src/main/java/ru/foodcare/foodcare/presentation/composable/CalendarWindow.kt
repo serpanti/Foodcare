@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import java.time.LocalDate
+import java.time.Year
 import java.time.YearMonth
 
 @Composable
@@ -63,23 +64,19 @@ fun DayWindow(
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    val month by mealViewModel.observedMonth.collectAsState()
-    val year by mealViewModel.observedYear.collectAsState()
-    val day by mealViewModel.observedDay.collectAsState()
+    val date by mealViewModel.observedDate.collectAsState()
 
-    DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
+    DayMealWindowByDate(mealViewModel, date, openMealEditor)
 }
 
 @Composable
 fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    val month by mealViewModel.observedMonth.collectAsState()
-    val year by mealViewModel.observedYear.collectAsState()
+    val date by mealViewModel.observedDate.collectAsState()
 
-    val daysCount = YearMonth.of(year, month).lengthOfMonth()
-    val days = (1 .. daysCount).toList()
+    val days = (1 .. date.lengthOfMonth()).toList()
 
     ElementWithHeader({
-        Header("%s  %d г.".format(month.toMonth(), year))
+        Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
     }) {
         DaysTable(days, formatType, mealViewModel)
     }
@@ -91,11 +88,19 @@ fun DaysTable(
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
+    val date by mealViewModel.observedDate.collectAsState()
+
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(days.size) { idx ->
             SquareButton(days[idx].toString()) {
-                mealViewModel.onObservedDayChanged(days[idx])
+                val newDate = if (days[idx] in (1 .. date.lengthOfMonth())) {
+                    date.withDayOfMonth(days[idx])
+                } else {
+                    date
+                }
+
+                mealViewModel.onObservedDateChanged(newDate)
                 formatType.value = CalendarShowType.Day
             }
         }
@@ -117,10 +122,10 @@ private fun Int.toMonth(): String {
 @Composable
 fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
     val months = remember {(1..12).toList()}
-    val year by mealViewModel.observedYear.collectAsState()
+    val date by mealViewModel.observedDate.collectAsState()
 
     ElementWithHeader({
-        Header("%d год".format(year))
+        Header("%d год".format(date.year))
     }) {
         MonthsTable(months, formatType, mealViewModel)
     }
@@ -132,12 +137,20 @@ fun MonthsTable(
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
+    val date by mealViewModel.observedDate.collectAsState()
+
     LazyVerticalGrid(GridCells.Fixed(3),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(months.size) { idx ->
             SquareButton(months[idx].toMonth()) {
-                mealViewModel.onObservedMonthChanged(months[idx])
-                formatType.value = CalendarShowType.Days
+                if (months[idx] in (1 .. date.lengthOfMonth())) {
+                    val newMonthLength = YearMonth.of(date.year, months[idx]).lengthOfMonth()
+                    val newDay = minOf(date.dayOfMonth, newMonthLength)
+                    val newDate = LocalDate.of(date.year, months[idx], newDay)
+
+                    mealViewModel.onObservedDateChanged(newDate)
+                    formatType.value = CalendarShowType.Days
+                }
             }
         }
     }
@@ -161,12 +174,20 @@ fun YearsTable(
     formatType: MutableState<CalendarShowType>,
     mealViewModel: MealViewModel
 ) {
+    val date by mealViewModel.observedDate.collectAsState()
+
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.size) { idx ->
             SquareButton(years[idx].toString()) {
-                mealViewModel.onObservedYearChanged(years[idx])
-                formatType.value = CalendarShowType.Months
+                if (years[idx] in (Year.MIN_VALUE .. Year.MAX_VALUE)) {
+                    val newMonthLength = YearMonth.of(years[idx], date.month).lengthOfMonth()
+                    val newDay = minOf(date.dayOfMonth, newMonthLength)
+                    val newDate = LocalDate.of(years[idx], date.month, newDay)
+
+                    mealViewModel.onObservedDateChanged(newDate)
+                    formatType.value = CalendarShowType.Months
+                }
             }
         }
     }
