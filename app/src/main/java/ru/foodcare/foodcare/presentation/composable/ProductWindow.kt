@@ -22,8 +22,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -107,8 +109,14 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
                 width.value = with(density) { coordinates.size.width.toDp() }
             }, contentAlignment = Alignment.TopEnd) {
             val visibleState = remember {mutableStateOf(false)}
+            var showAlert by remember { mutableStateOf(false) }
+            if (showAlert) {
+                AlertDeleteProductDialog({showAlert = false}, product) {
+                    viewModel.removeProduct(product)
+                }
+            }
 
-            EditMenu(visibleState, openEditor, {viewModel.removeProduct(product)},
+            EditMenu(visibleState, openEditor, {showAlert = true},
                 offset = DpOffset(width.value.withLayoutDirection(), 0.dp))
             IconButton({visibleState.value = true}) {
                 Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
@@ -116,6 +124,12 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
         }
     }
 }
+
+@Composable
+fun AlertDeleteProductDialog(close: () -> Unit, product: Product, delete: () -> Unit) =
+    AlertDeleteDialog(close, delete) {
+        ProductCardContent(product)
+    }
 
 @Composable
 fun ProductCardContent(product: Product) {

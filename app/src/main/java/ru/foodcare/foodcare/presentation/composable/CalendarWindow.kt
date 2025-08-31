@@ -23,9 +23,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -354,21 +352,7 @@ fun MealCardContentInfo(meal: Meal, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AlertDeleteMealDialog(close: () -> Unit, meal: Meal, delete: () -> Unit) {
-    AlertDialog (
-        onDismissRequest = close,
-        dismissButton = {TextButton(close) {
-            Text("Отмена")
-        }},
-        confirmButton = {TextButton({
-            delete()
-            close()
-        }) { Text("Подтвердить") }},
-        title = {
-            Text("Вы уверены, что хотите удалить этот прием пищи?")
-        },
-        text = {
-            MealCardContentInfoWithTime(meal)
-        },
-    )
-}
+fun AlertDeleteMealDialog(close: () -> Unit, meal: Meal, delete: () -> Unit) =
+    AlertDeleteDialog(close, delete) {
+        MealCardContentInfoWithTime(meal)
+    }

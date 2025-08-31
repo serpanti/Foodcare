@@ -379,3 +379,28 @@ fun IconWithAction(action: () -> Unit, modifier: Modifier = Modifier) {
         Icon(Icons.Filled.Delete, "Удалить запись")
     }
 }
+
+@Composable
+fun AlertAboutActionDialog(close: () -> Unit, action: () -> Unit, question: String,
+                           preview: @Composable () -> Unit = {}) {
+    AlertDialog (
+        onDismissRequest = close,
+        dismissButton = {TextButton(close) {
+            Text("Отмена")
+        }},
+        confirmButton = {TextButton({
+            action()
+            close()
+        }) { Text("Подтвердить") }},
+        title = {
+            Text(question)
+        },
+        text = preview,
+    )
+}
+
+@Composable
+fun AlertDeleteDialog(close: () -> Unit, delete: () -> Unit,
+                      preview: @Composable () -> Unit = {}) {
+    AlertAboutActionDialog(close, delete, "Вы уверены, что хотите удалить?", preview)
+}
