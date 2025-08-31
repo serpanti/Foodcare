@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
 @Composable
@@ -199,6 +200,7 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
         .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
         .clip(RoundedCornerShape(10.dp))
         .padding(2.dp)
+        .zIndex(1f)
     ) {
         CalendarTypeButton("Г.", type.value == CalendarShowType.Years, Modifier.weight(1f)) {
             type.value = CalendarShowType.Years
