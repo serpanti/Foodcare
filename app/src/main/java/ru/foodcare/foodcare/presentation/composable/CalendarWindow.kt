@@ -61,14 +61,14 @@ fun DayWindow(
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    if (mealViewModel.observedMonth.value == null ||
-        mealViewModel.observedYear.value == null ||
-        mealViewModel.observedDay.value == null) {
+    if (mealViewModel.observedMonth.collectAsState().value == null ||
+        mealViewModel.observedYear.collectAsState().value == null ||
+        mealViewModel.observedDay.collectAsState().value == null) {
         AdviceButton("Сначала выберите день") {
             formatType.value = CalendarShowType.Days
         }
     }
-    mealViewModel.observedYear.value ?. let { year ->
+    mealViewModel.observedYear.collectAsState().value ?. let { year ->
         mealViewModel.observedMonth.value ?. let { month ->
             mealViewModel.observedDay.value ?. let { day ->
                 DayMealWindowByDate(mealViewModel, year, month, day, openMealEditor)
@@ -79,13 +79,14 @@ fun DayWindow(
 
 @Composable
 fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    if (mealViewModel.observedMonth.value == null || mealViewModel.observedYear.value == null) {
+    if (mealViewModel.observedMonth.collectAsState().value == null ||
+        mealViewModel.observedYear.collectAsState().value == null) {
         AdviceButton("Сначала выберите месяц") {
             formatType.value = CalendarShowType.Months
         }
     }
-    mealViewModel.observedYear.value ?. let { year ->
-        mealViewModel.observedMonth.value ?. let { month ->
+    mealViewModel.observedYear.collectAsState().value ?. let { year ->
+        mealViewModel.observedMonth.collectAsState().value ?. let { month ->
             val days = mealViewModel.observeDays(year, month).collectAsState()
 
             ElementWithHeader({
@@ -107,7 +108,7 @@ fun DaysTable(
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(days.value.size) { idx ->
             SquareButton(days.value[idx].toString()) {
-                mealViewModel.observedDay.value = days.value[idx]
+                mealViewModel.onObservedDayChanged(days.value[idx])
                 formatType.value = CalendarShowType.Day
             }
         }
@@ -126,12 +127,12 @@ private fun Int.toMonth(): String {
 
 @Composable
 fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    if (mealViewModel.observedYear.value == null) {
+    if (mealViewModel.observedYear.collectAsState().value == null) {
         AdviceButton("Сначала выберите год") {
             formatType.value = CalendarShowType.Years
         }
     }
-    mealViewModel.observedYear.value ?. let {
+    mealViewModel.observedYear.collectAsState().value ?. let {
         val months = mealViewModel.observeMonths(it).collectAsState()
 
         ElementWithHeader({
@@ -152,7 +153,7 @@ fun MonthsTable(
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(months.value.size) { idx ->
             SquareButton(months.value[idx].toMonth()) {
-                mealViewModel.observedMonth.value = months.value[idx]
+                mealViewModel.onObservedMonthChanged(months.value[idx])
                 formatType.value = CalendarShowType.Days
             }
         }
@@ -187,7 +188,7 @@ fun YearsTable(
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.value.size) { idx ->
             SquareButton(years.value[idx].toString()) {
-                mealViewModel.observedYear.value = years.value[idx]
+                mealViewModel.onObservedYearChanged(years.value[idx])
                 formatType.value = CalendarShowType.Months
             }
         }
