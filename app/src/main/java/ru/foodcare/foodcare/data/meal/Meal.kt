@@ -5,10 +5,14 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import ru.foodcare.foodcare.data.date.Date
 import ru.foodcare.foodcare.data.product.Product
 
-@Entity("meals", foreignKeys = [ForeignKey(Product::class, parentColumns = ["id"],
-        childColumns = ["productId"], onDelete = CASCADE)])
+@Entity("meals", foreignKeys = [
+    ForeignKey(Product::class, parentColumns = ["id"],
+        childColumns = ["productId"], onDelete = CASCADE),
+    ForeignKey(Date::class, parentColumns = ["id"],
+        childColumns = ["dateId"], onDelete = CASCADE)])
 data class Meal (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("id")
@@ -20,14 +24,8 @@ data class Meal (
     @ColumnInfo("productRatio")
     val productRatio: Double,
 
-    @ColumnInfo("year")
-    val year: Int,
-
-    @ColumnInfo("month")
-    val month: Int,
-
-    @ColumnInfo("day")
-    val day: Int,
+    @ColumnInfo("dateId")
+    val dateId: Int,
 
     @ColumnInfo("hours")
     val hours: Int,

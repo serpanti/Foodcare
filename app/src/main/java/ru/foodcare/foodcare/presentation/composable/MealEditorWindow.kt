@@ -55,9 +55,9 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
     val id = remember { oldMeal?.id ?: 0 }
     val product = remember { mutableStateOf<Product?>(oldMeal?.product) }
     val productCount = remember { mutableStateOf(oldMeal?.product?.amount?.toString() ?: "") }
-    val year = remember { mutableStateOf(oldMeal?.year?.toString() ?: "") }
-    val month = remember { mutableStateOf(oldMeal?.month?.toString() ?: "") }
-    val day = remember { mutableStateOf(oldMeal?.day?.toString() ?: "") }
+    val year = remember { mutableStateOf(oldMeal?.date?.year?.toString() ?: "") }
+    val month = remember { mutableStateOf(oldMeal?.date?.monthValue?.toString() ?: "") }
+    val day = remember { mutableStateOf(oldMeal?.date?.dayOfMonth?.toString() ?: "") }
     val hours = remember { mutableStateOf(oldMeal?.hours?.toString() ?: "") }
     val minutes = remember { mutableStateOf(oldMeal?.minutes?.toString() ?: "") }
     val seconds = remember { mutableStateOf(oldMeal?.seconds?.toString() ?: "") }

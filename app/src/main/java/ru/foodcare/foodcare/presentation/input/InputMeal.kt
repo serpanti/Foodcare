@@ -3,6 +3,7 @@ package ru.foodcare.foodcare.presentation.input
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product
 import java.lang.Exception
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class InputMeal(val id: Int,
@@ -42,7 +43,7 @@ class InputMeal(val id: Int,
         )
         val productRatio = (productCount ?: 0) / retProduct.amount.toDouble()
         return Meal(id, retProduct, productRatio,
-            year ?: 0, month ?: 0, day ?: 0,
+            LocalDate.of(year ?: 0, month ?: 0, day ?: 0),
             hours ?: 0, minutes ?: 0, seconds ?: 0
         )
     }

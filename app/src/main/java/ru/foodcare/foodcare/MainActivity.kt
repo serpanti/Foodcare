@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
         val db = FoodcareDBProvider.getInstance(applicationContext)
         val productRepository = ProductRepositoryImpl(db.productDAO())
-        val mealRepository = MealRepositoryImpl(db.mealDAO(), db.productDAO())
+        val mealRepository = MealRepositoryImpl(db.mealDAO(), db.productDAO(), db.dateDAO())
         val productFactory = ProductViewModelFactory(productRepository, Dispatchers.IO)
         val mealFactory = MealViewModelFactory(mealRepository, Dispatchers.IO)
         productVM = ViewModelProvider(this, productFactory)[ProductViewModel::class.java]
