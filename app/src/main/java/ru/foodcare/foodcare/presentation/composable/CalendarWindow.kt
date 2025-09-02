@@ -78,10 +78,13 @@ fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealVi
 
     val days = (1 .. date.lengthOfMonth()).toList()
 
-    ElementWithHeader({
-        Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
-    }) {
-        DaysTable(days, formatType, mealViewModel)
+    InfinitePager(increase = { mealViewModel.onObservedDateChanged(date.plusMonths(1)) },
+        decrease = { mealViewModel.onObservedDateChanged(date.minusMonths(1)) }) { page ->
+        ElementWithHeader({
+            Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
+        }) {
+            DaysTable(days, formatType, mealViewModel)
+        }
     }
 }
 
@@ -127,10 +130,13 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: Meal
     val months = remember {(1..12).toList()}
     val date by mealViewModel.observedDate.collectAsState()
 
-    ElementWithHeader({
-        Header("%d год".format(date.year))
-    }) {
-        MonthsTable(months, formatType, mealViewModel)
+    InfinitePager(increase = { mealViewModel.onObservedDateChanged(date.plusYears(1)) },
+        decrease = { mealViewModel.onObservedDateChanged(date.minusYears(1)) }) { page ->
+        ElementWithHeader({
+            Header("%d год".format(date.year))
+        }) {
+            MonthsTable(months, formatType, mealViewModel)
+        }
     }
 }
 
