@@ -13,17 +13,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,7 +72,30 @@ fun DayWindow(
 ) {
     val date by mealViewModel.observedDate.collectAsState()
 
-    DayMealWindowByDate(mealViewModel, date, openMealEditor)
+    val center = Int.MAX_VALUE / 2
+    val pagerState = rememberPagerState(initialPage = center) { Int.MAX_VALUE }
+    var lastPage by remember{ mutableIntStateOf(pagerState.currentPage) }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { currentPage ->
+                when {
+                    lastPage < currentPage -> mealViewModel.onObservedDateChanged(date.plusDays(1))
+                    lastPage > currentPage -> mealViewModel.onObservedDateChanged(date.minusDays(1))
+                }
+
+                if (currentPage == 0 || currentPage == Int.MAX_VALUE) {
+                    lastPage = center
+                    pagerState.scrollToPage(center)
+                } else {
+                    lastPage = currentPage
+                }
+            }
+    }
+
+    HorizontalPager(pagerState) { page ->
+        DayMealWindowByDate(mealViewModel, date, openMealEditor)
+    }
 }
 
 @Composable
