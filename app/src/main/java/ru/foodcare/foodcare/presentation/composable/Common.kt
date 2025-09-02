@@ -68,6 +68,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -227,16 +228,20 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
                     placeholder: @Composable () -> Unit,
                     prefix: @Composable () -> Unit = {},
                     suffix: @Composable () -> Unit = {}) {
+    var hasFocus by remember {mutableStateOf(false)}
+
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.onFocusChanged { focusState ->
+            hasFocus = focusState.hasFocus
+        },
         decorationBox = @Composable { innerTextField ->
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxSize()) {
                 prefix()
-                if (value.isEmpty()) {
+                if (value.isEmpty() && !hasFocus) {
                     placeholder()
                 } else {
                     innerTextField()
