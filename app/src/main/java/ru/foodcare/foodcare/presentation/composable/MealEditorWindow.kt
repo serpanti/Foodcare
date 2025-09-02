@@ -95,22 +95,24 @@ fun ProductEdit(
     var width = 0.dp
     var height = 0
 
-    Column(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
-        width = with(density) { coordinates.size.width.toDp() }
-        height = coordinates.size.height
-    }) {
-        val selectedProductDelegate = remember { derivedStateOf { product.value } }
-        val productConst = selectedProductDelegate.value
+    val selectedProductDelegate = remember { derivedStateOf { product.value } }
+    val productConst = selectedProductDelegate.value
 
-        SelectedProductText(productConst, Modifier.fillMaxWidth()
-            .padding(horizontal = 10.dp).padding(top = 10.dp))
+    Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
+            width = with(density) { coordinates.size.width.toDp() }
+            height = coordinates.size.height
+        }) {
+            SelectedProductText(productConst, Modifier.fillMaxWidth()
+                .padding(horizontal = 10.dp).padding(top = 10.dp))
 
-        SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
-        { visible, close, products ->
-            DropdownProducts(visible, close, products,
-                Modifier.width(width).heightIn(0.dp, 200.dp),
-                offset = IntOffset(0, height)) { newProduct ->
-                product.value = newProduct
+            SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
+            { visible, close, products ->
+                DropdownProducts(visible, close, products,
+                    Modifier.width(width).heightIn(0.dp, 200.dp),
+                    offset = IntOffset(0, height)) { newProduct ->
+                    product.value = newProduct
+                }
             }
         }
 
