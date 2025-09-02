@@ -26,6 +26,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerScope
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -51,13 +54,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -401,4 +407,35 @@ fun AlertAboutActionDialog(close: () -> Unit, action: () -> Unit, question: Stri
 fun AlertDeleteDialog(close: () -> Unit, delete: () -> Unit,
                       preview: @Composable () -> Unit = {}) {
     AlertAboutActionDialog(close, delete, "Вы уверены, что хотите удалить?", preview)
+}
+
+@Composable
+fun InfinitePager(modifier: Modifier = Modifier,
+                  increase: () -> Unit,
+                  decrease: () -> Unit,
+                  content: @Composable PagerScope.(Int) -> Unit) {
+    val center = Int.MAX_VALUE / 2
+    val pagerState = rememberPagerState(initialPage = center) { Int.MAX_VALUE }
+    var lastPage by remember{ mutableIntStateOf(pagerState.currentPage) }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { currentPage ->
+                when {
+                    lastPage < currentPage -> increase()
+                    lastPage > currentPage -> decrease()
+                }
+
+                if (currentPage == 0 || currentPage == Int.MAX_VALUE) {
+                    lastPage = center
+                    pagerState.scrollToPage(center)
+                } else {
+                    lastPage = currentPage
+                }
+            }
+    }
+
+    HorizontalPager(pagerState, modifier = modifier) { page ->
+        content(page)
+    }
 }
