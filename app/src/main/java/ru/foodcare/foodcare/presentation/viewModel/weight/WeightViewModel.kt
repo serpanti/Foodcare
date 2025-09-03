@@ -2,7 +2,10 @@ package ru.foodcare.foodcare.presentation.viewModel.weight
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.domain.weight.WeightRepository
@@ -10,8 +13,14 @@ import kotlin.coroutines.CoroutineContext
 
 class WeightViewModel(private val weightRepository: WeightRepository,
                       private val context: CoroutineContext) : ViewModel() {
-    fun observeDay(year: Int, month: Int, day: Int): Flow<List<Weight>> {
+    fun observeDay(year: Int, month: Int, day: Int): StateFlow<List<Weight>> {
         return weightRepository.observeDay(year, month, day)
+            .flowOn(context)
+            .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
     }
 
     fun add(weight: Weight) {
