@@ -266,8 +266,7 @@ fun WrongInputMealPreview(inputMeal: InputMeal) {
         if (inputMeal.seconds == null) Text("Ошибка в секундах")
         if (inputMeal.productCount == null) Text("Ошибка в кол-ве продукта")
         if (inputMeal.year != null && inputMeal.month != null && inputMeal.day != null &&
-            inputMeal.hours != null && inputMeal.minutes != null && inputMeal.seconds != null
-            && inputMeal.product != null) {
+            inputMeal.hours != null && inputMeal.minutes != null && inputMeal.seconds != null) {
                 try {
                     LocalDateTime.of(inputMeal.year, inputMeal.month, inputMeal.day,
                         inputMeal.hours, inputMeal.minutes, inputMeal.seconds)
