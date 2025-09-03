@@ -13,21 +13,6 @@ import ru.foodcare.foodcare.domain.meal.MealRepository
 class MealRepositoryImpl(private val mealDao: MealDAO,
                          private val productDao: ProductDAO,
                          private val dateDao: DateDAO): MealRepository {
-    override fun observeYears(): Flow<List<Int>> {
-        return dateDao.observeYears()
-    }
-
-    override fun observeMonths(year: Int): Flow<List<Int>> {
-        return dateDao.observeMonths(year)
-    }
-
-    override fun observeDays(
-        year: Int,
-        month: Int
-    ): Flow<List<Int>> {
-        return dateDao.observeDays(year, month)
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeDay(
         year: Int,
