@@ -1,13 +1,11 @@
 package ru.foodcare.foodcare
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +16,6 @@ import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.data.weightMeasurement.WeightRepositoryImpl
 import ru.foodcare.foodcare.presentation.composable.Content
 import ru.foodcare.foodcare.presentation.composable.NavigationPanel
-import ru.foodcare.foodcare.presentation.mock.MockMealViewModel
-import ru.foodcare.foodcare.presentation.mock.MockProductViewModel
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModelFactory
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
@@ -59,27 +55,22 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FoodcareTheme {
-                UI(productVM, mealVM)
+                UI(productVM, mealVM, dateVM, weightVM)
             }
         }
     }
 }
 
 @Composable
-fun UI(productViewModel: ProductViewModel, mealViewModel: MealViewModel) {
+fun UI(productViewModel: ProductViewModel,
+       mealViewModel: MealViewModel,
+       dateVM: DateViewModel,
+       weightVM: WeightViewModel) {
     val navPanelState = rememberDrawerState (DrawerValue.Closed)
     val navigationController = rememberNavController()
 
     NavigationPanel(navPanelState, navigationController) {
-        Content(navPanelState, navigationController, productViewModel, mealViewModel)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    FoodcareTheme {
-        @SuppressLint("ViewModelConstructorInComposable")
-        UI(MockProductViewModel(), MockMealViewModel())
+        Content(navPanelState, navigationController,
+            productViewModel, mealViewModel, dateVM, weightVM)
     }
 }
