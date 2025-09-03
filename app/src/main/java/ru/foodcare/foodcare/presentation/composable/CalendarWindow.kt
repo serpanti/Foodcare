@@ -7,18 +7,24 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +36,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
@@ -75,6 +83,80 @@ fun DayWindow(
     InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
         decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
         DayWindowByDate(mealViewModel, weightVM, date, openMealEditor)
+    }
+}
+
+@Composable
+fun DayWindowByDate(
+    mealViewModel: MealViewModel,
+    weightVM: WeightViewModel,
+    date: LocalDate,
+    openMealEditor: () -> Unit
+) {
+    val observedMeals = mealViewModel.observeDay(date).collectAsState()
+    val observedWeights = weightVM.observeDay(date).collectAsState()
+    Box(Modifier.fillMaxSize()) {
+        ElementWithHeader({
+            Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year))
+        }) {
+            DayCards(observedMeals, observedWeights, mealViewModel, weightVM, openMealEditor)
+        }
+        val offset = (-10).dp
+        FloatingAddButton(modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .offset(offset.withLayoutDirection(), offset),
+            openEditor = {
+                mealViewModel.onAddMeal()
+                openMealEditor()
+            }
+        )
+    }
+}
+
+@Composable
+fun DayCards(
+    meals: State<List<Meal>>,
+    weights: State<List<Weight>>,
+    mealViewModel: MealViewModel,
+    weightVM: WeightViewModel,
+    openMealEditor: () -> Unit
+) {
+    val listState = rememberLazyListState()
+    val dayList by remember {
+        derivedStateOf {
+            meals.value + weights.value
+        }
+    }
+
+    LaunchedEffect(dayList.size) {
+        if (dayList.isNotEmpty()) {
+            listState.animateScrollToItem(dayList.lastIndex)
+        }
+    }
+
+    LazyColumn (state = listState,
+        contentPadding = PaddingValues(bottom = 600.dp)) {
+        items(dayList.size) { idx ->
+            DayContentCard {
+                val cardContent = dayList[idx]
+                when (cardContent) {
+                    is Meal ->
+                        MealCard(cardContent, mealViewModel, openMealEditor = openMealEditor)
+                    is Weight ->
+                        WeightCard(cardContent, weightVM, openWeightEditor = {})  // TODO openEditor
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DayContentCard(modifier: Modifier = Modifier,
+                   content: @Composable () -> Unit) {
+    CardSurface(modifier
+        .fillMaxWidth()
+        .padding(10.dp)) {
+        content()
     }
 }
 
