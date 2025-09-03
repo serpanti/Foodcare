@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import java.time.LocalDate
 import java.time.Year
@@ -38,6 +39,7 @@ import java.time.YearMonth
 @Composable
 fun CalendarWindow(
     mealViewModel: MealViewModel,
+    dateVM: DateViewModel,
     openMealEditor: () -> Unit
 ) {
     val formatType = rememberSaveable(stateSaver = CalendarShowTypeSaver) {
@@ -51,39 +53,40 @@ fun CalendarWindow(
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(mealViewModel, openMealEditor)}
-            CalendarShowType.Days -> {DaysWindow(formatType, mealViewModel)}
-            CalendarShowType.Months -> {MonthsWindow(formatType, mealViewModel)}
-            CalendarShowType.Years -> {YearsWindow(formatType, mealViewModel)}
+            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, openMealEditor)}
+            CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
+            CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
+            CalendarShowType.Years -> {YearsWindow(formatType, dateVM)}
         }
     }
 }
 
 @Composable
 fun DayWindow(
+    dateVM: DateViewModel,
     mealViewModel: MealViewModel,
     openMealEditor: () -> Unit
 ) {
-    val date by mealViewModel.observedDate.collectAsState()
+    val date by dateVM.observedDate.collectAsState()
 
-    InfinitePager(increase = { mealViewModel.onObservedDateChanged(date.plusDays(1)) },
-        decrease = { mealViewModel.onObservedDateChanged(date.minusDays(1)) }) { page ->
+    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
+        decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
         DayMealWindowByDate(mealViewModel, date, openMealEditor)
     }
 }
 
 @Composable
-fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    val date by mealViewModel.observedDate.collectAsState()
+fun DaysWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewModel) {
+    val date by dateVM.observedDate.collectAsState()
 
     val days = (1 .. date.lengthOfMonth()).toList()
 
-    InfinitePager(increase = { mealViewModel.onObservedDateChanged(date.plusMonths(1)) },
-        decrease = { mealViewModel.onObservedDateChanged(date.minusMonths(1)) }) { page ->
+    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusMonths(1)) },
+        decrease = { dateVM.onObservedDateChanged(date.minusMonths(1)) }) { page ->
         ElementWithHeader({
             Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
         }) {
-            DaysTable(days, formatType, mealViewModel)
+            DaysTable(days, formatType, dateVM)
         }
     }
 }
@@ -92,9 +95,9 @@ fun DaysWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealVi
 fun DaysTable(
     days: List<Int>,
     formatType: MutableState<CalendarShowType>,
-    mealViewModel: MealViewModel
+    dateVM: DateViewModel
 ) {
-    val date by mealViewModel.observedDate.collectAsState()
+    val date by dateVM.observedDate.collectAsState()
 
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
@@ -106,7 +109,7 @@ fun DaysTable(
                     date
                 }
 
-                mealViewModel.onObservedDateChanged(newDate)
+                dateVM.onObservedDateChanged(newDate)
                 formatType.value = CalendarShowType.Day
             }
         }
@@ -126,16 +129,16 @@ private fun Int.toMonth(): String {
 }
 
 @Composable
-fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
+fun MonthsWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewModel) {
     val months = remember {(1..12).toList()}
-    val date by mealViewModel.observedDate.collectAsState()
+    val date by dateVM.observedDate.collectAsState()
 
-    InfinitePager(increase = { mealViewModel.onObservedDateChanged(date.plusYears(1)) },
-        decrease = { mealViewModel.onObservedDateChanged(date.minusYears(1)) }) { page ->
+    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusYears(1)) },
+        decrease = { dateVM.onObservedDateChanged(date.minusYears(1)) }) { page ->
         ElementWithHeader({
             Header("%d год".format(date.year))
         }) {
-            MonthsTable(months, formatType, mealViewModel)
+            MonthsTable(months, formatType, dateVM)
         }
     }
 }
@@ -144,9 +147,9 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: Meal
 fun MonthsTable(
     months: List<Int>,
     formatType: MutableState<CalendarShowType>,
-    mealViewModel: MealViewModel
+    dateVM: DateViewModel
 ) {
-    val date by mealViewModel.observedDate.collectAsState()
+    val date by dateVM.observedDate.collectAsState()
 
     LazyVerticalGrid(GridCells.Fixed(3),
         contentPadding = PaddingValues(bottom = 50.dp)) {
@@ -157,7 +160,7 @@ fun MonthsTable(
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
                     val newDate = LocalDate.of(date.year, months[idx], newDay)
 
-                    mealViewModel.onObservedDateChanged(newDate)
+                    dateVM.onObservedDateChanged(newDate)
                     formatType.value = CalendarShowType.Days
                 }
             }
@@ -166,14 +169,14 @@ fun MonthsTable(
 }
 
 @Composable
-fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealViewModel) {
-    val years by mealViewModel.observedYears.collectAsState()
+fun YearsWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewModel) {
+    val years by dateVM.observedYears.collectAsState()
     val currentYear = LocalDate.now().year
 
     ElementWithHeader({
         Header("Все года")
     }) {
-        YearsTable((years + currentYear).distinct(), formatType, mealViewModel)
+        YearsTable((years + currentYear).distinct(), formatType, dateVM)
     }
 }
 
@@ -181,9 +184,9 @@ fun YearsWindow(formatType: MutableState<CalendarShowType>, mealViewModel: MealV
 fun YearsTable(
     years: List<Int>,
     formatType: MutableState<CalendarShowType>,
-    mealViewModel: MealViewModel
+    dateVM: DateViewModel
 ) {
-    val date by mealViewModel.observedDate.collectAsState()
+    val date by dateVM.observedDate.collectAsState()
 
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
@@ -194,7 +197,7 @@ fun YearsTable(
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
                     val newDate = LocalDate.of(years[idx], date.month, newDay)
 
-                    mealViewModel.onObservedDateChanged(newDate)
+                    dateVM.onObservedDateChanged(newDate)
                     formatType.value = CalendarShowType.Months
                 }
             }

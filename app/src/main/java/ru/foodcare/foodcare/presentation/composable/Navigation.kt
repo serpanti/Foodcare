@@ -26,8 +26,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
 
 sealed class Route(val route: String) {
     object Main: Route("main")
@@ -84,7 +86,9 @@ fun Content(
     navPanelState: DrawerState,
     navController: NavHostController,
     productViewModel: ProductViewModel,
-    mealViewModel: MealViewModel
+    mealViewModel: MealViewModel,
+    dateVM: DateViewModel,
+    weightVM: WeightViewModel
 ) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState()
     val onMainWindow = remember {derivedStateOf {
@@ -121,7 +125,9 @@ fun Content(
                 }
             })
     }) {
-        FoodcareNavHost(navController, productViewModel, mealViewModel, Modifier.padding(it))
+        FoodcareNavHost(navController,
+            productViewModel, mealViewModel, dateVM,
+            Modifier.padding(it))
     }
 }
 
@@ -129,6 +135,7 @@ fun Content(
 fun FoodcareNavHost(
     navController: NavHostController, productViewModel: ProductViewModel,
     mealViewModel: MealViewModel,
+    dateVM: DateViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(navController, Route.Main.route, modifier) {
@@ -138,7 +145,7 @@ fun FoodcareNavHost(
             }
         }
         composable(Route.Calendar.route) {
-            CalendarWindow(mealViewModel) {
+            CalendarWindow(mealViewModel, dateVM) {
                 navController.navigate(Route.MealEditor.route)
             }
         }
