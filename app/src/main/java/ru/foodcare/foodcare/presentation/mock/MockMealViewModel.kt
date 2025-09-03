@@ -11,21 +11,6 @@ import java.time.LocalDate
 
 class MockMealViewModel : MealViewModel(
     repository = object : MealRepository {
-        override fun observeYears(): Flow<List<Int>> {
-            return flowOf((2020..2045).toList())
-        }
-
-        override fun observeMonths(year: Int): Flow<List<Int>> {
-            return flowOf((1..12).toList())
-        }
-
-        override fun observeDays(
-            year: Int,
-            month: Int
-        ): Flow<List<Int>> {
-            return flowOf((1..31).toList())
-        }
-
         override fun observeDay(
             year: Int,
             month: Int,
