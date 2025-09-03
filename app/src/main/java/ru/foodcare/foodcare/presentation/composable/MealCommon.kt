@@ -67,7 +67,9 @@ fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor
     LazyColumn (state = listState,
         contentPadding = PaddingValues(bottom = 600.dp)) {
         items(meals.value.size) { idx ->
-            MealCard(meals.value[idx], mealViewModel, openMealEditor = openMealEditor)
+            DayContentCard {
+                MealCard(meals.value[idx], mealViewModel, openMealEditor = openMealEditor)
+            }
         }
     }
 }
@@ -75,21 +77,19 @@ fun Meals(meals: State<List<Meal>>, mealViewModel: MealViewModel, openMealEditor
 @Composable
 fun MealCard(meal: Meal, mealViewModel: MealViewModel,
              modifier: Modifier = Modifier, openMealEditor: () -> Unit) {
-    CardSurface(modifier.fillMaxWidth().padding(10.dp)) {
-        var showAlert by remember { mutableStateOf(false) }
-        if (showAlert) {
-            AlertDeleteMealDialog({showAlert = false}, meal) {
-                mealViewModel.removeMeal(meal)
-            }
+    var showAlert by remember { mutableStateOf(false) }
+    if (showAlert) {
+        AlertDeleteMealDialog({showAlert = false}, meal) {
+            mealViewModel.removeMeal(meal)
         }
-        MealCardContent(meal, Modifier.fillMaxSize()
-            .padding(10.dp)
-            .clickable {
-                mealViewModel.onUpdateMeal(meal)
-                openMealEditor()
-            }) {
-            showAlert = true
-        }
+    }
+    MealCardContent(meal, modifier.fillMaxSize()
+        .padding(10.dp)
+        .clickable {
+            mealViewModel.onUpdateMeal(meal)
+            openMealEditor()
+        }) {
+        showAlert = true
     }
 }
 
