@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
+import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
 import java.time.LocalDate
 import java.time.Year
 import java.time.YearMonth
@@ -40,6 +41,7 @@ import java.time.YearMonth
 fun CalendarWindow(
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
+    weightVM: WeightViewModel,
     openMealEditor: () -> Unit
 ) {
     val formatType = rememberSaveable(stateSaver = CalendarShowTypeSaver) {
@@ -53,7 +55,7 @@ fun CalendarWindow(
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, openMealEditor)}
+            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
             CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
             CalendarShowType.Years -> {YearsWindow(formatType, dateVM)}
@@ -65,13 +67,14 @@ fun CalendarWindow(
 fun DayWindow(
     dateVM: DateViewModel,
     mealViewModel: MealViewModel,
+    weightVM: WeightViewModel,
     openMealEditor: () -> Unit
 ) {
     val date by dateVM.observedDate.collectAsState()
 
     InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
         decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
-        DayMealWindowByDate(mealViewModel, date, openMealEditor)
+        DayWindowByDate(mealViewModel, weightVM, date, openMealEditor)
     }
 }
 
