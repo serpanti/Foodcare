@@ -1,5 +1,6 @@
 package ru.foodcare.foodcare.data.weightMeasurement
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -11,6 +12,7 @@ import kotlin.collections.firstOrNull
 
 class WeightRepositoryImpl(private val weightDao: WeightMeasurementDAO,
     private val dateDAO: DateDAO): WeightRepository {
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeDay(
         year: Int,
         month: Int,
