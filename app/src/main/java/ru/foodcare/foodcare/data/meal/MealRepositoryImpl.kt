@@ -1,6 +1,5 @@
 package ru.foodcare.foodcare.data.meal
 
-import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -38,11 +37,9 @@ class MealRepositoryImpl(private val mealDao: MealDAO,
         return dateDao.getDate(year, month, day)
                 .map { it.firstOrNull()?.id }
                 .filterNotNull()
-                .apply { Log.d("apply", "в") }
                 .flatMapLatest { mealDao.observeDay(it) }
                 .map { list ->
                     list.map {
-                        Log.d("list.map", "в")
                         MealMapper.toDomain(it)
                     }
                 }
