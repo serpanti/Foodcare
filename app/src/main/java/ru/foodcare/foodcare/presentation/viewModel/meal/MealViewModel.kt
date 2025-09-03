@@ -17,14 +17,6 @@ import kotlin.coroutines.CoroutineContext
 open class MealViewModel(private val repository: MealRepository,
     private val context: CoroutineContext): ViewModel() {
 
-    val observedYears = repository.observeYears()
-        .flowOn(context)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
     private val _mealObserved: MutableStateFlow<Meal?> = MutableStateFlow(null)
     val mealObserved: StateFlow<Meal?> = _mealObserved.asStateFlow()
 
@@ -34,31 +26,6 @@ open class MealViewModel(private val repository: MealRepository,
 
     fun onAddMeal() {
         _mealObserved.value = null
-    }
-
-    private val _observedDate = MutableStateFlow<LocalDate>(LocalDate.now())
-    val observedDate = _observedDate.asStateFlow()
-
-    fun onObservedDateChanged(date: LocalDate) {
-        _observedDate.value = date
-    }
-
-    fun observeMonths(year: Int): StateFlow<List<Int>> {
-        return repository.observeMonths(year).flowOn(context)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Companion.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
-    }
-
-    fun observeDays(year: Int, month: Int): StateFlow<List<Int>> {
-        return repository.observeDays(year, month).flowOn(context)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Companion.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
     }
 
     fun observeDay(date: LocalDate): StateFlow<List<Meal>> {
