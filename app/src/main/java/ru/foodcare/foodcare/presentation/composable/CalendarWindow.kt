@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.weight.Weight
+import ru.foodcare.foodcare.presentation.composable.meal.MealCard
+import ru.foodcare.foodcare.presentation.composable.weight.WeightCard
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel

@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +22,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.presentation.composable.HorizontalDivider
+import ru.foodcare.foodcare.presentation.composable.InfiniteLoading
+import ru.foodcare.foodcare.presentation.composable.SearchField
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
@@ -38,7 +41,8 @@ fun SearchProductField(productViewModel: ProductViewModel, modifier: Modifier = 
         productViewModel.onKeyChanged(newKey)
     }
 
-    SearchField(onStartSearching = onStartSearching,
+    SearchField(
+        onStartSearching = onStartSearching,
         onStopSearching = onStopSearching,
         startValue = key.value,
         onValueChange = onValueChange,
@@ -63,7 +67,8 @@ fun SearchProductFieldWithList(productViewModel: ProductViewModel, modifier: Mod
         productViewModel.onKeyChanged(newKey)
     }
 
-    SearchField(onStartSearching = onStartSearching,
+    SearchField(
+        onStartSearching = onStartSearching,
         onStopSearching = onStopSearching,
         startValue = key.value,
         onValueChange = onValueChange,

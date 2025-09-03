@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.weight
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.weight.Weight
+import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
+import ru.foodcare.foodcare.presentation.composable.IconWithAction
 import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
 
 @Composable
@@ -28,9 +30,11 @@ fun WeightCardContent(weight: Weight, modifier: Modifier = Modifier,
     Row(modifier, horizontalArrangement = Arrangement.SpaceBetween) {
         WeightCardContentInfo(weight)
         Column (Modifier.wrapContentSize()) {
-            IconWithAction(delete, Modifier
-                .size(50.dp)
-                .clip(CircleShape))
+            IconWithAction(
+                delete, Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+            )
             Text("%02d:%02d".format(weight.date.hour, weight.date.minute))
         }
     }

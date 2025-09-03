@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +27,11 @@ import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.presentation.input.InputProduct
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
+import ru.foodcare.foodcare.presentation.composable.CardSurface
+import ru.foodcare.foodcare.presentation.composable.CheckCircle
+import ru.foodcare.foodcare.presentation.composable.SaveButton
+import ru.foodcare.foodcare.presentation.composable.itemWithUnderLine
+import ru.foodcare.foodcare.presentation.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
@@ -76,13 +81,14 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
                 caloriesNum, proteinNum, fatNum, carbohydratesNum,
                 fiberNum)
 
-            SaveButton(oldProduct == null, inputProduct, close,
-                add = {viewModel.addProduct(inputProduct.toProduct())},
+            SaveButton(
+                oldProduct == null, inputProduct, close,
+                add = { viewModel.addProduct(inputProduct.toProduct()) },
                 update = {
-                    oldProduct?.let{viewModel.updateProduct(inputProduct.toProduct(), it)}
+                    oldProduct?.let { viewModel.updateProduct(inputProduct.toProduct(), it) }
                 }) {
-                    WrongInputProductPreview(inputProduct)
-                }
+                WrongInputProductPreview(inputProduct)
+            }
         }
     }
 }

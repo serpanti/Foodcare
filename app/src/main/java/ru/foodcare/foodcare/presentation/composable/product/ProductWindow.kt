@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +34,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
+import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
+import ru.foodcare.foodcare.presentation.composable.CardSurface
+import ru.foodcare.foodcare.presentation.composable.EditMenu
+import ru.foodcare.foodcare.presentation.composable.FloatingAddButton
+import ru.foodcare.foodcare.presentation.composable.HorizontalDivider
+import ru.foodcare.foodcare.presentation.composable.SwipeToStartButton
+import ru.foodcare.foodcare.presentation.composable.VerticalDivider
+import ru.foodcare.foodcare.presentation.composable.toStringWithLanguage
+import ru.foodcare.foodcare.presentation.composable.withLayoutDirection
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 
 @Composable
@@ -60,9 +69,11 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
         SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
 
         val offset = (-10).dp
-        FloatingAddButton(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset)) {
+        FloatingAddButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(offset.withLayoutDirection(), offset)
+        ) {
             viewModel.onAddProduct()
             openEditor()
         }
@@ -100,22 +111,26 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
 
         val width = remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
-        Box(Modifier
+        Box(
+            Modifier
             .fillMaxWidth()
             .onGloballyPositioned { coordinates ->
                 width.value = with(density) { coordinates.size.width.toDp() }
-            }, contentAlignment = Alignment.TopEnd) {
-            val visibleState = remember {mutableStateOf(false)}
+            }, contentAlignment = Alignment.TopEnd
+        ) {
+            val visibleState = remember { mutableStateOf(false) }
             var showAlert by remember { mutableStateOf(false) }
             if (showAlert) {
-                AlertDeleteProductDialog({showAlert = false}, product) {
+                AlertDeleteProductDialog({ showAlert = false }, product) {
                     viewModel.removeProduct(product)
                 }
             }
 
-            EditMenu(visibleState, openEditor, {showAlert = true},
-                offset = DpOffset(width.value.withLayoutDirection(), 0.dp))
-            IconButton({visibleState.value = true}) {
+            EditMenu(
+                visibleState, openEditor, { showAlert = true },
+                offset = DpOffset(width.value.withLayoutDirection(), 0.dp)
+            )
+            IconButton({ visibleState.value = true }) {
                 Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
             }
         }
@@ -177,7 +192,11 @@ fun Nutrient(description: String, value: Double, type: String) {
 }
 
 @Composable
-fun NutrientsHorizontalDivider() {HorizontalDivider(2.dp, Color.Gray)}
+fun NutrientsHorizontalDivider() {
+    HorizontalDivider(2.dp, Color.Gray)
+}
 
 @Composable
-fun NutrientsVerticalDivider() {VerticalDivider(2.dp, Color.Gray)}
+fun NutrientsVerticalDivider() {
+    VerticalDivider(2.dp, Color.Gray)
+}

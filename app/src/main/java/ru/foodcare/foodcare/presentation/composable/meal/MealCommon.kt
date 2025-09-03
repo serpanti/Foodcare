@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.meal
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
+import ru.foodcare.foodcare.presentation.composable.DayContentCard
+import ru.foodcare.foodcare.presentation.composable.ElementWithHeader
+import ru.foodcare.foodcare.presentation.composable.FloatingAddButton
+import ru.foodcare.foodcare.presentation.composable.Header
+import ru.foodcare.foodcare.presentation.composable.IconWithAction
+import ru.foodcare.foodcare.presentation.composable.toStringWithLanguage
+import ru.foodcare.foodcare.presentation.composable.withLayoutDirection
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import java.time.LocalDate
 
@@ -44,9 +51,10 @@ fun DayMealWindowByDate(mealViewModel: MealViewModel,
             Meals(observedDay, mealViewModel, openMealEditor)
         }
         val offset = (-10).dp
-        FloatingAddButton(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset),
+        FloatingAddButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(offset.withLayoutDirection(), offset),
             openEditor = {
                 mealViewModel.onAddMeal()
                 openMealEditor()
@@ -99,8 +107,10 @@ fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
     Row(modifier, horizontalArrangement = Arrangement.SpaceBetween) {
         MealCardContentInfo(meal)
         Column (Modifier.wrapContentSize()) {
-            IconWithAction(delete, Modifier
-                .size(50.dp).clip(CircleShape))
+            IconWithAction(
+                delete, Modifier
+                    .size(50.dp).clip(CircleShape)
+            )
             Text("%02d:%02d".format(meal.hours, meal.minutes))
         }
     }

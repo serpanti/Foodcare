@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.weight
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.weight.Weight
+import ru.foodcare.foodcare.presentation.composable.CardSurface
+import ru.foodcare.foodcare.presentation.composable.SaveButton
+import ru.foodcare.foodcare.presentation.composable.SimpleTextField
+import ru.foodcare.foodcare.presentation.composable.meal.TimeEdit
+import ru.foodcare.foodcare.presentation.composable.itemWithUnderLine
+import ru.foodcare.foodcare.presentation.composable.parseToDoubleOrNull
+import ru.foodcare.foodcare.presentation.composable.parseToIntOrNull
 import ru.foodcare.foodcare.presentation.input.InputWeight
 import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
 import java.time.LocalDateTime
@@ -49,7 +56,7 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
 
     LazyColumn {
         itemWithUnderLine {WeightEdit(weightValue)}
-        itemWithUnderLine {TimeEdit(year, month, day, hours, minutes, seconds)}
+        itemWithUnderLine { TimeEdit(year, month, day, hours, minutes, seconds) }
         item {
             val weightValueNum = weightValue.value.parseToDoubleOrNull()
             val yearNum = year.value.parseToIntOrNull()
@@ -61,9 +68,10 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
             val inputWeight = InputWeight(id, weightValueNum,
                 yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
 
-            SaveButton(oldWeight == null, inputWeight, close,
-                {viewModel.add(inputWeight.toWeight())},
-                {viewModel.update(inputWeight.toWeight())}) {
+            SaveButton(
+                oldWeight == null, inputWeight, close,
+                { viewModel.add(inputWeight.toWeight()) },
+                { viewModel.update(inputWeight.toWeight()) }) {
                 WrongInputWeightPreview(inputWeight)
             }
         }

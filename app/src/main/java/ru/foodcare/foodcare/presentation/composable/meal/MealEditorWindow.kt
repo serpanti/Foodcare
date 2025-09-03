@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.presentation.composable
+package ru.foodcare.foodcare.presentation.composable.meal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +27,15 @@ import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
+import ru.foodcare.foodcare.presentation.composable.CardSurface
+import ru.foodcare.foodcare.presentation.composable.CustomButton
+import ru.foodcare.foodcare.presentation.composable.product.DropdownProducts
+import ru.foodcare.foodcare.presentation.composable.SaveButton
+import ru.foodcare.foodcare.presentation.composable.product.SearchProductFieldWithList
+import ru.foodcare.foodcare.presentation.composable.SimpleTextField
+import ru.foodcare.foodcare.presentation.composable.itemWithUnderLine
+import ru.foodcare.foodcare.presentation.composable.parseToIntOrNull
+import ru.foodcare.foodcare.presentation.composable.toStringWithLanguage
 import ru.foodcare.foodcare.presentation.input.InputMeal
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
@@ -76,9 +85,10 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
             val inputMeal = InputMeal(id, product.value, productCountNum,
                 yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
 
-            SaveButton(oldMeal == null, inputMeal, close,
-                {viewModel.addMeal(inputMeal.toMeal())},
-                {viewModel.updateMeal(inputMeal.toMeal())}) {
+            SaveButton(
+                oldMeal == null, inputMeal, close,
+                { viewModel.addMeal(inputMeal.toMeal()) },
+                { viewModel.updateMeal(inputMeal.toMeal()) }) {
                 WrongInputMealPreview(inputMeal)
             }
         }
@@ -108,9 +118,11 @@ fun ProductEdit(
 
             SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
             { visible, close, products ->
-                DropdownProducts(visible, close, products,
+                DropdownProducts(
+                    visible, close, products,
                     Modifier.width(width).heightIn(0.dp, 200.dp),
-                    offset = IntOffset(0, height)) { newProduct ->
+                    offset = IntOffset(0, height)
+                ) { newProduct ->
                     product.value = newProduct
                 }
             }

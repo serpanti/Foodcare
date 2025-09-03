@@ -26,6 +26,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.presentation.composable.meal.MealEditWindow
+import ru.foodcare.foodcare.presentation.composable.product.ProductEditWindow
+import ru.foodcare.foodcare.presentation.composable.product.ProductsWindow
+import ru.foodcare.foodcare.presentation.composable.product.SearchProductField
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
@@ -156,10 +160,10 @@ fun FoodcareNavHost(
             }
         }
         composable(Route.ProductEditor.route) {
-            ProductEditWindow(productViewModel) {navController.popBackStack()}
+            ProductEditWindow(productViewModel) { navController.popBackStack() }
         }
         composable(Route.MealEditor.route) {
-            MealEditWindow(mealViewModel, productViewModel) {navController.popBackStack()}
+            MealEditWindow(mealViewModel, productViewModel) { navController.popBackStack() }
         }
     }
 }

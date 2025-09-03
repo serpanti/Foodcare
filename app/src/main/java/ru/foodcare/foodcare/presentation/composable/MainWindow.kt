@@ -1,6 +1,7 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.runtime.Composable
+import ru.foodcare.foodcare.presentation.composable.meal.DayMealWindowByDate
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import java.time.LocalDate
 
