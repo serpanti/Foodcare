@@ -126,7 +126,7 @@ fun Content(
             })
     }) {
         FoodcareNavHost(navController,
-            productViewModel, mealViewModel, dateVM,
+            productViewModel, mealViewModel, dateVM, weightVM,
             Modifier.padding(it))
     }
 }
@@ -136,16 +136,17 @@ fun FoodcareNavHost(
     navController: NavHostController, productViewModel: ProductViewModel,
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
+    weightVM: WeightViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {
-            MainWindow(mealViewModel) {
+            MainWindow(mealViewModel, ) {
                 navController.navigate(Route.MealEditor.route)
             }
         }
         composable(Route.Calendar.route) {
-            CalendarWindow(mealViewModel, dateVM) {
+            CalendarWindow(mealViewModel, dateVM, weightVM) {
                 navController.navigate(Route.MealEditor.route)
             }
         }
