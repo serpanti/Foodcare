@@ -52,6 +52,7 @@ fun CalendarWindow(
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
     weightVM: WeightViewModel,
+    openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
     val formatType = rememberSaveable(stateSaver = CalendarShowTypeSaver) {
@@ -65,7 +66,8 @@ fun CalendarWindow(
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM, openMealEditor)}
+            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM,
+                openWeightEditor, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
             CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
             CalendarShowType.Years -> {YearsWindow(formatType, dateVM)}
@@ -78,13 +80,14 @@ fun DayWindow(
     dateVM: DateViewModel,
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
+    openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
     val date by dateVM.observedDate.collectAsState()
 
     InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
         decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
-        DayWindowByDate(mealViewModel, weightVM, date, openMealEditor)
+        DayWindowByDate(mealViewModel, weightVM, date, openWeightEditor, openMealEditor)
     }
 }
 
@@ -93,6 +96,7 @@ fun DayWindowByDate(
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
     date: LocalDate,
+    openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
     val observedMeals = mealViewModel.observeDay(date).collectAsState()
@@ -101,7 +105,8 @@ fun DayWindowByDate(
         ElementWithHeader({
             Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year))
         }) {
-            DayCards(observedMeals, observedWeights, mealViewModel, weightVM, openMealEditor)
+            DayCards(observedMeals, observedWeights, mealViewModel, weightVM,
+                openWeightEditor, openMealEditor)
         }
         val offset = (-10).dp
         FloatingAddButton(modifier = Modifier
@@ -121,6 +126,7 @@ fun DayCards(
     weights: State<List<Weight>>,
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
+    openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
     val listState = rememberLazyListState()
@@ -145,7 +151,7 @@ fun DayCards(
                     is Meal ->
                         MealCard(cardContent, mealViewModel, openMealEditor = openMealEditor)
                     is Weight ->
-                        WeightCard(cardContent, weightVM, openWeightEditor = {})  // TODO openEditor
+                        WeightCard(cardContent, weightVM, openWeightEditor = openWeightEditor)
                 }
             }
         }
