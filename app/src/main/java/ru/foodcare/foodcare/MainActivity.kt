@@ -12,12 +12,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
 import ru.foodcare.foodcare.data.database.FoodcareDBProvider
+import ru.foodcare.foodcare.data.date.DateRepositoryImpl
 import ru.foodcare.foodcare.data.meal.MealRepositoryImpl
 import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.presentation.composable.Content
 import ru.foodcare.foodcare.presentation.composable.NavigationPanel
 import ru.foodcare.foodcare.presentation.mock.MockMealViewModel
 import ru.foodcare.foodcare.presentation.mock.MockProductViewModel
+import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
+import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModelFactory
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModelFactory
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
@@ -28,17 +31,24 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var productVM: ProductViewModel
     private lateinit var mealVM: MealViewModel
+    private lateinit var dateVM: DateViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val db = FoodcareDBProvider.getInstance(applicationContext)
+
         val productRepository = ProductRepositoryImpl(db.productDAO())
         val mealRepository = MealRepositoryImpl(db.mealDAO(), db.productDAO(), db.dateDAO())
+        val dateRepository = DateRepositoryImpl(db.dateDAO())
+
         val productFactory = ProductViewModelFactory(productRepository, Dispatchers.IO)
         val mealFactory = MealViewModelFactory(mealRepository, Dispatchers.IO)
+        val dateFactory = DateViewModelFactory(dateRepository, Dispatchers.IO)
+
         productVM = ViewModelProvider(this, productFactory)[ProductViewModel::class.java]
         mealVM = ViewModelProvider(this, mealFactory)[MealViewModel::class.java]
+        dateVM = ViewModelProvider(this, dateFactory)[DateViewModel::class.java]
 
         setContent {
             FoodcareTheme {
