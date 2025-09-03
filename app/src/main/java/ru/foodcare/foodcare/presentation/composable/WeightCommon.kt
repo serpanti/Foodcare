@@ -50,7 +50,7 @@ fun WeightCard(weight: Weight, weightVM: WeightViewModel,
         .fillMaxSize()
         .padding(10.dp)
         .clickable {
-            // TODO weightVM.onUpdateWeight(weight)
+            weightVM.onUpdateWeight(weight)
             openWeightEditor()
         }) {
         showAlert = true
