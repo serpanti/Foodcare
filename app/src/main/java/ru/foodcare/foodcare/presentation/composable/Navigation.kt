@@ -30,6 +30,7 @@ import ru.foodcare.foodcare.presentation.composable.meal.MealEditWindow
 import ru.foodcare.foodcare.presentation.composable.product.ProductEditWindow
 import ru.foodcare.foodcare.presentation.composable.product.ProductsWindow
 import ru.foodcare.foodcare.presentation.composable.product.SearchProductField
+import ru.foodcare.foodcare.presentation.composable.weight.WeightEditWindow
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
@@ -41,6 +42,7 @@ sealed class Route(val route: String) {
     object Products: Route("products")
     object ProductEditor: Route("productEditor")
     object MealEditor: Route("mealEditor")
+    object WeightEditor: Route("weightEditor")
 }
 
 @Composable
@@ -107,13 +109,18 @@ fun Content(
     val mealEditorIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.MealEditor.route
     }}
+    val weightEditorIsOpened = remember {derivedStateOf {
+        currentBackStackEntry.value?.destination?.route == Route.WeightEditor.route
+    }}
 
     Scaffold(topBar = {
         TopAppBar({
             if (onMainWindow.value) Text("Foodcare")
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
-            if (productEditorIsOpened.value || mealEditorIsOpened.value) {
+            if (productEditorIsOpened.value ||
+                mealEditorIsOpened.value ||
+                weightEditorIsOpened.value) {
                 IconButton({navController.popBackStack()}) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
                 }
@@ -150,9 +157,15 @@ fun FoodcareNavHost(
             }
         }
         composable(Route.Calendar.route) {
-            CalendarWindow(mealViewModel, dateVM, weightVM) {
-                navController.navigate(Route.MealEditor.route)
-            }
+            CalendarWindow(
+                mealViewModel, dateVM, weightVM,
+                openMealEditor = {
+                    navController.navigate(Route.MealEditor.route)
+                },
+                openWeightEditor = {
+                    navController.navigate(Route.WeightEditor.route)
+                }
+            )
         }
         composable(Route.Products.route) {
             ProductsWindow(productViewModel) {
@@ -164,6 +177,9 @@ fun FoodcareNavHost(
         }
         composable(Route.MealEditor.route) {
             MealEditWindow(mealViewModel, productViewModel) { navController.popBackStack() }
+        }
+        composable(Route.WeightEditor.route) {
+            WeightEditWindow(weightVM) { navController.popBackStack() }
         }
     }
 }
