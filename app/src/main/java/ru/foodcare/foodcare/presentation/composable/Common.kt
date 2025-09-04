@@ -2,6 +2,12 @@ package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -33,7 +39,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -47,7 +53,6 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -67,6 +72,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -78,6 +84,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.presentation.input.Input
@@ -119,11 +126,78 @@ fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) 
 
 @Composable
 fun FloatingAddButton(modifier: Modifier = Modifier, openEditor: () -> Unit = {}) {
-    FloatingActionButton(openEditor,
-        shape = CircleShape,
-        modifier = modifier,
-        containerColor = Color.LightGray) {
-        Icon(Icons.Filled.AddCircle, "открыть меню добавления")
+    FloatingActionButton(modifier, openEditor)
+}
+
+@Composable
+fun FloatingAddListButton(modifier: Modifier = Modifier,
+                          editList: List<(@Composable () -> Unit)> = emptyList()) {
+    var isOpened by remember { mutableStateOf(false) }
+
+    FloatingActionButton(modifier,
+        action = {isOpened = !isOpened},
+        contentDescription = "Открыть меню добавления",
+        rotateAngle = 45f,
+        editList = editList,
+        listIsOpened = isOpened
+    )
+}
+
+@Composable
+fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
+                         rotateAngle: Float = 0f, contentDescription: String? = null,
+                                 editList: List<(@Composable () -> Unit)> = emptyList(),
+                                 listIsOpened: Boolean = false) {
+    val transition = updateTransition(targetState = listIsOpened)
+
+    val rotate by transition.animateFloat (
+        transitionSpec = {
+            tween(
+                durationMillis = 600,
+                easing = LinearOutSlowInEasing
+            )
+        }
+    ) { state ->
+        if (state) rotateAngle else 0f
+    }
+
+    Column (modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween) {
+        editList.forEachIndexed { idx, editBlock ->
+            val targetOffset = (70 + 30 * (editList.lastIndex - idx))
+
+            val offset by transition.animateDp(
+                transitionSpec = {
+                    tween(600, easing = FastOutSlowInEasing)
+                }
+            ) { state ->
+                if (state) 0.dp else targetOffset.dp
+            }
+
+            Box(modifier = Modifier.offset(y = offset)) {
+                editBlock()
+            }
+        }
+
+        val shape = CircleShape
+
+        Box(modifier = Modifier
+            .size(57.dp)
+            .clip(shape)
+            .shadow(10.dp,
+                shape = shape,
+                clip = false)
+            .background(Color.LightGray)
+            .zIndex(1f)
+            .rotate(rotate)
+            .clickable(onClick = action)
+            .padding(2.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Filled.Add, contentDescription,
+                modifier = Modifier.fillMaxSize())
+        }
     }
 }
 
