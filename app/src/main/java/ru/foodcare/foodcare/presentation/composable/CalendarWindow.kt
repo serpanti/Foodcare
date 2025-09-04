@@ -18,6 +18,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Balance
+import androidx.compose.material.icons.filled.RestaurantMenu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -109,13 +114,26 @@ fun DayWindowByDate(
                 openWeightEditor, openMealEditor)
         }
         val offset = (-10).dp
-        FloatingAddButton(modifier = Modifier
+        FloatingAddListButton(modifier = Modifier
             .align(Alignment.BottomEnd)
             .offset(offset.withLayoutDirection(), offset),
-            openEditor = {
-                mealViewModel.onAddMeal()
-                openMealEditor()
-            }
+            listOf<@Composable () -> Unit> (
+                {
+                    IconButton(onClick = {
+                        mealViewModel.onAddMeal()
+                        openMealEditor()
+                    }) {
+                        Icon(Icons.Filled.RestaurantMenu, "Открыть редактор приема пищи")
+                    }
+                }, {
+                    IconButton(onClick = {
+                        weightVM.onAddWeight()
+                        openWeightEditor()
+                    }) {
+                        Icon(Icons.Filled.Balance, "Открыть редактор веса")
+                    }
+                }
+            )
         )
     }
 }
