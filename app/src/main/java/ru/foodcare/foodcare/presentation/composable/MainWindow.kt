@@ -1,14 +1,16 @@
 package ru.foodcare.foodcare.presentation.composable
 
 import androidx.compose.runtime.Composable
-import ru.foodcare.foodcare.presentation.composable.meal.DayMealWindowByDate
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
+import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
 import java.time.LocalDate
 
 @Composable
 fun MainWindow(
     mealViewModel: MealViewModel,
-    openMealEditor: () -> Unit
+    weightVM: WeightViewModel,
+    openMealEditor: () -> Unit,
+    openWeightEditor: () -> Unit
 ) {
-    DayMealWindowByDate(mealViewModel, LocalDate.now(), openMealEditor)
+    DayWindowByDate(mealViewModel, weightVM, LocalDate.now(), openWeightEditor, openMealEditor)
 }

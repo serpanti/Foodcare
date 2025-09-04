@@ -152,9 +152,14 @@ fun FoodcareNavHost(
 ) {
     NavHost(navController, Route.Main.route, modifier) {
         composable(Route.Main.route) {
-            MainWindow(mealViewModel, ) {
-                navController.navigate(Route.MealEditor.route)
-            }
+            MainWindow(mealViewModel, weightVM,
+                openMealEditor = {
+                    navController.navigate(Route.MealEditor.route)
+                },
+                openWeightEditor = {
+                    navController.navigate(Route.WeightEditor.route)
+                }
+            )
         }
         composable(Route.Calendar.route) {
             CalendarWindow(
