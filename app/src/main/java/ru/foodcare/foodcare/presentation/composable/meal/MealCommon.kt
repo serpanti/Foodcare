@@ -54,7 +54,7 @@ fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
                 delete, Modifier
                     .size(50.dp).clip(CircleShape)
             )
-            Text("%02d:%02d".format(meal.hours, meal.minutes))
+            Text("%02d:%02d".format(meal.date.hour, meal.date.minute))
         }
     }
 }
@@ -66,7 +66,7 @@ fun MealCardContentInfoWithTime(meal: Meal, modifier: Modifier = Modifier,
         MealCardContentInfo(meal)
         Column (Modifier.wrapContentSize().align(Alignment.Bottom)) {
             other()
-            Text("%02d:%02d".format(meal.hours, meal.minutes))
+            Text("%02d:%02d".format(meal.date.hour, meal.date.minute))
         }
     }
 }

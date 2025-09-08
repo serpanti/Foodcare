@@ -67,9 +67,9 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
     val year = remember { mutableStateOf(oldMeal?.date?.year?.toString() ?: "") }
     val month = remember { mutableStateOf(oldMeal?.date?.monthValue?.toString() ?: "") }
     val day = remember { mutableStateOf(oldMeal?.date?.dayOfMonth?.toString() ?: "") }
-    val hours = remember { mutableStateOf(oldMeal?.hours?.toString() ?: "") }
-    val minutes = remember { mutableStateOf(oldMeal?.minutes?.toString() ?: "") }
-    val seconds = remember { mutableStateOf(oldMeal?.seconds?.toString() ?: "") }
+    val hours = remember { mutableStateOf(oldMeal?.date?.hour?.toString() ?: "") }
+    val minutes = remember { mutableStateOf(oldMeal?.date?.minute?.toString() ?: "") }
+    val seconds = remember { mutableStateOf(oldMeal?.date?.second?.toString() ?: "") }
 
     LazyColumn {
         itemWithUnderLine {ProductEdit(product, productCount, productViewModel)}
