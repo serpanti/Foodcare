@@ -8,10 +8,8 @@ object MealMapper {
     fun toDomain(entity: MealWithProductAndDate) = MealDomain(
         id = entity.meal.id,
         product = ProductMapper.toDomain(entity.product),
-        date = DateMapper.toDomain(entity.date),
-        hours = entity.meal.hours,
-        minutes = entity.meal.minutes,
-        seconds = entity.meal.seconds,
+        date = DateMapper.toDomain(entity.date,
+            entity.meal.hours, entity.meal.minutes, entity.meal.seconds),
         productRatio = entity.meal.productRatio
     )
 
@@ -19,9 +17,9 @@ object MealMapper {
         id = domain.id,
         productId = productId,
         dateId = dateId,
-        hours = domain.hours,
-        minutes = domain.minutes,
-        seconds = domain.seconds,
+        hours = domain.date.hour,
+        minutes = domain.date.minute,
+        seconds = domain.date.second,
         productRatio = domain.productRatio
     )
 }

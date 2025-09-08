@@ -9,10 +9,10 @@ object WeightMeasurementMapper {
             Weight(
                 id = weightMeasurement.id,
                 value = weightMeasurement.weight,
-                date = DateMapper.toDomain(dateWithWeightMeasurements.date)
-                    .atTime(weightMeasurement.hours,
-                        weightMeasurement.minutes,
-                        weightMeasurement.seconds)
+                date = DateMapper.toDomain(dateWithWeightMeasurements.date,
+                    weightMeasurement.hours,
+                    weightMeasurement.minutes,
+                    weightMeasurement.seconds)
             )
         }
     }
