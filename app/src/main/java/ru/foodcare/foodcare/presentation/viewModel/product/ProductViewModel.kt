@@ -46,7 +46,8 @@ open class ProductViewModel(private val repository: ProductRepository,
         viewModelScope.launch(context) {
             @OptIn(FlowPreview::class)
             key.debounce(300)
-                .distinctUntilChanged()
+//                раскомментировать, если key перестанет быть stateFlow
+//                .distinctUntilChanged()
                 .collect { query ->
                     _productsByQuery.value =
                         (repository.getProductByName(query) +
