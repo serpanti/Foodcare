@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -45,6 +46,8 @@ import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.presentation.composable.meal.MealCard
 import ru.foodcare.foodcare.presentation.composable.weight.WeightCard
+import ru.foodcare.foodcare.presentation.model.MealItem
+import ru.foodcare.foodcare.presentation.model.WeightItem
 import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
@@ -150,7 +153,8 @@ fun DayCards(
     val listState = rememberLazyListState()
     val dayList by remember {
         derivedStateOf {
-            meals.value + weights.value
+            (meals.value.map{MealItem(it)} + weights.value.map{WeightItem(it)})
+                .sortedBy { it.date }
         }
     }
 
@@ -162,14 +166,13 @@ fun DayCards(
 
     LazyColumn (state = listState,
         contentPadding = PaddingValues(bottom = 600.dp)) {
-        items(dayList.size) { idx ->
+        items(dayList) { cardContent ->
             DayContentCard {
-                val cardContent = dayList[idx]
                 when (cardContent) {
-                    is Meal ->
-                        MealCard(cardContent, mealViewModel, openMealEditor = openMealEditor)
-                    is Weight ->
-                        WeightCard(cardContent, weightVM, openWeightEditor = openWeightEditor)
+                    is MealItem -> MealCard(cardContent.meal,
+                            mealViewModel, openMealEditor = openMealEditor)
+                    is WeightItem -> WeightCard(cardContent.weight,
+                            weightVM, openWeightEditor = openWeightEditor)
                 }
             }
         }
