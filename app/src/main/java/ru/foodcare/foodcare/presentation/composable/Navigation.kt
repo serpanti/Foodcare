@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -100,27 +101,27 @@ fun Content(
     val onMainWindow = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.Main.route
     }}
-    val productEditorIsOpened = remember {derivedStateOf {
-        currentBackStackEntry.value?.destination?.route == Route.ProductEditor.route
-    }}
     val productIsOpened = remember {derivedStateOf {
         currentBackStackEntry.value?.destination?.route == Route.Products.route
     }}
-    val mealEditorIsOpened = remember {derivedStateOf {
-        currentBackStackEntry.value?.destination?.route == Route.MealEditor.route
-    }}
-    val weightEditorIsOpened = remember {derivedStateOf {
-        currentBackStackEntry.value?.destination?.route == Route.WeightEditor.route
-    }}
+
+    val arrowBackIsNeeded by remember {
+        derivedStateOf {
+            when (currentBackStackEntry.value?.destination?.route) {
+                Route.WeightEditor.route -> true
+                Route.MealEditor.route -> true
+                Route.ProductEditor.route -> true
+                else -> false
+            }
+        }
+    }
 
     Scaffold(topBar = {
         TopAppBar({
             if (onMainWindow.value) Text("Foodcare")
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
-            if (productEditorIsOpened.value ||
-                mealEditorIsOpened.value ||
-                weightEditorIsOpened.value) {
+            if (arrowBackIsNeeded) {
                 IconButton({navController.popBackStack()}) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
                 }
