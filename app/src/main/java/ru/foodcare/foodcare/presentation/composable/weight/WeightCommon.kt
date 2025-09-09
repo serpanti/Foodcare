@@ -83,6 +83,6 @@ fun WeightCardContentInfoWithTime(weight: Weight, modifier: Modifier = Modifier,
 @Composable
 fun WeightCardContentInfo(weight: Weight, modifier: Modifier = Modifier) {
     // TODO resources
-    Text("Имя: ${ weight.value } кг",
+    Text("Вес: ${ weight.value } кг",
         modifier = modifier)
 }
