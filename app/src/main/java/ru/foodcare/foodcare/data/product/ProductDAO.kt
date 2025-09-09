@@ -28,9 +28,9 @@ interface ProductDAO {
     @Query("SELECT * FROM products WHERE name = :name AND production = :production")
     suspend fun getProduct(name: String, production: String): List<Product>
 
-    @Query("SELECT * FROM products WHERE name LIKE :name || '%' COLLATE NOCASE")
+    @Query("SELECT * FROM products WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     suspend fun getProductByName(name: String): List<Product>
 
-    @Query("SELECT * FROM products WHERE production LIKE :production || '%' COLLATE NOCASE")
+    @Query("SELECT * FROM products WHERE production LIKE '%' || :production || '%' COLLATE NOCASE")
     suspend fun getProductByProduction(production: String): List<Product>
 }
