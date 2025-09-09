@@ -142,7 +142,7 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
     }, modifier = modifier.padding(10.dp), placeholder = {
         Text("Введите кол-во полностью")
     }, prefix = {
-        Text("Год: ")
+        Text("Кол-во: ")
     }, suffix = {
         Text(type.toStringWithLanguage())
     })
