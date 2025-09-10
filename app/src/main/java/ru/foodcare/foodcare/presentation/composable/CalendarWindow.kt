@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +61,7 @@ fun CalendarWindow(
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
     weightVM: WeightViewModel,
+    snackbarHostState: SnackbarHostState? = null,
     openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
@@ -74,7 +76,7 @@ fun CalendarWindow(
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
         when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM,
+            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM, snackbarHostState,
                 openWeightEditor, openMealEditor)}
             CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
             CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
@@ -88,6 +90,7 @@ fun DayWindow(
     dateVM: DateViewModel,
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
+    snackbarHostState: SnackbarHostState? = null,
     openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
@@ -95,7 +98,8 @@ fun DayWindow(
 
     InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
         decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
-        DayWindowByDate(mealViewModel, weightVM, date, openWeightEditor, openMealEditor)
+        DayWindowByDate(mealViewModel, weightVM, snackbarHostState,
+            date, openWeightEditor, openMealEditor)
     }
 }
 
@@ -103,6 +107,7 @@ fun DayWindow(
 fun DayWindowByDate(
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
+    snackbarHostState: SnackbarHostState? = null,
     date: LocalDate,
     openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
@@ -113,7 +118,7 @@ fun DayWindowByDate(
         ElementWithHeader({
             Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year))
         }) {
-            DayCards(observedMeals, observedWeights, mealViewModel, weightVM,
+            DayCards(observedMeals, observedWeights, mealViewModel, weightVM, snackbarHostState,
                 openWeightEditor, openMealEditor)
         }
         val offset = (-10).dp
@@ -147,6 +152,7 @@ fun DayCards(
     weights: State<List<Weight>>,
     mealViewModel: MealViewModel,
     weightVM: WeightViewModel,
+    snackbarHostState: SnackbarHostState? = null,
     openWeightEditor: () -> Unit,
     openMealEditor: () -> Unit
 ) {
@@ -170,9 +176,11 @@ fun DayCards(
             DayContentCard {
                 when (cardContent) {
                     is MealItem -> MealCard(cardContent.meal,
-                            mealViewModel, openMealEditor = openMealEditor)
+                            mealViewModel, snackbarHostState = snackbarHostState,
+                        openMealEditor = openMealEditor)
                     is WeightItem -> WeightCard(cardContent.weight,
-                            weightVM, openWeightEditor = openWeightEditor)
+                            weightVM, snackbarHostState = snackbarHostState,
+                        openWeightEditor = openWeightEditor)
                 }
             }
         }

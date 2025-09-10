@@ -9,16 +9,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.presentation.composable.IconWithAction
@@ -42,12 +47,29 @@ fun WeightCardContent(weight: Weight, modifier: Modifier = Modifier,
 
 @Composable
 fun WeightCard(weight: Weight, weightVM: WeightViewModel,
-               modifier: Modifier = Modifier, openWeightEditor: () -> Unit) {
+               modifier: Modifier = Modifier,
+               snackbarHostState: SnackbarHostState? = null, openWeightEditor: () -> Unit) {
     var showAlert by remember { mutableStateOf(false) }
-    if (showAlert) {
-        AlertDeleteWeightDialog({showAlert = false}, weight) {
-            weightVM.remove(weight)
+    val deleteScope = rememberCoroutineScope()
+    val removeWeightAction = {weightVM.remove(weight)}
+
+    val deleteAction: () -> Unit = {
+        if (snackbarHostState != null) {
+            deleteScope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = "Скоро произойдет удаление",
+                    actionLabel = "Отмена",
+                    duration = SnackbarDuration.Short
+                )
+                if (result == SnackbarResult.Dismissed) removeWeightAction()
+            }
+        } else {
+            removeWeightAction()
         }
+    }
+
+    if (showAlert) {
+        AlertDeleteWeightDialog({showAlert = false}, weight, delete = deleteAction)
     }
     WeightCardContent(weight, modifier
         .fillMaxSize()

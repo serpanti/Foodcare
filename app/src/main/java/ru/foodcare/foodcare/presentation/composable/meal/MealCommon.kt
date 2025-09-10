@@ -9,16 +9,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.presentation.composable.IconWithAction
@@ -27,13 +32,31 @@ import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
 
 @Composable
 fun MealCard(meal: Meal, mealViewModel: MealViewModel,
-             modifier: Modifier = Modifier, openMealEditor: () -> Unit) {
+             modifier: Modifier = Modifier,
+             snackbarHostState: SnackbarHostState? = null, openMealEditor: () -> Unit) {
     var showAlert by remember { mutableStateOf(false) }
-    if (showAlert) {
-        AlertDeleteMealDialog({showAlert = false}, meal) {
-            mealViewModel.removeMeal(meal)
+    val deleteScope = rememberCoroutineScope()
+    val removeMealAction = {mealViewModel.removeMeal(meal)}
+
+    val deleteAction: () -> Unit = {
+        if (snackbarHostState != null) {
+            deleteScope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = "Скоро произойдет удаление",
+                    actionLabel = "Отмена",
+                    duration = SnackbarDuration.Short
+                )
+                if (result == SnackbarResult.Dismissed) removeMealAction()
+            }
+        } else {
+            removeMealAction()
         }
     }
+
+    if (showAlert)  {
+        AlertDeleteMealDialog({showAlert = false}, meal, delete = deleteAction)
+    }
+
     MealCardContent(meal, modifier.fillMaxSize()
         .padding(10.dp)
         .clickable {
