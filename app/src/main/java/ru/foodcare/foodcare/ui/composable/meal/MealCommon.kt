@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.SnackbarDuration
@@ -85,9 +87,11 @@ fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
 @Composable
 fun MealCardContentInfoWithTime(meal: Meal, modifier: Modifier = Modifier,
                                 other: @Composable () -> Unit = {}) {
-    Row(modifier, horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         MealCardContentInfo(meal)
-        Column (Modifier.wrapContentSize().align(Alignment.Bottom)) {
+        Column (Modifier
+        .wrapContentHeight(Alignment.Bottom)
+        .align(Alignment.Bottom)) {
             other()
             Text("%02d:%02d".format(meal.date.hour, meal.date.minute))
         }
