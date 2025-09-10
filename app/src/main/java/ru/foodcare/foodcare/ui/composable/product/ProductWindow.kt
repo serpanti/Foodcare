@@ -180,7 +180,10 @@ fun DeleteProductContent(
 @Composable
 fun AlertDeleteProductDialog(close: () -> Unit, product: Product, delete: () -> Unit) =
     AlertDeleteDialog(close, delete) {
-        ProductCardContent(product)
+        Column {
+            Text("Название: " + product.name)
+            Text("Производитель: " + product.production)
+        }
     }
 
 @Composable
