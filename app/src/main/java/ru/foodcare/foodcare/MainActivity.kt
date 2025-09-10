@@ -14,16 +14,16 @@ import ru.foodcare.foodcare.data.date.DateRepositoryImpl
 import ru.foodcare.foodcare.data.meal.MealRepositoryImpl
 import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
 import ru.foodcare.foodcare.data.weightMeasurement.WeightRepositoryImpl
-import ru.foodcare.foodcare.presentation.composable.Content
-import ru.foodcare.foodcare.presentation.composable.NavigationPanel
-import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModel
-import ru.foodcare.foodcare.presentation.viewModel.date.DateViewModelFactory
-import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModel
-import ru.foodcare.foodcare.presentation.viewModel.meal.MealViewModelFactory
-import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
-import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModelFactory
-import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModel
-import ru.foodcare.foodcare.presentation.viewModel.weight.WeightViewModelFactory
+import ru.foodcare.foodcare.ui.composable.Content
+import ru.foodcare.foodcare.ui.composable.NavigationPanel
+import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
+import ru.foodcare.foodcare.ui.viewModel.date.DateViewModelFactory
+import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
+import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModelFactory
+import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
+import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModelFactory
+import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
+import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModelFactory
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
 
 class MainActivity : ComponentActivity() {
