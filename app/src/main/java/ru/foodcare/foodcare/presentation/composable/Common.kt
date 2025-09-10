@@ -55,6 +55,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -516,5 +518,21 @@ fun InfinitePager(modifier: Modifier = Modifier,
 
     HorizontalPager(pagerState, modifier = modifier) { page ->
         content(page)
+    }
+}
+@Composable
+fun CommonSnackbar(data: SnackbarData) {
+    Snackbar(action = {
+        TextButton({data.performAction()}) {
+            Text(data.visuals.actionLabel ?: "Ок")
+        }
+    }, dismissAction = {
+        if (data.visuals.withDismissAction) {
+            TextButton({data.dismiss()}) {
+                Text("Отмена")
+            }
+        }
+    }) {
+        Text(data.visuals.message)
     }
 }

@@ -19,13 +19,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +36,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.presentation.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.presentation.composable.CardSurface
@@ -48,6 +52,7 @@ import ru.foodcare.foodcare.presentation.viewModel.product.ProductViewModel
 @Composable
 fun ProductsWindow(
     viewModel: ProductViewModel,
+    snackbarHostState: SnackbarHostState? = null,
     openProductEditor: () -> Unit
 ) {
     var products = if (viewModel.key.collectAsState().value == "") {
@@ -56,15 +61,17 @@ fun ProductsWindow(
         viewModel.productsByQuery
     }.collectAsState()
 
-    Products(viewModel, products.value, openProductEditor)
+    Products(viewModel, products.value, snackbarHostState, openProductEditor)
 }
 
 @Composable
 fun Products(viewModel: ProductViewModel, products: List<Product>,
-             openEditor: () -> Unit = {}, lazyListState: LazyListState = rememberLazyListState()) {
+             snackbarHostState: SnackbarHostState? = null,
+             openEditor: () -> Unit = {},
+             lazyListState: LazyListState = rememberLazyListState()) {
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ProductsList(viewModel, products, openEditor, lazyListState)
+        ProductsList(viewModel, products, snackbarHostState, openEditor, lazyListState)
 
         SwipeToStartButton(modifier = Modifier.align(Alignment.BottomCenter), lazyListState)
 
@@ -81,8 +88,11 @@ fun Products(viewModel: ProductViewModel, products: List<Product>,
 }
 
 @Composable
-fun ProductsList(viewModel: ProductViewModel, products: List<Product>,
-                 openEditor: () -> Unit = {}, lazyListState: LazyListState) {
+fun ProductsList(
+    viewModel: ProductViewModel, products: List<Product>,
+    snackbarHostState: SnackbarHostState? = null,
+    openEditor: () -> Unit = {}, lazyListState: LazyListState
+) {
     val productsSorted = remember(products) {
         products.sortedWith (
             compareBy<Product> { it.name }
@@ -94,7 +104,7 @@ fun ProductsList(viewModel: ProductViewModel, products: List<Product>,
         contentPadding = PaddingValues(bottom = 80.dp)) {
         items(productsSorted.size) { idx ->
             ProductCard(productsSorted[idx], Modifier.padding(vertical = 5.dp,
-                horizontal = 5.dp), viewModel
+                horizontal = 5.dp), snackbarHostState, viewModel
             ) {
                 viewModel.onUpdateProduct(productsSorted[idx])
                 openEditor()
@@ -104,8 +114,12 @@ fun ProductsList(viewModel: ProductViewModel, products: List<Product>,
 }
 
 @Composable
-fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: ProductViewModel,
-                openEditor: () -> Unit = {}) {
+fun ProductCard(
+    product: Product, modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState? = null,
+    viewModel: ProductViewModel,
+    openEditor: () -> Unit = {}
+) {
     CardSurface(modifier) {
         ProductCardContent(product)
 
@@ -113,27 +127,53 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier, viewModel: Prod
         val density = LocalDensity.current
         Box(
             Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { coordinates ->
-                width.value = with(density) { coordinates.size.width.toDp() }
-            }, contentAlignment = Alignment.TopEnd
+                .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    width.value = with(density) { coordinates.size.width.toDp() }
+                }, contentAlignment = Alignment.TopEnd
         ) {
             val visibleState = remember { mutableStateOf(false) }
-            var showAlert by remember { mutableStateOf(false) }
-            if (showAlert) {
-                AlertDeleteProductDialog({ showAlert = false }, product) {
-                    viewModel.removeProduct(product)
-                }
-            }
+            var showAlert = remember { mutableStateOf(false) }
 
+            DeleteProductContent(product, snackbarHostState, viewModel, showAlert)
             EditMenu(
-                visibleState, openEditor, { showAlert = true },
+                visibleState, openEditor, { showAlert.value = true },
                 offset = DpOffset(width.value.withLayoutDirection(), 0.dp)
             )
             IconButton({ visibleState.value = true }) {
                 Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
             }
         }
+    }
+}
+
+@Composable
+fun DeleteProductContent(
+    product: Product,
+    snackbarHostState: SnackbarHostState? = null,
+    viewModel: ProductViewModel,
+    showAlert: MutableState<Boolean>
+) {
+
+    val deleteScope = rememberCoroutineScope()
+    val removeProductAction = {viewModel.removeProduct(product)}
+    val deleteAction: () -> Unit = {
+        if (snackbarHostState != null) {
+            deleteScope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = "Скоро произойдет удаление",
+                    actionLabel = "Отмена",
+                    duration = SnackbarDuration.Short
+                )
+                if (result == SnackbarResult.Dismissed) removeProductAction()
+            }
+        } else {
+            removeProductAction()
+        }
+    }
+
+    if (showAlert.value) {
+        AlertDeleteProductDialog({ showAlert.value = false }, product, delete = deleteAction)
     }
 }
 

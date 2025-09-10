@@ -13,6 +13,8 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -116,6 +118,8 @@ fun Content(
         }
     }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(topBar = {
         TopAppBar({
             if (onMainWindow.value) Text("Foodcare")
@@ -136,8 +140,12 @@ fun Content(
                     SearchProductField(productViewModel, Modifier.widthIn(50.dp, 200.dp))
                 }
             })
-    }) {
-        FoodcareNavHost(navController,
+    },
+        snackbarHost = { SnackbarHost(snackbarHostState) { data ->
+            CommonSnackbar(data)
+        } }
+    ) {
+        FoodcareNavHost(navController, snackbarHostState,
             productViewModel, mealViewModel, dateVM, weightVM,
             Modifier.padding(it))
     }
@@ -145,7 +153,8 @@ fun Content(
 
 @Composable
 fun FoodcareNavHost(
-    navController: NavHostController, productViewModel: ProductViewModel,
+    navController: NavHostController, snackbarHostState: SnackbarHostState,
+    productViewModel: ProductViewModel,
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
     weightVM: WeightViewModel,
@@ -174,7 +183,7 @@ fun FoodcareNavHost(
             )
         }
         composable(Route.Products.route) {
-            ProductsWindow(productViewModel) {
+            ProductsWindow(productViewModel, snackbarHostState) {
                 navController.navigate(Route.ProductEditor.route)
             }
         }
