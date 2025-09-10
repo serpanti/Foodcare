@@ -60,11 +60,11 @@ fun MealCard(meal: Meal, mealViewModel: MealViewModel,
     }
 
     MealCardContent(meal, modifier.fillMaxSize()
-        .padding(10.dp)
         .clickable {
             mealViewModel.onUpdateMeal(meal)
             openMealEditor()
-        }) {
+        }
+        .padding(10.dp)) {
         showAlert = true
     }
 }

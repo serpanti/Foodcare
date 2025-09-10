@@ -75,11 +75,11 @@ fun WeightCard(weight: Weight, weightVM: WeightViewModel,
     }
     WeightCardContent(weight, modifier
         .fillMaxSize()
-        .padding(10.dp)
         .clickable {
             weightVM.onUpdateWeight(weight)
             openWeightEditor()
-        }) {
+        }
+        .padding(10.dp)) {
         showAlert = true
     }
 }
