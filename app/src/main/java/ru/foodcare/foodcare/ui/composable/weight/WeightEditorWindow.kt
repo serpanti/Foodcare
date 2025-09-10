@@ -3,6 +3,7 @@ package ru.foodcare.foodcare.ui.composable.weight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -55,7 +56,8 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
     val seconds = remember { mutableStateOf(oldWeight?.date?.second?.toString() ?: "") }
 
     LazyColumn {
-        itemWithUnderLine {WeightEdit(weightValue)}
+        itemWithUnderLine {WeightEdit(weightValue,
+            modifier = Modifier.fillMaxWidth().padding(5.dp))}
         itemWithUnderLine { TimeEdit(year, month, day, hours, minutes, seconds) }
         item {
             val weightValueNum = weightValue.value.parseToDoubleOrNull()
