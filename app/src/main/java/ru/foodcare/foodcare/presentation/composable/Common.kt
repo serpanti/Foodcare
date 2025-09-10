@@ -3,9 +3,11 @@ package ru.foodcare.foodcare.presentation.composable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
@@ -57,6 +59,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -69,6 +72,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -187,9 +191,11 @@ fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
         Box(modifier = Modifier
             .size(57.dp)
             .clip(shape)
-            .shadow(10.dp,
+            .shadow(
+                10.dp,
                 shape = shape,
-                clip = false)
+                clip = false
+            )
             .background(Color.LightGray)
             .zIndex(1f)
             .rotate(rotate)
@@ -226,9 +232,10 @@ fun InfiniteLoading() {
     var indicatorSize by remember {mutableStateOf(40.dp)}
     val density = LocalDensity.current
 
-    Box(modifier = Modifier.fillMaxSize()
+    Box(modifier = Modifier
+        .fillMaxSize()
         .padding(70.dp)
-        .onGloballyPositioned {coordinates ->
+        .onGloballyPositioned { coordinates ->
             with(density) {
                 val minSize = minOf(coordinates.size.width, coordinates.size.height).toDp()
                 if (minSize != indicatorSize) indicatorSize = minSize
@@ -270,7 +277,9 @@ fun SearchField(onStartSearching: () -> Unit,
                 isOpened: () -> Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
-        modifier = modifier.offset(y = 2.dp).padding(5.dp)
+        modifier = modifier
+            .offset(y = 2.dp)
+            .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
             .border(1.dp, Color.Black, RoundedCornerShape(15.dp))
@@ -336,12 +345,13 @@ fun SquareButton(value: String, modifier: Modifier = Modifier, onClick: () -> Un
 @Composable
 fun CustomButton(value: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(5.dp)
-    Box(modifier = modifier.padding(5.dp)
+    Box(modifier = modifier
+        .padding(5.dp)
         .shadow(5.dp, shape, clip = true)
         .border(2.dp, Color.Black, shape)
         .clip(shape)
         .background(Color.White)
-        .clickable{onClick()}
+        .clickable { onClick() }
         .padding(5.dp)) {
         Text(value, modifier = Modifier.align(Alignment.Center))
     }
@@ -520,19 +530,68 @@ fun InfinitePager(modifier: Modifier = Modifier,
         content(page)
     }
 }
+
 @Composable
 fun CommonSnackbar(data: SnackbarData) {
-    Snackbar(action = {
-        TextButton({data.performAction()}) {
+    val action: (@Composable () -> Unit)? = {
+        TextButton({ data.performAction() }) {
             Text(data.visuals.actionLabel ?: "Ок")
         }
-    }, dismissAction = {
+    }
+
+    val dismissAction: (@Composable () -> Unit)? =
         if (data.visuals.withDismissAction) {
-            TextButton({data.dismiss()}) {
-                Text("Отмена")
+            { TextButton({ data.dismiss() }) { Text("Отмена") } }
+        } else null
+
+    val snackBarSize = 60.dp
+    Snackbar(modifier = Modifier.height(snackBarSize)) {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()) {
+            Text(data.visuals.message)
+            Row (verticalAlignment = Alignment.CenterVertically) {
+                action?.invoke()
+                dismissAction?.invoke()
+
+                val strokeWidth = 4.dp
+                CommonSnackbarProgressIndicator(modifier = Modifier
+                    .size(snackBarSize / 2 + strokeWidth * 2),
+                    strokeWidth = strokeWidth,
+                    durationMillis = when (data.visuals.duration) {
+                        SnackbarDuration.Long -> 16000
+                        SnackbarDuration.Short -> 4000
+                        SnackbarDuration.Indefinite -> 60_000
+                    }) {
+                    data.dismiss()
+                }
             }
         }
-    }) {
-        Text(data.visuals.message)
+    }
+}
+
+@Composable
+fun CommonSnackbarProgressIndicator(
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp = 2.dp,
+    durationMillis: Int,
+    finishedListener: ((Float) -> Unit)? = null
+) {
+    val durationMillis = durationMillis
+    var started by remember { mutableStateOf(false) }
+    val progress by animateFloatAsState(
+        targetValue = if (started) 0f else 1f,
+        animationSpec = tween(durationMillis = durationMillis, easing = LinearEasing),
+        label = "snackbarProgress",
+        finishedListener = finishedListener
+    )
+    val timeLeft by remember { derivedStateOf { (progress * durationMillis).toInt() / 1000 } }
+
+    LaunchedEffect(Unit) { started = true }
+
+    Box(contentAlignment = Alignment.Center, modifier = modifier) {
+        Text(timeLeft.toString())
+        CircularProgressIndicator(progress = { progress },
+            strokeWidth = strokeWidth, modifier = Modifier.matchParentSize())
     }
 }
