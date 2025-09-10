@@ -5,9 +5,12 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
@@ -81,6 +84,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -337,19 +341,21 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
 }
 
 @Composable
-fun SquareButton(value: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    CustomButton(value, modifier.size(40.dp), onClick)
+fun SquareButton(value: String, modifier: Modifier = Modifier,
+                 backgroundColor: Color = Color.White, onClick: () -> Unit) {
+    CustomButton(value, modifier.size(40.dp), backgroundColor, onClick = onClick)
 }
 
 @Composable
-fun CustomButton(value: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun CustomButton(value: String, modifier: Modifier = Modifier,
+                 backgroundColor: Color = Color.White, onClick: () -> Unit) {
     val shape = RoundedCornerShape(5.dp)
     Box(modifier = modifier
         .padding(5.dp)
         .shadow(5.dp, shape, clip = true)
         .border(2.dp, Color.Black, shape)
         .clip(shape)
-        .background(Color.White)
+        .background(backgroundColor)
         .clickable { onClick() }
         .padding(5.dp)) {
         Text(value, modifier = Modifier.align(Alignment.Center))
@@ -593,4 +599,24 @@ fun CommonSnackbarProgressIndicator(
         CircularProgressIndicator(progress = { progress },
             strokeWidth = strokeWidth, modifier = Modifier.matchParentSize())
     }
+}
+
+@Composable
+fun BlinkColorAsState(color1: Color = Color.White,
+                 color2: Color = Color.Cyan,
+                 durationMillis: Int = 500): MutableState<Color> {
+    val animatedColor = remember { mutableStateOf(color1) }
+    val transition = rememberInfiniteTransition(label = "blink")
+    val fraction by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "blinkFraction"
+    )
+
+    animatedColor.value = lerp(color1, color2, fraction)
+    return animatedColor
 }

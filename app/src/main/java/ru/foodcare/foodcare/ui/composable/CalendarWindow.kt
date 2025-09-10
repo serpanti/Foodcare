@@ -220,11 +220,24 @@ fun DaysTable(
     dateVM: DateViewModel
 ) {
     val date by dateVM.observedDate.collectAsState()
+    val now = LocalDate.now()
 
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(days.size) { idx ->
-            SquareButton(days[idx].toString()) {
+            val defaultColor = Color.White
+            val selectedDateColor = Color.Red
+            var staticColor = if (days[idx] == date.dayOfMonth) selectedDateColor
+            else defaultColor
+            val backgroundColor = if (days[idx] == now.dayOfMonth) {
+                BlinkColorAsState(durationMillis = 1000,
+                    color1 = staticColor,
+                    color2 = Color.Magenta).value
+            } else {
+                staticColor
+            }
+
+            SquareButton(days[idx].toString(), backgroundColor = backgroundColor) {
                 val newDate = if (days[idx] in (1 .. date.lengthOfMonth())) {
                     date.withDayOfMonth(days[idx])
                 } else {
@@ -272,11 +285,24 @@ fun MonthsTable(
     dateVM: DateViewModel
 ) {
     val date by dateVM.observedDate.collectAsState()
+    val now = LocalDate.now()
 
     LazyVerticalGrid(GridCells.Fixed(3),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(months.size) { idx ->
-            SquareButton(months[idx].toMonth()) {
+            val defaultColor = Color.White
+            val selectedDateColor = Color.Red
+            var staticColor = if (months[idx] == date.monthValue) selectedDateColor
+            else defaultColor
+            val backgroundColor = if (months[idx] == now.monthValue) {
+                BlinkColorAsState(durationMillis = 1000,
+                    color1 = staticColor,
+                    color2 = Color.Magenta).value
+            } else {
+                staticColor
+            }
+
+            SquareButton(months[idx].toMonth(), backgroundColor = backgroundColor) {
                 if (months[idx] in (1 .. date.lengthOfMonth())) {
                     val newMonthLength = YearMonth.of(date.year, months[idx]).lengthOfMonth()
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
@@ -309,11 +335,24 @@ fun YearsTable(
     dateVM: DateViewModel
 ) {
     val date by dateVM.observedDate.collectAsState()
+    val now = LocalDate.now()
 
-    LazyVerticalGrid(GridCells.Fixed(5),
+        LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.size) { idx ->
-            SquareButton(years[idx].toString()) {
+            val defaultColor = Color.White
+            val selectedDateColor = Color.Red
+            var staticColor = if (years[idx] == date.year) selectedDateColor
+            else defaultColor
+            val backgroundColor = if (years[idx] == now.year) {
+                BlinkColorAsState(durationMillis = 1000,
+                    color1 = staticColor,
+                    color2 = Color.Magenta).value
+            } else {
+                staticColor
+            }
+
+            SquareButton(years[idx].toString(), backgroundColor = backgroundColor) {
                 if (years[idx] in (Year.MIN_VALUE .. Year.MAX_VALUE)) {
                     val newMonthLength = YearMonth.of(years[idx], date.month).lengthOfMonth()
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
