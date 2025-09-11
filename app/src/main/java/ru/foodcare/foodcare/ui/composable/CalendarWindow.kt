@@ -1,5 +1,9 @@
 package ru.foodcare.foodcare.ui.composable
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -76,12 +80,20 @@ fun CalendarWindow(
         CalendarTypeSelector(formatType, Modifier
             .align(Alignment.BottomStart)
             .offset(xOffset.withLayoutDirection(), yOffset))
-        when (formatType.value) {
-            CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM, snackbarHostState,
-                openWeightEditor, openMealEditor)}
-            CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
-            CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
-            CalendarShowType.Years -> {YearsWindow(formatType, dateVM)}
+
+        AnimatedContent(targetState = formatType.value,
+            transitionSpec = {
+                fadeIn() togetherWith fadeOut()
+            },
+            label = "CalendarContent"
+            ) { state ->
+            when (state) {
+                CalendarShowType.Day -> {DayWindow(dateVM, mealViewModel, weightVM, snackbarHostState,
+                    openWeightEditor, openMealEditor)}
+                CalendarShowType.Days -> {DaysWindow(formatType, dateVM)}
+                CalendarShowType.Months -> {MonthsWindow(formatType, dateVM)}
+                CalendarShowType.Years -> {YearsWindow(formatType, dateVM)}
+            }
         }
     }
 }
