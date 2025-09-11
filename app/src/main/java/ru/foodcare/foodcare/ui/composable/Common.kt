@@ -158,7 +158,8 @@ fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
                          rotateAngle: Float = 0f, contentDescription: String? = null,
                                  editList: List<(@Composable () -> Unit)> = emptyList(),
                                  listIsOpened: Boolean = false) {
-    val transition = updateTransition(targetState = listIsOpened)
+    val transition = updateTransition(targetState = listIsOpened,
+        label = "floatingActionButtonTransition")
 
     val rotate by transition.animateFloat (
         transitionSpec = {
@@ -166,7 +167,8 @@ fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
                 durationMillis = 600,
                 easing = LinearOutSlowInEasing
             )
-        }
+        },
+        label = "floatingActionButtonRotationAnimation"
     ) { state ->
         if (state) rotateAngle else 0f
     }
@@ -180,7 +182,8 @@ fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
             val offset by transition.animateDp(
                 transitionSpec = {
                     tween(600, easing = FastOutSlowInEasing)
-                }
+                },
+                label = "floatingActionButtonEditListItem${idx}Animation"
             ) { state ->
                 if (state) 0.dp else targetOffset.dp
             }
