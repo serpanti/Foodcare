@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -52,22 +52,22 @@ fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
 
 @Composable
 fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: () -> Unit) {
-    val name = remember { mutableStateOf(oldProduct?.name ?: "") }
-    val production = remember { mutableStateOf(oldProduct?.production ?: "") }
-    val type = remember { mutableStateOf(UnitType.Piece) }
-    val calories = remember {
+    val name = rememberSaveable { mutableStateOf(oldProduct?.name ?: "") }
+    val production = rememberSaveable { mutableStateOf(oldProduct?.production ?: "") }
+    val type = rememberSaveable { mutableStateOf(UnitType.Piece) }
+    val calories = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.calories?.toString() ?: "")
     }
-    val protein = remember {
+    val protein = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.protein?.toString() ?: "")
     }
-    val fat = remember {
+    val fat = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.fat?.toString() ?: "")
     }
-    val carbohydrates = remember {
+    val carbohydrates = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.carbohydrates?.toString() ?: "")
     }
-    val fiber = remember {
+    val fiber = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.fiber?.toString() ?: "")
     }
 

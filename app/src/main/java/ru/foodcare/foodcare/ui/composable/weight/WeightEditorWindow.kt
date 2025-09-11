@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -46,14 +46,14 @@ fun WeightEditWindow(viewModel: WeightViewModel,
 
 @Composable
 fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> Unit) {
-    val id = remember { oldWeight?.id ?: 0 }
-    val weightValue = remember { mutableStateOf(oldWeight?.value?.toString() ?: "") }
-    val year = remember { mutableStateOf(oldWeight?.date?.year?.toString() ?: "") }
-    val month = remember { mutableStateOf(oldWeight?.date?.monthValue?.toString() ?: "") }
-    val day = remember { mutableStateOf(oldWeight?.date?.dayOfMonth?.toString() ?: "") }
-    val hours = remember { mutableStateOf(oldWeight?.date?.hour?.toString() ?: "") }
-    val minutes = remember { mutableStateOf(oldWeight?.date?.minute?.toString() ?: "") }
-    val seconds = remember { mutableStateOf(oldWeight?.date?.second?.toString() ?: "") }
+    val id = rememberSaveable { oldWeight?.id ?: 0 }
+    val weightValue = rememberSaveable { mutableStateOf(oldWeight?.value?.toString() ?: "") }
+    val year = rememberSaveable { mutableStateOf(oldWeight?.date?.year?.toString() ?: "") }
+    val month = rememberSaveable { mutableStateOf(oldWeight?.date?.monthValue?.toString() ?: "") }
+    val day = rememberSaveable { mutableStateOf(oldWeight?.date?.dayOfMonth?.toString() ?: "") }
+    val hours = rememberSaveable { mutableStateOf(oldWeight?.date?.hour?.toString() ?: "") }
+    val minutes = rememberSaveable { mutableStateOf(oldWeight?.date?.minute?.toString() ?: "") }
+    val seconds = rememberSaveable { mutableStateOf(oldWeight?.date?.second?.toString() ?: "") }
 
     LazyColumn {
         itemWithUnderLine {WeightEdit(weightValue,

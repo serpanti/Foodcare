@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -61,15 +62,17 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
 @Composable
 fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
                  productViewModel: ProductViewModel, close: () -> Unit) {
-    val id = remember { oldMeal?.id ?: 0 }
-    val product = remember { mutableStateOf<Product?>(oldMeal?.product) }
-    val productCount = remember { mutableStateOf(oldMeal?.product?.amount?.toString() ?: "") }
-    val year = remember { mutableStateOf(oldMeal?.date?.year?.toString() ?: "") }
-    val month = remember { mutableStateOf(oldMeal?.date?.monthValue?.toString() ?: "") }
-    val day = remember { mutableStateOf(oldMeal?.date?.dayOfMonth?.toString() ?: "") }
-    val hours = remember { mutableStateOf(oldMeal?.date?.hour?.toString() ?: "") }
-    val minutes = remember { mutableStateOf(oldMeal?.date?.minute?.toString() ?: "") }
-    val seconds = remember { mutableStateOf(oldMeal?.date?.second?.toString() ?: "") }
+    val id = rememberSaveable { oldMeal?.id ?: 0 }
+    val product = rememberSaveable { mutableStateOf<Product?>(oldMeal?.product) }
+    val productCount = rememberSaveable {
+        mutableStateOf(oldMeal?.product?.amount?.toString() ?: "")
+    }
+    val year = rememberSaveable { mutableStateOf(oldMeal?.date?.year?.toString() ?: "") }
+    val month = rememberSaveable { mutableStateOf(oldMeal?.date?.monthValue?.toString() ?: "") }
+    val day = rememberSaveable { mutableStateOf(oldMeal?.date?.dayOfMonth?.toString() ?: "") }
+    val hours = rememberSaveable { mutableStateOf(oldMeal?.date?.hour?.toString() ?: "") }
+    val minutes = rememberSaveable { mutableStateOf(oldMeal?.date?.minute?.toString() ?: "") }
+    val seconds = rememberSaveable { mutableStateOf(oldMeal?.date?.second?.toString() ?: "") }
 
     LazyColumn {
         itemWithUnderLine {ProductEdit(product, productCount, productViewModel)}
