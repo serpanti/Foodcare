@@ -1,5 +1,6 @@
 package ru.foodcare.foodcare.ui.input
 
+import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.product.Product
 
 class InputProduct(var name: String = "",
@@ -18,9 +19,10 @@ class InputProduct(var name: String = "",
     }
 
     fun toProduct(): Product {
-        return Product(
-            name, production, amount, type,
-            calories ?: 0.0, protein ?: 0.0, fat ?: 0.0, carbohydrates ?: 0.0, fiber ?: 0.0
-        )
+        val nutrientsProperties = NutrientsProperties(calories = calories ?: 0.0,
+            protein = protein ?: 0.0, fat = fat ?: 0.0, carbohydrates = carbohydrates ?: 0.0,
+            fiber = fiber ?: 0.0)
+
+        return Product(name, production, amount, type, nutrientsProperties)
     }
 }

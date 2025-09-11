@@ -1,6 +1,7 @@
 package ru.foodcare.foodcare.ui.input
 
 import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.product.Product
 import java.lang.Exception
 import java.time.LocalDateTime
@@ -29,16 +30,16 @@ class InputMeal(val id: Int,
     }
 
     fun toMeal(): Meal {
+        val nutrientsProperties = NutrientsProperties(calories = 0.0,
+            protein = 0.0, fat = 0.0, carbohydrates = 0.0,
+            fiber = 0.0)
+
         val retProduct = product ?: Product(
             name = "",
             production = "",
             amount = 1,
             type = Product.Companion.UnitType.Piece,
-            calories = 0.0,
-            protein = 0.0,
-            fat = 0.0,
-            carbohydrates = 0.0,
-            fiber = 0.0
+            nutrientsProperties = nutrientsProperties
         )
         val productRatio = (productCount ?: 0) / retProduct.amount.toDouble()
         return Meal(id, retProduct, productRatio,

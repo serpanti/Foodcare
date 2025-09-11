@@ -55,11 +55,21 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
     val name = remember { mutableStateOf(oldProduct?.name ?: "") }
     val production = remember { mutableStateOf(oldProduct?.production ?: "") }
     val type = remember { mutableStateOf(UnitType.Piece) }
-    val calories = remember { mutableStateOf(oldProduct?.calories?.toString() ?: "") }
-    val protein = remember { mutableStateOf(oldProduct?.protein?.toString() ?: "") }
-    val fat = remember { mutableStateOf(oldProduct?.fat?.toString() ?: "") }
-    val carbohydrates = remember { mutableStateOf(oldProduct?.carbohydrates?.toString() ?: "") }
-    val fiber = remember { mutableStateOf(oldProduct?.fiber?.toString() ?: "") }
+    val calories = remember {
+        mutableStateOf(oldProduct?.nutrientsProperties?.calories?.toString() ?: "")
+    }
+    val protein = remember {
+        mutableStateOf(oldProduct?.nutrientsProperties?.protein?.toString() ?: "")
+    }
+    val fat = remember {
+        mutableStateOf(oldProduct?.nutrientsProperties?.fat?.toString() ?: "")
+    }
+    val carbohydrates = remember {
+        mutableStateOf(oldProduct?.nutrientsProperties?.carbohydrates?.toString() ?: "")
+    }
+    val fiber = remember {
+        mutableStateOf(oldProduct?.nutrientsProperties?.fiber?.toString() ?: "")
+    }
 
     LazyColumn {
         itemWithUnderLine {NameEdit(name)}

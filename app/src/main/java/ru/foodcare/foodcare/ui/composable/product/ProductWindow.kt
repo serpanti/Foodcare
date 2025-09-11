@@ -210,15 +210,15 @@ fun Nutrients(product: Product, modifier: Modifier = Modifier) {
             .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween) {
             NutrientsVerticalDivider()
-            Nutrient("Ценность", product.calories, "ккал")
+            Nutrient("Ценность", product.nutrientsProperties.calories, "ккал")
             NutrientsVerticalDivider()
-            Nutrient("Б", product.protein, "грамм")
+            Nutrient("Б", product.nutrientsProperties.protein, "грамм")
             NutrientsVerticalDivider()
-            Nutrient("Ж", product.fat, "грамм")
+            Nutrient("Ж", product.nutrientsProperties.fat, "грамм")
             NutrientsVerticalDivider()
-            Nutrient("У", product.carbohydrates, "грамм")
+            Nutrient("У", product.nutrientsProperties.carbohydrates, "грамм")
             NutrientsVerticalDivider()
-            Nutrient("Волокна", product.fiber, "грамм")
+            Nutrient("Волокна", product.nutrientsProperties.fiber, "грамм")
             NutrientsVerticalDivider()
         }
         NutrientsHorizontalDivider()
