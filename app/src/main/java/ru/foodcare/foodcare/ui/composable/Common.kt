@@ -97,6 +97,7 @@ import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.input.Input
+import java.time.LocalDate
 
 @Composable
 fun VerticalDivider(width: Dp, color: Color) {
@@ -533,6 +534,38 @@ fun InfinitePager(modifier: Modifier = Modifier,
 
     HorizontalPager(pagerState, modifier = modifier) { page ->
         content(page)
+    }
+}
+
+@Composable
+fun InfiniteDatePager(modifier: Modifier = Modifier,
+                      currentDate: LocalDate,
+                      getChangedDate: LocalDate.(Long) -> LocalDate,
+                  setNewDate: (LocalDate) -> Unit = {},
+                  content: @Composable (LocalDate) -> Unit) {
+    var edgeCaseKey by remember { mutableStateOf(false) }
+    val fixedStartDate = remember(edgeCaseKey) { currentDate }
+    val center = Int.MAX_VALUE / 2
+    val pagerState = rememberPagerState(initialPage = center) { Int.MAX_VALUE }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { page ->
+                setNewDate(fixedStartDate.getChangedDate((page - center).toLong()))
+
+                if (page == 0 || page == Int.MAX_VALUE) {
+                    edgeCaseKey = !edgeCaseKey
+                }
+            }
+    }
+
+    LaunchedEffect(fixedStartDate) {
+        pagerState.scrollToPage(center)
+    }
+
+    HorizontalPager(pagerState, modifier = modifier) { page ->
+        val pageDate = fixedStartDate.getChangedDate((page - center).toLong())
+        content(pageDate)
     }
 }
 

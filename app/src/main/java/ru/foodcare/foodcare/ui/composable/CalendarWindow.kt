@@ -97,10 +97,13 @@ fun DayWindow(
 ) {
     val date by dateVM.observedDate.collectAsState()
 
-    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusDays(1)) },
-        decrease = { dateVM.onObservedDateChanged(date.minusDays(1)) }) { page ->
+    InfiniteDatePager(
+        setNewDate = { newDate -> dateVM.onObservedDateChanged(newDate) },
+        currentDate = date,
+        getChangedDate = {days -> this.plusDays(days)},
+    ) { pageDate ->
         DayWindowByDate(mealViewModel, weightVM, snackbarHostState,
-            date, openWeightEditor, openMealEditor)
+            pageDate, openWeightEditor, openMealEditor)
     }
 }
 
@@ -217,8 +220,11 @@ fun DaysWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewModel
 
     val days = (1 .. date.lengthOfMonth()).toList()
 
-    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusMonths(1)) },
-        decrease = { dateVM.onObservedDateChanged(date.minusMonths(1)) }) { page ->
+    InfiniteDatePager(
+        setNewDate = { newDate -> dateVM.onObservedDateChanged(newDate) },
+        currentDate = date,
+        getChangedDate = {months -> this.plusMonths(months)},
+    ) { pageDate ->
         ElementWithHeader({
             Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
         }) {
@@ -282,8 +288,11 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewMod
     val months = remember {(1..12).toList()}
     val date by dateVM.observedDate.collectAsState()
 
-    InfinitePager(increase = { dateVM.onObservedDateChanged(date.plusYears(1)) },
-        decrease = { dateVM.onObservedDateChanged(date.minusYears(1)) }) { page ->
+    InfiniteDatePager(
+        setNewDate = { newDate -> dateVM.onObservedDateChanged(newDate) },
+        currentDate = date,
+        getChangedDate = {years -> this.plusYears(years)},
+    ) { pageDate ->
         ElementWithHeader({
             Header("%d год".format(date.year))
         }) {
