@@ -249,7 +249,10 @@ fun DaysTable(
             val selectedDateColor = Color.Red
             var staticColor = if (days[idx] == date.dayOfMonth) selectedDateColor
             else defaultColor
-            val backgroundColor = if (days[idx] == now.dayOfMonth) {
+            val backgroundColor = if (
+                date.year == now.year &&
+                date.month == now.month &&
+                days[idx] == now.dayOfMonth) {
                 BlinkColorAsState(durationMillis = 1000,
                     color1 = staticColor,
                     color2 = Color.Magenta).value
@@ -317,7 +320,9 @@ fun MonthsTable(
             val selectedDateColor = Color.Red
             var staticColor = if (months[idx] == date.monthValue) selectedDateColor
             else defaultColor
-            val backgroundColor = if (months[idx] == now.monthValue) {
+            val backgroundColor = if (
+                date.year == now.year &&
+                months[idx] == now.monthValue) {
                 BlinkColorAsState(durationMillis = 1000,
                     color1 = staticColor,
                     color2 = Color.Magenta).value
