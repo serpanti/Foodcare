@@ -44,8 +44,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.domain.meal.Meal
+import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.meal.MealCard
+import ru.foodcare.foodcare.ui.composable.nutrients.NutrientsPropertiesCard
 import ru.foodcare.foodcare.ui.composable.weight.WeightCard
 import ru.foodcare.foodcare.ui.model.MealItem
 import ru.foodcare.foodcare.ui.model.WeightItem
@@ -165,9 +167,12 @@ fun DayCards(
     }
 
     LaunchedEffect(dayList.size) {
-        if (dayList.isNotEmpty()) {
-            listState.animateScrollToItem(dayList.lastIndex)
+        val lastIndex = if (dayList.isNotEmpty()) {
+            dayList.lastIndex + 1
+        } else {
+            0
         }
+        listState.animateScrollToItem(lastIndex)
     }
 
     LazyColumn (state = listState,
@@ -184,7 +189,26 @@ fun DayCards(
                 }
             }
         }
+        item {
+            DayContentCard {
+                NutrientsPropertiesCard(summarizeMeals(meals.value), Modifier.padding(10.dp))
+            }
+        }
     }
+}
+
+private fun summarizeMeals(meals: List<Meal>): NutrientsProperties {
+    val calories = meals.sumOf { it.product.nutrientsProperties.calories * it.productRatio }
+    val protein = meals.sumOf { it.product.nutrientsProperties.protein * it.productRatio }
+    val fat = meals.sumOf { it.product.nutrientsProperties.fat * it.productRatio }
+    val carbohydrates = meals.sumOf {
+        it.product.nutrientsProperties.carbohydrates * it.productRatio
+    }
+    val fiber = meals.sumOf { it.product.nutrientsProperties.fiber * it.productRatio }
+
+    return NutrientsProperties(calories = calories,
+        protein = protein, fat = fat, carbohydrates = carbohydrates,
+        fiber = fiber)
 }
 
 @Composable

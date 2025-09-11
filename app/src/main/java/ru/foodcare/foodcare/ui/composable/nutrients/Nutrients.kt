@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
+import ru.foodcare.foodcare.ui.composable.ElementWithHeader
 import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.VerticalDivider
 
@@ -25,7 +27,7 @@ fun Nutrients(nutrientsProperties: NutrientsProperties, modifier: Modifier = Mod
             .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceBetween) {
             NutrientsVerticalDivider()
-            Nutrient("Ценность", nutrientsProperties.calories, "ккал")
+            Nutrient("Ценность", nutrientsProperties.calories.toInt(), "ккал")
             NutrientsVerticalDivider()
             Nutrient("Б", nutrientsProperties.protein, "грамм")
             NutrientsVerticalDivider()
@@ -44,7 +46,16 @@ fun Nutrients(nutrientsProperties: NutrientsProperties, modifier: Modifier = Mod
 fun Nutrient(description: String, value: Double, type: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(description)
-        Text(value.toString())
+        Text("%.2f".format(value))
+        Text(type)
+    }
+}
+
+@Composable
+fun Nutrient(description: String, value: Int, type: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(description)
+        Text("$value")
         Text(type)
     }
 }
@@ -57,4 +68,14 @@ fun NutrientsHorizontalDivider() {
 @Composable
 fun NutrientsVerticalDivider() {
     VerticalDivider(2.dp, Color.Gray)
+}
+
+@Composable
+fun NutrientsPropertiesCard(nutrientsProperties: NutrientsProperties,
+                            modifier: Modifier = Modifier) {
+    ElementWithHeader(header = {
+        Text("Статистика по съеденному", fontSize = 24.sp)
+    }, modifier = modifier) {
+        Nutrients(nutrientsProperties, modifier)
+    }
 }
