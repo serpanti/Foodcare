@@ -1,19 +1,22 @@
 package ru.foodcare.foodcare.data.product
 
+import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.product.Product as ProductDomain
 
 object ProductMapper {
-    fun toDomain(entity: Product) = ProductDomain(
+    fun toDomain(entity: Product): ProductDomain {
+        val nutrientsProperties = NutrientsProperties(calories = entity.calories,
+            protein = entity.protein, fat = entity.fat, carbohydrates = entity.carbohydrates,
+            fiber = entity.fiber)
+
+        return ProductDomain(
             name = entity.name,
             production = entity.production,
             amount = entity.amount,
             type = mapStringToUnitType(entity.type),
-            calories = entity.calories,
-            protein = entity.protein,
-            fat = entity.fat,
-            carbohydrates = entity.carbohydrates,
-            fiber = entity.fiber
+            nutrientsProperties = nutrientsProperties
         )
+    }
 
     fun fromDomain(domain: ProductDomain, idOptional: Int = 0): Product = Product(
             id = idOptional,
@@ -21,11 +24,11 @@ object ProductMapper {
             production = domain.production,
             amount = domain.amount,
             type = mapUnitTypeToString(domain.type),
-            calories = domain.calories,
-            protein = domain.protein,
-            fat = domain.fat,
-            carbohydrates = domain.carbohydrates,
-            fiber = domain.fiber
+            calories = domain.nutrientsProperties.calories,
+            protein = domain.nutrientsProperties.protein,
+            fat = domain.nutrientsProperties.fat,
+            carbohydrates = domain.nutrientsProperties.carbohydrates,
+            fiber = domain.nutrientsProperties.fiber
         )
 
     private fun mapStringToUnitType(type: String): ProductDomain.Companion.UnitType {
