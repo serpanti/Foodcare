@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.ui.composable.CardSurface
@@ -45,6 +46,7 @@ import ru.foodcare.foodcare.ui.composable.FloatingAddButton
 import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.SwipeToStartButton
 import ru.foodcare.foodcare.ui.composable.VerticalDivider
+import ru.foodcare.foodcare.ui.composable.nutrients.Nutrients
 import ru.foodcare.foodcare.ui.composable.toStringWithLanguage
 import ru.foodcare.foodcare.ui.composable.withLayoutDirection
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
@@ -193,53 +195,10 @@ fun ProductCardContent(product: Product) {
         .padding(10.dp)) {
         Text("Название: " + product.name)
         Text("Производитель: " + product.production)
-        Nutrients(product, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
+        Nutrients(product.nutrientsProperties, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
         Row(modifier = Modifier.align(Alignment.End)) {
             Text("Кол-во: ")
             Text("${product.amount} ${product.type.toStringWithLanguage()}")
         }
     }
-}
-
-@Composable
-fun Nutrients(product: Product, modifier: Modifier = Modifier) {
-    Column(modifier) {
-        NutrientsHorizontalDivider()
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-            NutrientsVerticalDivider()
-            Nutrient("Ценность", product.nutrientsProperties.calories, "ккал")
-            NutrientsVerticalDivider()
-            Nutrient("Б", product.nutrientsProperties.protein, "грамм")
-            NutrientsVerticalDivider()
-            Nutrient("Ж", product.nutrientsProperties.fat, "грамм")
-            NutrientsVerticalDivider()
-            Nutrient("У", product.nutrientsProperties.carbohydrates, "грамм")
-            NutrientsVerticalDivider()
-            Nutrient("Волокна", product.nutrientsProperties.fiber, "грамм")
-            NutrientsVerticalDivider()
-        }
-        NutrientsHorizontalDivider()
-    }
-}
-
-@Composable
-fun Nutrient(description: String, value: Double, type: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(description)
-        Text(value.toString())
-        Text(type)
-    }
-}
-
-@Composable
-fun NutrientsHorizontalDivider() {
-    HorizontalDivider(2.dp, Color.Gray)
-}
-
-@Composable
-fun NutrientsVerticalDivider() {
-    VerticalDivider(2.dp, Color.Gray)
 }
