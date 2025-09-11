@@ -1,15 +1,12 @@
 package ru.foodcare.foodcare.ui.composable.product
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,15 +34,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.EditMenu
 import ru.foodcare.foodcare.ui.composable.FloatingAddButton
-import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.SwipeToStartButton
-import ru.foodcare.foodcare.ui.composable.VerticalDivider
 import ru.foodcare.foodcare.ui.composable.nutrients.Nutrients
 import ru.foodcare.foodcare.ui.composable.toStringWithLanguage
 import ru.foodcare.foodcare.ui.composable.withLayoutDirection
