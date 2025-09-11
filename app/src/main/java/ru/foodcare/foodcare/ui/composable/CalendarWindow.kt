@@ -377,8 +377,8 @@ fun YearsTable(
     val date by dateVM.observedDate.collectAsState()
     val now = LocalDate.now()
 
-        LazyVerticalGrid(GridCells.Fixed(5),
-        contentPadding = PaddingValues(bottom = 50.dp)) {
+    LazyVerticalGrid(GridCells.Fixed(5),
+    contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.size) { idx ->
             val defaultColor = Color.White
             val selectedDateColor = Color.Red
