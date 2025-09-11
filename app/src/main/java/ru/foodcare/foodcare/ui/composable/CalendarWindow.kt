@@ -27,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -162,21 +161,17 @@ fun DayCards(
     val dayList by remember {
         derivedStateOf {
             (meals.value.map{MealItem(it)} + weights.value.map{WeightItem(it)})
-                .sortedBy { it.date }
+                .sortedByDescending  { it.date }
         }
-    }
-
-    LaunchedEffect(dayList.size) {
-        val lastIndex = if (dayList.isNotEmpty()) {
-            dayList.lastIndex + 1
-        } else {
-            0
-        }
-        listState.animateScrollToItem(lastIndex)
     }
 
     LazyColumn (state = listState,
         contentPadding = PaddingValues(bottom = 600.dp)) {
+        item {
+            DayContentCard {
+                NutrientsPropertiesCard(summarizeMeals(meals.value), Modifier.padding(10.dp))
+            }
+        }
         items(dayList) { cardContent ->
             DayContentCard {
                 when (cardContent) {
@@ -187,11 +182,6 @@ fun DayCards(
                             weightVM, snackbarHostState = snackbarHostState,
                         openWeightEditor = openWeightEditor)
                 }
-            }
-        }
-        item {
-            DayContentCard {
-                NutrientsPropertiesCard(summarizeMeals(meals.value), Modifier.padding(10.dp))
             }
         }
     }
