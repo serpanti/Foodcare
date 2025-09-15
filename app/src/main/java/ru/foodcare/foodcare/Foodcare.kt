@@ -7,6 +7,7 @@ import ru.foodcare.foodcare.di.components.FoodcareComponent
 
 class Foodcare: Application() {
     lateinit var foodcareComponent: FoodcareComponent
+        private set
 
     override fun onCreate() {
         super.onCreate()
