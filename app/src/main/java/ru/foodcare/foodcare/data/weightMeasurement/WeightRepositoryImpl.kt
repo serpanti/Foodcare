@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.map
 import ru.foodcare.foodcare.data.date.DateDAO
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.domain.weight.WeightRepository
+import javax.inject.Inject
 import kotlin.collections.firstOrNull
 
-class WeightRepositoryImpl(private val weightDao: WeightMeasurementDAO,
-    private val dateDAO: DateDAO): WeightRepository {
+class WeightRepositoryImpl @Inject constructor(private val weightDao: WeightMeasurementDAO,
+                           private val dateDAO: DateDAO): WeightRepository {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun observeDay(
         year: Int,

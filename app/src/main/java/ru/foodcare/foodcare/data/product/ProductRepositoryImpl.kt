@@ -4,8 +4,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.ProductRepository
+import javax.inject.Inject
 
-class ProductRepositoryImpl(private val dao: ProductDAO) : ProductRepository {
+class ProductRepositoryImpl @Inject constructor(private val dao: ProductDAO) : ProductRepository {
     override suspend fun addProduct(product: Product) {
         dao.addProduct(ProductMapper.fromDomain(product))
     }

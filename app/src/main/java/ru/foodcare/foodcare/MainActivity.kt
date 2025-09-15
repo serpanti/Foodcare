@@ -9,11 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
-import ru.foodcare.foodcare.data.database.FoodcareDBProvider
-import ru.foodcare.foodcare.data.date.DateRepositoryImpl
-import ru.foodcare.foodcare.data.meal.MealRepositoryImpl
-import ru.foodcare.foodcare.data.product.ProductRepositoryImpl
-import ru.foodcare.foodcare.data.weightMeasurement.WeightRepositoryImpl
 import ru.foodcare.foodcare.ui.composable.Content
 import ru.foodcare.foodcare.ui.composable.NavigationPanel
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
@@ -36,17 +31,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = FoodcareDBProvider.getInstance(applicationContext)
+        val foodcareComponent = application.foodcare.foodcareComponent
 
-        val productRepository = ProductRepositoryImpl(db.productDAO())
-        val mealRepository = MealRepositoryImpl(db.mealDAO(), db.productDAO(), db.dateDAO())
-        val dateRepository = DateRepositoryImpl(db.dateDAO())
-        val weightRepository = WeightRepositoryImpl(db.weightMeasurementDAO(), db.dateDAO())
-
-        val productFactory = ProductViewModelFactory(productRepository, Dispatchers.IO)
-        val mealFactory = MealViewModelFactory(mealRepository, Dispatchers.IO)
-        val dateFactory = DateViewModelFactory(dateRepository, Dispatchers.IO)
-        val weightFactory = WeightViewModelFactory(weightRepository, Dispatchers.IO)
+        val productFactory = ProductViewModelFactory(
+            foodcareComponent.getProductRepository(), Dispatchers.IO)
+        val mealFactory = MealViewModelFactory(
+            foodcareComponent.getMealRepository(), Dispatchers.IO)
+        val dateFactory = DateViewModelFactory(
+            foodcareComponent.getDateRepository(), Dispatchers.IO)
+        val weightFactory = WeightViewModelFactory(
+            foodcareComponent.getWeightRepository(), Dispatchers.IO)
 
         productVM = ViewModelProvider(this, productFactory)[ProductViewModel::class.java]
         mealVM = ViewModelProvider(this, mealFactory)[MealViewModel::class.java]

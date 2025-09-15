@@ -9,8 +9,9 @@ import ru.foodcare.foodcare.data.date.DateDAO
 import ru.foodcare.foodcare.data.product.ProductDAO
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.meal.MealRepository
+import javax.inject.Inject
 
-class MealRepositoryImpl(private val mealDao: MealDAO,
+class MealRepositoryImpl @Inject constructor(private val mealDao: MealDAO,
                          private val productDao: ProductDAO,
                          private val dateDao: DateDAO): MealRepository {
     @OptIn(ExperimentalCoroutinesApi::class)

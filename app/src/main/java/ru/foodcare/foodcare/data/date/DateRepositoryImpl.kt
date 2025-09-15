@@ -2,8 +2,9 @@ package ru.foodcare.foodcare.data.date
 
 import kotlinx.coroutines.flow.Flow
 import ru.foodcare.foodcare.domain.date.DateRepository
+import javax.inject.Inject
 
-class DateRepositoryImpl(private val dateDao: DateDAO) : DateRepository {
+class DateRepositoryImpl @Inject constructor(private val dateDao: DateDAO) : DateRepository {
     override fun observeYears(): Flow<List<Int>> {
         return dateDao.observeYears()
     }
