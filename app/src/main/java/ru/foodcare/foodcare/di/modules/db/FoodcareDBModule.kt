@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.di.modules
+package ru.foodcare.foodcare.di.modules.db
 
 import android.content.Context
 import androidx.room.Room

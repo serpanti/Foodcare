@@ -3,11 +3,11 @@ package ru.foodcare.foodcare.di.components
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
-import ru.foodcare.foodcare.di.modules.DateRepositoryModule
-import ru.foodcare.foodcare.di.modules.FoodcareDBModule
-import ru.foodcare.foodcare.di.modules.MealRepositoryModule
-import ru.foodcare.foodcare.di.modules.ProductRepositoryModule
-import ru.foodcare.foodcare.di.modules.WeightRepositoryModule
+import ru.foodcare.foodcare.di.modules.repositories.DateRepositoryModule
+import ru.foodcare.foodcare.di.modules.db.FoodcareDBModule
+import ru.foodcare.foodcare.di.modules.repositories.MealRepositoryModule
+import ru.foodcare.foodcare.di.modules.repositories.ProductRepositoryModule
+import ru.foodcare.foodcare.di.modules.repositories.WeightRepositoryModule
 import ru.foodcare.foodcare.domain.date.DateRepository
 import ru.foodcare.foodcare.domain.meal.MealRepository
 import ru.foodcare.foodcare.domain.product.ProductRepository

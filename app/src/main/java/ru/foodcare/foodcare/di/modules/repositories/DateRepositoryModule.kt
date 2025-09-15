@@ -1,4 +1,4 @@
-package ru.foodcare.foodcare.di.modules
+package ru.foodcare.foodcare.di.modules.repositories
 
 import dagger.Binds
 import dagger.Module
