@@ -9,13 +9,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.di.modules.viewModel.IODispatcher
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.meal.MealRepository
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class MealViewModel(private val repository: MealRepository,
-    private val context: CoroutineContext): ViewModel() {
+open class MealViewModel @Inject constructor(
+    private val repository: MealRepository,
+    @param:IODispatcher private val context: CoroutineContext): ViewModel() {
 
     private val _mealObserved: MutableStateFlow<Meal?> = MutableStateFlow(null)
     val mealObserved: StateFlow<Meal?> = _mealObserved.asStateFlow()

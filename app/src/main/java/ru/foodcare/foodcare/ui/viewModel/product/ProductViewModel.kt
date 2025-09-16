@@ -11,12 +11,15 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.di.modules.viewModel.IODispatcher
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.ProductRepository
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class ProductViewModel(private val repository: ProductRepository,
-                            private val context: CoroutineContext): ViewModel() {
+open class ProductViewModel @Inject constructor(
+    private val repository: ProductRepository,
+    @param:IODispatcher private val context: CoroutineContext): ViewModel() {
     val products = repository.observeProducts().flowOn(context)
         .stateIn(
             scope = viewModelScope,

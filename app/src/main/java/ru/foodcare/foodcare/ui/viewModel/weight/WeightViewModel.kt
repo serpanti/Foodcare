@@ -9,13 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.di.modules.viewModel.IODispatcher
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.domain.weight.WeightRepository
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class WeightViewModel(private val weightRepository: WeightRepository,
-                      private val context: CoroutineContext) : ViewModel() {
+class WeightViewModel @Inject constructor(
+    private val weightRepository: WeightRepository,
+    @param:IODispatcher private val context: CoroutineContext) : ViewModel() {
+
     private val _weightObserved: MutableStateFlow<Weight?> = MutableStateFlow(null)
     val weightObserved: StateFlow<Weight?> = _weightObserved.asStateFlow()
 
