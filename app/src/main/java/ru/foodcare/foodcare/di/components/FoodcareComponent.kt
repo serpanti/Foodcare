@@ -17,13 +17,15 @@ import javax.inject.Singleton
 @Component(modules = [FoodcareDBModule::class,
     ProductRepositoryModule::class,
     MealRepositoryModule::class, DateRepositoryModule::class,
-    WeightRepositoryModule::class])
+    WeightRepositoryModule::class,
+    FoodcareSubcomponentsModule::class])
 @Singleton
 interface FoodcareComponent {
     fun getWeightRepository() : WeightRepository
     fun getMealRepository() : MealRepository
     fun getDateRepository() : DateRepository
     fun getProductRepository() : ProductRepository
+    fun getMainActivityComponentFactory() : MainActivityComponent.Factory
 
     @Component.Factory
     interface Factory {
