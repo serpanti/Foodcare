@@ -24,8 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.ui.composable.IconWithAction
@@ -40,12 +42,15 @@ fun MealCard(meal: Meal, mealViewModel: MealViewModel,
     val deleteScope = rememberCoroutineScope()
     val removeMealAction = {mealViewModel.removeMeal(meal)}
 
+    val actionLabel = stringResource(R.string.cancel)
+    val deleteMessage = stringResource(R.string.deletion_warning)
+
     val deleteAction: () -> Unit = {
         if (snackbarHostState != null) {
             deleteScope.launch {
                 val result = snackbarHostState.showSnackbar(
-                    message = "Скоро произойдет удаление",
-                    actionLabel = "Отмена",
+                    message = deleteMessage,
+                    actionLabel = actionLabel,
                     duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.Dismissed) removeMealAction()
@@ -101,11 +106,12 @@ fun MealCardContentInfoWithTime(meal: Meal, modifier: Modifier = Modifier,
 @Composable
 fun MealCardContentInfo(meal: Meal, modifier: Modifier = Modifier) {
     val product = meal.product
-    val productCount = "Кол-во: %d %s".format(
+    val productCount = "%s: %d %s".format(
+        stringResource(R.string.quantity_capital),
         (product.amount * meal.productRatio).toInt(), product.type.toStringWithLanguage())
     Column(modifier.wrapContentSize()) {
-        Text("Имя: " + product.name)
-        Text("Производитель: " + product.production)
+        Text(stringResource(R.string.name_capital) + ": " + product.name)
+        Text(stringResource(R.string.supplier_capital) + ": " + product.production)
         Text(productCount)
     }
 }

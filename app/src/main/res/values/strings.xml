@@ -67,4 +67,7 @@
         <item quantity="one">gram</item>
         <item quantity="other">grams</item>
     </plurals>
+    <string name="quantity_capital">Quantity</string>
+    <string name="supplier_capital">Supplier</string>
+    <string name="name_capital">Name</string>
 </resources>

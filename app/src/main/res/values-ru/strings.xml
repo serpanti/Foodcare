@@ -69,5 +69,8 @@
         <item quantity="many">граммов</item>
         <item quantity="other">грамма</item>
     </plurals>
+    <string name="quantity_capital">Кол-во</string>
+    <string name="supplier_capital">Производитель</string>
+    <string name="name_capital">Имя</string>
 
 </resources>
