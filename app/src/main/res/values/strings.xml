@@ -44,4 +44,15 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+    <string name="weight_edit_placeholder">Enter your weight in kilograms(63.75)</string>
+    <string name="weight_capital">Weight</string>
+    <string name="kg">kg</string>
+    <string name="weight_error_message">Error in weight input</string>
+    <string name="year_error_message">Error in year input</string>
+    <string name="month_error_message">Error in month input</string>
+    <string name="day_error_message">Error in day input</string>
+    <string name="hours_error_message">Error in hours input</string>
+    <string name="minutes_error_message">Error in minutes input</string>
+    <string name="seconds_error_message">Error in seconds input</string>
+    <string name="wrong_date_message">Such date does not exist</string>
 </resources>

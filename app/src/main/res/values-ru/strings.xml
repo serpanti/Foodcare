@@ -44,4 +44,15 @@
         <item>Ноябрь</item>
         <item>Декабрь</item>
     </string-array>
+    <string name="weight_edit_placeholder">Введите ваш вес в килограммах(63.75)</string>
+    <string name="weight_capital">Вес</string>
+    <string name="kg">кг</string>
+    <string name="weight_error_message">Ошибка в весе</string>
+    <string name="year_error_message">Ошибка в году</string>
+    <string name="month_error_message">Ошибка в месяце</string>
+    <string name="day_error_message">Ошибка в дне</string>
+    <string name="hours_error_message">Ошибка в часах</string>
+    <string name="minutes_error_message">Ошибка в минутах</string>
+    <string name="seconds_error_message">Ошибка в секундах</string>
+    <string name="wrong_date_message">Такой даты не существует</string>
 </resources>

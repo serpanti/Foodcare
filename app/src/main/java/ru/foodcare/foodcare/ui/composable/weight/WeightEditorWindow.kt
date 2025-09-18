@@ -14,7 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.SaveButton
@@ -88,24 +90,24 @@ fun WeightEdit(
     SimpleTextField(weightValue.value, onValueChange = { newStr ->
         weightValue.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите ваш вес в килограммах(50.73)")
+        Text(stringResource(R.string.weight_edit_placeholder))
     }, prefix = {
-        Text("Вес: ")
+        Text(stringResource(R.string.weight_capital) + ": ")
     }, suffix = {
-        Text(" кг")
+        Text(" " + stringResource(R.string.kg))
     })
 }
 
 @Composable
 fun WrongInputWeightPreview(inputWeight: InputWeight) {
     Column {
-        if (inputWeight.value == null) Text("Ошибка в весе")
-        if (inputWeight.year == null) Text("Ошибка в году")
-        if (inputWeight.month == null) Text("Ошибка в месяце")
-        if (inputWeight.day == null) Text("Ошибка в дне")
-        if (inputWeight.hours == null) Text("Ошибка в часах")
-        if (inputWeight.minutes == null) Text("Ошибка в минутах")
-        if (inputWeight.seconds == null) Text("Ошибка в секундах")
+        if (inputWeight.value == null) Text(stringResource(R.string.weight_error_message))
+        if (inputWeight.year == null) Text(stringResource(R.string.year_error_message))
+        if (inputWeight.month == null) Text(stringResource(R.string.month_error_message))
+        if (inputWeight.day == null) Text(stringResource(R.string.day_error_message))
+        if (inputWeight.hours == null) Text(stringResource(R.string.hours_error_message))
+        if (inputWeight.minutes == null) Text(stringResource(R.string.minutes_error_message))
+        if (inputWeight.seconds == null) Text(stringResource(R.string.seconds_error_message))
         if (inputWeight.year != null &&
             inputWeight.month != null &&
             inputWeight.day != null &&
@@ -116,7 +118,7 @@ fun WrongInputWeightPreview(inputWeight: InputWeight) {
                 LocalDateTime.of(inputWeight.year, inputWeight.month, inputWeight.day,
                     inputWeight.hours, inputWeight.minutes, inputWeight.seconds)
             } catch (_: Exception) {
-                Text("Такой даты не существует")
+                Text(stringResource(R.string.wrong_date_message))
             }
         }
     }
