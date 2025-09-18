@@ -56,4 +56,15 @@
     <string name="seconds_error_message">Error in seconds input</string>
     <string name="wrong_date_message">Such date does not exist</string>
     <string name="deletion_warning">The deletion will happen soon</string>
+    <string name="caloric_content">Energy</string>
+    <string name="calories_short">kcal</string>
+    <string name="nutrients_sum_label">Nutrient Intake Summary</string>
+    <string name="protein_short_capital">P</string>
+    <string name="fat_short_capital">F</string>
+    <string name="carbohydrates_short_capital">C</string>
+    <string name="fibers_capital">Fibers</string>
+    <plurals name="weight_in_grams">
+        <item quantity="one">gram</item>
+        <item quantity="other">grams</item>
+    </plurals>
 </resources>

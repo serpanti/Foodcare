@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="main_page">Главная</string>
     <string name="calendar">Календарь</string>
     <string name="products">Продукты</string>
@@ -56,4 +56,18 @@
     <string name="seconds_error_message">Ошибка в секундах</string>
     <string name="wrong_date_message">Такой даты не существует</string>
     <string name="deletion_warning">Скоро произойдет удаление</string>
+    <string name="caloric_content">Энергия</string>
+    <string name="calories_short">ккал</string>
+    <string name="nutrients_sum_label">Отчёт по приёму пищи</string>
+    <string name="protein_short_capital">Б</string>
+    <string name="fat_short_capital">Ж</string>
+    <string name="carbohydrates_short_capital">У</string>
+    <string name="fibers_capital">Волокна</string>
+    <plurals name="weight_in_grams">
+        <item quantity="one" tools:ignore="ImpliedQuantity">грамм</item>
+        <item quantity="few">грамма</item>
+        <item quantity="many">граммов</item>
+        <item quantity="other">грамма</item>
+    </plurals>
+
 </resources>
