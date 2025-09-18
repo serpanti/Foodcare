@@ -639,9 +639,9 @@ fun CommonSnackbarProgressIndicator(
 }
 
 @Composable
-fun BlinkColorAsState(color1: Color = Color.White,
-                 color2: Color = Color.Cyan,
-                 durationMillis: Int = 500): MutableState<Color> {
+fun blinkColorAsState(color1: Color = Color.White,
+                      color2: Color = Color.Cyan,
+                      durationMillis: Int = 500): MutableState<Color> {
     val animatedColor = remember { mutableStateOf(color1) }
     val transition = rememberInfiniteTransition(label = "blink")
     val fraction by transition.animateFloat(

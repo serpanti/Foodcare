@@ -265,7 +265,7 @@ fun DaysTable(
                 date.year == now.year &&
                 date.month == now.month &&
                 days[idx] == now.dayOfMonth) {
-                BlinkColorAsState(durationMillis = 1000,
+                blinkColorAsState(durationMillis = 1000,
                     color1 = staticColor,
                     color2 = Color.Magenta).value
             } else {
@@ -335,7 +335,7 @@ fun MonthsTable(
             val backgroundColor = if (
                 date.year == now.year &&
                 months[idx] == now.monthValue) {
-                BlinkColorAsState(durationMillis = 1000,
+                blinkColorAsState(durationMillis = 1000,
                     color1 = staticColor,
                     color2 = Color.Magenta).value
             } else {
@@ -385,7 +385,7 @@ fun YearsTable(
             var staticColor = if (years[idx] == date.year) selectedDateColor
             else defaultColor
             val backgroundColor = if (years[idx] == now.year) {
-                BlinkColorAsState(durationMillis = 1000,
+                blinkColorAsState(durationMillis = 1000,
                     color1 = staticColor,
                     color2 = Color.Magenta).value
             } else {
