@@ -1,5 +1,6 @@
 package ru.foodcare.foodcare.ui.composable
 
+import ru.foodcare.foodcare.R
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -57,17 +59,17 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
             val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
             val startRoute = Route.Main.route
 
-            NavigationDrawerItem({Text("Главная")},
+            NavigationDrawerItem({Text(stringResource(R.string.main_page))},
                 currentRoute == Route.Main.route, {
                     navController.navigateWithPopTo(Route.Main.route, startRoute)
                     closeNavPanel()
                 })
-            NavigationDrawerItem({Text("Календарь")},
+            NavigationDrawerItem({Text(stringResource(R.string.calendar))},
                 currentRoute == Route.Calendar.route, {
                     navController.navigateWithPopTo(Route.Calendar.route, startRoute)
                     closeNavPanel()
                 })
-            NavigationDrawerItem({Text("Продукты")},
+            NavigationDrawerItem({Text(stringResource(R.string.products))},
                 currentRoute == Route.Products.route, {
                     navController.navigateWithPopTo(Route.Products.route, startRoute)
                     closeNavPanel()
@@ -122,17 +124,18 @@ fun Content(
 
     Scaffold(topBar = {
         TopAppBar({
-            if (onMainWindow.value) Text("Foodcare")
+            if (onMainWindow.value) Text(stringResource(R.string.app_name))
         }, navigationIcon = {
             val navPanelScope = rememberCoroutineScope()
             if (arrowBackIsNeeded) {
                 IconButton({navController.popBackStack()}) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "выйти из редактора")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                        stringResource(R.string.exit_the_editor))
                 }
             } else {
                 IconButton({
                     navPanelScope.launch { navPanelState.open() }
-                }) { Icon(Icons.Default.Menu, "Меню") }
+                }) { Icon(Icons.Default.Menu, stringResource(R.string.menu)) }
             }
         },
             actions = {

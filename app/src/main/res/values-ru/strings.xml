@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_page">Главная</string>
+    <string name="calendar">Календарь</string>
+    <string name="products">Продукты</string>
+    <string name="menu">Меню</string>
+    <string name="exit_the_editor">Выйти из редактора</string>
+</resources>
