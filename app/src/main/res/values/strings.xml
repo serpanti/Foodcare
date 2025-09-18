@@ -20,6 +20,28 @@
     <string name="g">g</string>
     <string name="delete_record">Delete record</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
     <string name="delete_question">Are you sure you want to delete?</string>
+    <string name="open_meal_editor">Open the meal editor</string>
+    <string name="open_weight_editor">Open the weight editor</string>
+    <string name="year_short">" y"</string>
+    <string name="year">year</string>
+    <string name="all_years">Years</string>
+    <string name="year_short_capital">Y</string>
+    <string name="month_short_capital">M</string>
+    <string name="day_short_capital">D</string>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 </resources>

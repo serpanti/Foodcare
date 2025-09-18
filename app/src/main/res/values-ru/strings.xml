@@ -22,4 +22,26 @@
     <string name="cancel">Отмена</string>
     <string name="ok">Подтвердить</string>
     <string name="delete_question">Вы уверены, что хотите удалить?</string>
+    <string name="open_meal_editor">Открыть редактор приема пищи</string>
+    <string name="open_weight_editor">Открыть редактор веса</string>
+    <string name="year_short">г</string>
+    <string name="year">год</string>
+    <string name="all_years">Все года</string>
+    <string name="year_short_capital">Г</string>
+    <string name="month_short_capital">М</string>
+    <string name="day_short_capital">Д</string>
+    <string-array name="months">
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </string-array>
 </resources>

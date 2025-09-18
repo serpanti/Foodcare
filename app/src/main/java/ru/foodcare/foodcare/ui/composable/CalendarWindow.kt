@@ -44,8 +44,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.nutrientsProperties.NutrientsProperties
 import ru.foodcare.foodcare.domain.weight.Weight
@@ -147,14 +150,14 @@ fun DayWindowByDate(
                         mealViewModel.onAddMeal()
                         openMealEditor()
                     }) {
-                        Icon(Icons.Filled.RestaurantMenu, "Открыть редактор приема пищи")
+                        Icon(Icons.Filled.RestaurantMenu, stringResource(R.string.open_meal_editor))
                     }
                 }, {
                     IconButton(onClick = {
                         weightVM.onAddWeight()
                         openWeightEditor()
                     }) {
-                        Icon(Icons.Filled.Balance, "Открыть редактор веса")
+                        Icon(Icons.Filled.Balance, stringResource(R.string.open_weight_editor))
                     }
                 }
             )
@@ -238,7 +241,9 @@ fun DaysWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewModel
         getChangedDate = {months -> this.plusMonths(months)},
     ) { pageDate ->
         ElementWithHeader({
-            Header("%s  %d г.".format(date.monthValue.toMonth(), date.year))
+            Header("%s  %d %s."
+                .format(date.monthValue.toMonth(), date.year,
+                    stringResource(R.string.year_short)))
         }) {
             DaysTable(days, formatType, dateVM)
         }
@@ -288,12 +293,7 @@ fun DaysTable(
 
 @Composable
 private fun Int.toMonth(): String {
-    // TODO resources
-    val year = listOf(
-        "январь", "февраль", "март", "апрель",
-        "май", "июнь", "июль", "август",
-        "сентябрь", "октябрь", "ноябрь", "декабрь"
-    )
+    val year = stringArrayResource(R.array.months)
 
     return year[(this - 1) % year.size]
 }
@@ -309,7 +309,7 @@ fun MonthsWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewMod
         getChangedDate = {years -> this.plusYears(years)},
     ) { pageDate ->
         ElementWithHeader({
-            Header("%d год".format(date.year))
+            Header("%d %s".format(date.year, stringResource(R.string.year)))
         }) {
             MonthsTable(months, formatType, dateVM)
         }
@@ -362,7 +362,7 @@ fun YearsWindow(formatType: MutableState<CalendarShowType>, dateVM: DateViewMode
     val currentYear = LocalDate.now().year
 
     ElementWithHeader({
-        Header("Все года")
+        Header(stringResource(R.string.all_years))
     }) {
         YearsTable((years + currentYear).distinct(), formatType, dateVM)
     }
@@ -416,19 +416,23 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
         .padding(2.dp)
         .zIndex(1f)
     ) {
-        CalendarTypeButton("Г.", type.value == CalendarShowType.Years, Modifier.weight(1f)) {
+        CalendarTypeButton(stringResource(R.string.year_short_capital) + ".",
+            type.value == CalendarShowType.Years, Modifier.weight(1f)) {
             type.value = CalendarShowType.Years
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("М.", type.value == CalendarShowType.Months, Modifier.weight(1f)) {
+        CalendarTypeButton(stringResource(R.string.month_short_capital) + ".",
+            type.value == CalendarShowType.Months, Modifier.weight(1f)) {
             type.value = CalendarShowType.Months
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("Д.", type.value == CalendarShowType.Days, Modifier.weight(1f)) {
+        CalendarTypeButton(stringResource(R.string.day_short_capital) + ".",
+            type.value == CalendarShowType.Days, Modifier.weight(1f)) {
             type.value = CalendarShowType.Days
         }
         VerticalDivider(2.dp, Color.Black)
-        CalendarTypeButton("1Д.", type.value == CalendarShowType.Day, Modifier.weight(1f)) {
+        CalendarTypeButton("1" + stringResource(R.string.day_short_capital) + ".",
+            type.value == CalendarShowType.Day, Modifier.weight(1f)) {
             type.value = CalendarShowType.Day
         }
     }
