@@ -88,6 +88,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
@@ -95,6 +96,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.input.Input
 import java.time.LocalDate
@@ -146,7 +148,7 @@ fun FloatingAddListButton(modifier: Modifier = Modifier,
 
     FloatingActionButton(modifier,
         action = {isOpened = !isOpened},
-        contentDescription = "Открыть меню добавления",
+        contentDescription = stringResource(R.string.open_the_add_menu),
         rotateAngle = 45f,
         editList = editList,
         listIsOpened = isOpened
@@ -230,7 +232,7 @@ fun SwipeToStartButton(modifier: Modifier = Modifier, lazyListState: LazyListSta
             scope.launch {
                 lazyListState.animateScrollToItem(0)
             }
-        }) { Icon(Icons.Filled.KeyboardArrowUp, "Переместиться наверх") }
+        }) { Icon(Icons.Filled.KeyboardArrowUp, stringResource(R.string.move_to_top)) }
     }
 }
 
@@ -260,14 +262,14 @@ fun EditMenu(visibleState: MutableState<Boolean>,
     DropdownMenu(visibleState.value, {visibleState.value = false}, modifier = modifier,
         offset = offset) {
         DropdownMenuItem({
-            Text("Редактировать")
+            Text(stringResource(R.string.edit))
         }, {
             visibleState.value = false
             edit()
         }, trailingIcon = {Icon(Icons.Filled.Edit, null)})
         HorizontalDivider(1.dp, Color.Gray)
         DropdownMenuItem({
-            Text("Удалить")
+            Text(stringResource(R.string.delete))
         }, {
             visibleState.value = false
             remove()
@@ -297,9 +299,9 @@ fun SearchField(onStartSearching: () -> Unit,
             if (isOpened()) onStopSearching() else onStartSearching()
         }) {
             if (isOpened()) {
-                Icon(Icons.Filled.Close, "Закрыть поиск")
+                Icon(Icons.Filled.Close, stringResource(R.string.close_search))
             } else {
-                Icon(Icons.Filled.Search, "Открыть поиск")
+                Icon(Icons.Filled.Search, stringResource(R.string.open_search))
             }
         }
     }
@@ -309,7 +311,7 @@ fun SearchField(onStartSearching: () -> Unit,
 fun SearchTextField(startText: String, onValueChange: (String) -> Unit,
                     modifier: Modifier = Modifier) {
     SimpleTextField(startText, onValueChange,
-        placeholder = {Text("Поиск")},
+        placeholder = {Text(stringResource(R.string.search))},
         modifier = modifier.padding(start = 5.dp)
     )
 }
@@ -413,9 +415,9 @@ fun LazyListScope.itemWithUnderLine(content: @Composable (LazyItemScope.() -> Un
 @Composable
 fun AlertWrongInput(preview: @Composable (() -> Unit) = {}, closeAlert: () -> Unit) {
     AlertDialog(closeAlert,
-        {TextButton(closeAlert) {Text("Исправлю")} },
+        {TextButton(closeAlert) {Text(stringResource(R.string.fix))} },
         modifier = Modifier.fillMaxWidth(),
-        title = {Text("В вводе ошибки")},
+        title = {Text(stringResource(R.string.error_in_the_input))},
         text = preview)
 }
 
@@ -462,25 +464,24 @@ fun SaveButton(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Save, "")
-            Text("Сохранить", fontSize = 20.sp)
+            Text(stringResource(R.string.save), fontSize = 20.sp)
         }
     }
 }
 
 @Composable
 fun UnitType.toStringWithLanguage(): String {
-    // TODO интеграция с resources
     return when (this) {
-        UnitType.Milliliter -> "мл"
-        UnitType.Gram -> "г"
-        UnitType.Piece -> "шт"
+        UnitType.Milliliter -> stringResource(R.string.ml)
+        UnitType.Gram -> stringResource(R.string.g)
+        UnitType.Piece -> stringResource(R.string.piece)
     }
 }
 
 @Composable
 fun IconWithAction(action: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.clickable(onClick = action), contentAlignment = Alignment.Center) {
-        Icon(Icons.Filled.Delete, "Удалить запись")
+        Icon(Icons.Filled.Delete, stringResource(R.string.delete_record))
     }
 }
 
@@ -490,12 +491,12 @@ fun AlertAboutActionDialog(close: () -> Unit, action: () -> Unit, question: Stri
     AlertDialog (
         onDismissRequest = close,
         dismissButton = {TextButton(close) {
-            Text("Отмена")
+            Text(stringResource(R.string.cancel))
         }},
         confirmButton = {TextButton({
             action()
             close()
-        }) { Text("Подтвердить") }},
+        }) { Text(stringResource(R.string.ok)) }},
         title = {
             Text(question)
         },
@@ -506,7 +507,7 @@ fun AlertAboutActionDialog(close: () -> Unit, action: () -> Unit, question: Stri
 @Composable
 fun AlertDeleteDialog(close: () -> Unit, delete: () -> Unit,
                       preview: @Composable () -> Unit = {}) {
-    AlertAboutActionDialog(close, delete, "Вы уверены, что хотите удалить?", preview)
+    AlertAboutActionDialog(close, delete, stringResource(R.string.delete_question), preview)
 }
 
 @Composable
@@ -576,13 +577,13 @@ fun InfiniteDatePager(modifier: Modifier = Modifier,
 fun CommonSnackbar(data: SnackbarData) {
     val action: (@Composable () -> Unit)? = {
         TextButton({ data.performAction() }) {
-            Text(data.visuals.actionLabel ?: "Ок")
+            Text(data.visuals.actionLabel ?: stringResource(R.string.ok))
         }
     }
 
     val dismissAction: (@Composable () -> Unit)? =
         if (data.visuals.withDismissAction) {
-            { TextButton({ data.dismiss() }) { Text("Отмена") } }
+            { TextButton({ data.dismiss() }) { Text(stringResource(R.string.cancel)) } }
         } else null
 
     val snackBarSize = 60.dp

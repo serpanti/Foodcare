@@ -5,4 +5,21 @@
     <string name="products">Продукты</string>
     <string name="menu">Меню</string>
     <string name="exit_the_editor">Выйти из редактора</string>
+    <string name="open_the_add_menu">Открыть меню добавления</string>
+    <string name="move_to_top">Переместиться наверх</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+    <string name="open_search">Открыть поиск</string>
+    <string name="close_search">Закрыть поиск</string>
+    <string name="search">Поиск</string>
+    <string name="fix">Исправить</string>
+    <string name="error_in_the_input">В вводе ошибки</string>
+    <string name="save">Сохранить</string>
+    <string name="ml">мл</string>
+    <string name="piece">шт</string>
+    <string name="g">г</string>
+    <string name="delete_record">Удалить запись</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">Подтвердить</string>
+    <string name="delete_question">Вы уверены, что хотите удалить?</string>
 </resources>
