@@ -24,8 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.ui.composable.IconWithAction
@@ -55,12 +57,15 @@ fun WeightCard(weight: Weight, weightVM: WeightViewModel,
     val deleteScope = rememberCoroutineScope()
     val removeWeightAction = {weightVM.remove(weight)}
 
+    val actionLabel = stringResource(R.string.cancel)
+    val message = stringResource(R.string.deletion_warning)
+
     val deleteAction: () -> Unit = {
         if (snackbarHostState != null) {
             deleteScope.launch {
                 val result = snackbarHostState.showSnackbar(
-                    message = "Скоро произойдет удаление",
-                    actionLabel = "Отмена",
+                    message = message,
+                    actionLabel = actionLabel,
                     duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.Dismissed) removeWeightAction()
@@ -106,7 +111,7 @@ fun WeightCardContentInfoWithTime(weight: Weight, modifier: Modifier = Modifier,
 
 @Composable
 fun WeightCardContentInfo(weight: Weight, modifier: Modifier = Modifier) {
-    // TODO resources
-    Text("Вес: ${ weight.value } кг",
+    Text("%s: %.2f %s"
+        .format(stringResource(R.string.weight_capital), weight.value, stringResource(R.string.kg)),
         modifier = modifier)
 }

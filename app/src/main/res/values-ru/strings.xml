@@ -55,4 +55,5 @@
     <string name="minutes_error_message">Ошибка в минутах</string>
     <string name="seconds_error_message">Ошибка в секундах</string>
     <string name="wrong_date_message">Такой даты не существует</string>
+    <string name="deletion_warning">Скоро произойдет удаление</string>
 </resources>
