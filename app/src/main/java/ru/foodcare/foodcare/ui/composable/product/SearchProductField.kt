@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.InfiniteLoading
@@ -93,7 +95,7 @@ fun DropdownProducts(visible: Boolean, close: () -> Unit, products: List<Product
                     InfiniteLoading()
                 } else {
                     if (products.isEmpty()) {
-                        Text("Нет совпадений", Modifier.align(Alignment.Center))
+                        Text(stringResource(R.string.no_matches), Modifier.align(Alignment.Center))
                     } else {
                         ProductButtonsLazyColumn(products) { product ->
                             onSelected(product)

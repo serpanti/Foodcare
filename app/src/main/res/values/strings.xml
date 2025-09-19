@@ -106,4 +106,5 @@
     <string name="piece_selector_text">1 piece - per 1 item</string>
     <string name="gram_selector_text">100 g - per 100 grams</string>
     <string name="milliliter_selector_text">100 ml - per 0.1 liter</string>
+    <string name="no_matches">No matches</string>
 </resources>

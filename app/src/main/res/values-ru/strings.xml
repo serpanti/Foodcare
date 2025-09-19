@@ -109,5 +109,6 @@
     <string name="piece_selector_text">1 шт - на 1 предмет</string>
     <string name="gram_selector_text">100 г - на 100 грамм</string>
     <string name="milliliter_selector_text">100 мл - на 0.1 литра</string>
+    <string name="no_matches">Нет совпадений</string>
 
 </resources>
