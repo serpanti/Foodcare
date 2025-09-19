@@ -129,8 +129,9 @@ fun CaloriesEdit(calories: MutableState<String>) {
 
 @Composable
 fun ProteinEdit(protein: MutableState<String>) {
+    var proteinNumber = protein.value.toDoubleOrNull()
     val gramString = LocalResources.current
-        .getQuantityString(R.plurals.weight_in_grams, protein.value.toInt())
+        .getQuantityString(R.plurals.weight_in_grams, proteinNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.protein_capital) +
             ": ", protein.value, gramString
     ) { protein.value = it }
@@ -138,8 +139,9 @@ fun ProteinEdit(protein: MutableState<String>) {
 
 @Composable
 fun FatEdit(fat: MutableState<String>) {
+    var fatNumber = fat.value.toDoubleOrNull()
     val gramString = LocalResources.current
-        .getQuantityString(R.plurals.weight_in_grams, fat.value.toInt())
+        .getQuantityString(R.plurals.weight_in_grams, fatNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.fat_capital) +
             ": ", fat.value, gramString
     ) { fat.value = it }
@@ -147,8 +149,9 @@ fun FatEdit(fat: MutableState<String>) {
 
 @Composable
 fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
+    var carbohydratesNumber = carbohydrates.value.toDoubleOrNull()
     val gramString = LocalResources.current
-        .getQuantityString(R.plurals.weight_in_grams, carbohydrates.value.toInt())
+        .getQuantityString(R.plurals.weight_in_grams, carbohydratesNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.carbohydrates_capital) +
             ": ", carbohydrates.value, gramString
     ) { carbohydrates.value = it }
@@ -156,8 +159,9 @@ fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
 
 @Composable
 fun FiberEdit(fiber: MutableState<String>) {
+    var fiberNumber = fiber.value.toDoubleOrNull()
     val gramString = LocalResources.current
-        .getQuantityString(R.plurals.weight_in_grams, fiber.value.toInt())
+        .getQuantityString(R.plurals.weight_in_grams, fiberNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.fibers_capital) +
             ": ", fiber.value, gramString
     ) { fiber.value = it }
