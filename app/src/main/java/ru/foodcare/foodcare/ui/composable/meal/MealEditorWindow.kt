@@ -23,8 +23,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
@@ -143,9 +145,9 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
     SimpleTextField(productCount.value, onValueChange = { newStr ->
         productCount.value = newStr
     }, modifier = modifier.padding(10.dp), placeholder = {
-        Text("Введите кол-во полностью")
+        Text(stringResource(R.string.quantity_input_product_instruction))
     }, prefix = {
-        Text("Кол-во: ")
+        Text("${stringResource(R.string.quantity_capital)}: ")
     }, suffix = {
         Text(type.toStringWithLanguage())
     })
@@ -160,7 +162,7 @@ fun SelectedProductText(product: Product?, modifier: Modifier = Modifier) {
     val text = if (product != null) {
         "%s %s".format(product.name, product.production)
     } else {
-        "Продукт не выбран"
+        stringResource(R.string.select_product_status)
     }
     Text(text, innerModifier)
 }
@@ -175,7 +177,7 @@ fun TimeEdit(
     seconds: MutableState<String>
 ) {
     Column {
-        CustomButton("Установить Текущее время", Modifier.fillMaxWidth()) {
+        CustomButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth()) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
         val fieldModifier = Modifier.fillMaxWidth().padding(5.dp)
@@ -193,9 +195,9 @@ fun YearTextField(year: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(year.value, onValueChange = { newStr ->
         year.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите год полностью")
+        Text(stringResource(R.string.year_input_instruction))
     }, prefix = {
-        Text("Год: ")
+        Text(stringResource(R.string.year_capital) + ": ")
     })
 }
 
@@ -204,9 +206,9 @@ fun MonthTextField(month: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(month.value, onValueChange = { newStr ->
         month.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите номер месяца (1-12)")
+        Text(stringResource(R.string.month_input_instruction) + " (1-12)")
     }, prefix = {
-        Text("Месяц: ")
+        Text(stringResource(R.string.month_capital) + ": ")
     })
 }
 
@@ -215,9 +217,9 @@ fun DayTextField(day: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(day.value, onValueChange = { newStr ->
         day.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите номер дня (1-31)")
+        Text(stringResource(R.string.day_input_instruction) + " (1-31)")
     }, prefix = {
-        Text("День: ")
+        Text(stringResource(R.string.day_capital) + ": ")
     })
 }
 
@@ -226,9 +228,9 @@ fun HoursTextField(hour: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(hour.value, onValueChange = { newStr ->
         hour.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите номер часа (0-23)")
+        Text(stringResource(R.string.hours_input_instruction) + " (0-23)")
     }, prefix = {
-        Text("Часы: ")
+        Text(stringResource(R.string.hours_capital) + ": ")
     })
 }
 
@@ -237,9 +239,9 @@ fun MinutesTextField(minutes: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(minutes.value, onValueChange = { newStr ->
         minutes.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите количество минут (0-59)")
+        Text(stringResource(R.string.minutes_input_instruction) + " (0-59)")
     }, prefix = {
-        Text("Минуты: ")
+        Text(stringResource(R.string.minutes_capital) + ": ")
     })
 }
 
@@ -248,9 +250,9 @@ fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(seconds.value, onValueChange = { newStr ->
         seconds.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("Введите количество секунд (0-59)")
+        Text(stringResource(R.string.seconds_input_instruction) + " (0-59)")
     }, prefix = {
-        Text("Секунды: ")
+        Text(stringResource(R.string.seconds_capital) + ": ")
     })
 }
 
@@ -272,21 +274,21 @@ private fun setSystemTime(year: MutableState<String>,
 @Composable
 fun WrongInputMealPreview(inputMeal: InputMeal) {
     Column {
-        if (inputMeal.product == null) Text("Продукт не выбран")
-        if (inputMeal.year == null) Text("Ошибка в году")
-        if (inputMeal.month == null) Text("Ошибка в месяце")
-        if (inputMeal.day == null) Text("Ошибка в дне")
-        if (inputMeal.hours == null) Text("Ошибка в часах")
-        if (inputMeal.minutes == null) Text("Ошибка в минутах")
-        if (inputMeal.seconds == null) Text("Ошибка в секундах")
-        if (inputMeal.productCount == null) Text("Ошибка в кол-ве продукта")
+        if (inputMeal.product == null) Text(stringResource(R.string.product_error_message))
+        if (inputMeal.year == null) Text(stringResource(R.string.year_error_message))
+        if (inputMeal.month == null) Text(stringResource(R.string.month_error_message))
+        if (inputMeal.day == null) Text(stringResource(R.string.day_error_message))
+        if (inputMeal.hours == null) Text(stringResource(R.string.hours_error_message))
+        if (inputMeal.minutes == null) Text(stringResource(R.string.minutes_error_message))
+        if (inputMeal.seconds == null) Text(stringResource(R.string.seconds_error_message))
+        if (inputMeal.productCount == null) Text(stringResource(R.string.product_quantity_error_message))
         if (inputMeal.year != null && inputMeal.month != null && inputMeal.day != null &&
             inputMeal.hours != null && inputMeal.minutes != null && inputMeal.seconds != null) {
                 try {
                     LocalDateTime.of(inputMeal.year, inputMeal.month, inputMeal.day,
                         inputMeal.hours, inputMeal.minutes, inputMeal.seconds)
                 } catch (_: Exception) {
-                    Text("Такой даты не существует")
+                    Text(stringResource(R.string.wrong_date_message))
                 }
             }
     }

@@ -72,5 +72,23 @@
     <string name="quantity_capital">Кол-во</string>
     <string name="supplier_capital">Производитель</string>
     <string name="name_capital">Имя</string>
+    <string name="quantity_input_product_instruction">Введите кол-во полностью</string>
+    <string name="select_product_status">Продукт не выбран</string>
+    <string name="set_current_time">Установить текущее время</string>
+    <string name="set_current_time">Установить Текущее время</string>
+    <string name="year_capital">Год</string>
+    <string name="month_capital">Месяц</string>
+    <string name="day_capital">День</string>
+    <string name="hours_capital">Часы</string>
+    <string name="minutes_capital">Минуты</string>
+    <string name="seconds_capital">Секунды</string>
+    <string name="year_input_instruction">Введите год полностью</string>
+    <string name="month_input_instruction">Введите номер месяца</string>
+    <string name="day_input_instruction">Введите номер дня</string>
+    <string name="hours_input_instruction">Введите номер часа</string>
+    <string name="minutes_input_instruction">Введите количество минут</string>
+    <string name="seconds_input_instruction">Введите количество секунд</string>
+    <string name="product_error_message">Продукт не выбран</string>
+    <string name="product_quantity_error_message">Ошибка в кол-ве продукта</string>
 
 </resources>

@@ -70,4 +70,21 @@
     <string name="quantity_capital">Quantity</string>
     <string name="supplier_capital">Supplier</string>
     <string name="name_capital">Name</string>
+    <string name="quantity_input_product_instruction">Enter the quantity of the product</string>
+    <string name="select_product_status">Product not selected</string>
+    <string name="set_current_time">Set the current time</string>
+    <string name="year_capital">Year</string>
+    <string name="month_capital">Month</string>
+    <string name="day_capital">Day</string>
+    <string name="hours_capital">Hours</string>
+    <string name="minutes_capital">Minutes</string>
+    <string name="seconds_capital">Seconds</string>
+    <string name="year_input_instruction">Enter the year number</string>
+    <string name="month_input_instruction">Enter the month number</string>
+    <string name="day_input_instruction">Enter the day number</string>
+    <string name="hours_input_instruction">Enter the hour</string>
+    <string name="minutes_input_instruction">Enter minutes</string>
+    <string name="seconds_input_instruction">Enter seconds</string>
+    <string name="product_error_message">No product selected</string>
+    <string name="product_quantity_error_message">Error in product quantity</string>
 </resources>
