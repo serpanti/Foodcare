@@ -5,9 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -21,10 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
@@ -32,7 +27,6 @@ import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.CustomButton
-import ru.foodcare.foodcare.ui.composable.product.DropdownProducts
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.product.SearchProductFieldWithList
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
@@ -106,31 +100,17 @@ fun ProductEdit(
     productCount: MutableState<String>,
     productViewModel: ProductViewModel
 ) {
-    val density = LocalDensity.current
-    var width = 0.dp
-    var height = 0
-
     val selectedProductDelegate = remember { derivedStateOf { product.value } }
     val productConst = selectedProductDelegate.value
 
     Column(Modifier.fillMaxWidth()) {
-        Column(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
-            width = with(density) { coordinates.size.width.toDp() }
-            height = coordinates.size.height
-        }) {
+        Column(Modifier.fillMaxWidth()) {
             SelectedProductText(productConst, Modifier.fillMaxWidth()
                 .padding(horizontal = 10.dp).padding(top = 10.dp))
 
-            SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth())
-            { visible, close, products ->
-                DropdownProducts(
-                    visible, close, products,
-                    Modifier.width(width).heightIn(0.dp, 200.dp),
-                    offset = IntOffset(0, height)
-                ) { newProduct ->
-                    product.value = newProduct
-                }
-            }
+            SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth()
+                .padding(horizontal = 10.dp).padding(vertical = 5.dp)
+                , product)
         }
 
         if (productConst != null) {
