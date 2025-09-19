@@ -87,9 +87,9 @@
     <string name="seconds_input_instruction">Enter seconds</string>
     <string name="product_error_message">No product selected</string>
     <string name="product_quantity_error_message">Error in product quantity</string>
-    <string name="product_name_edit_prefix">Name</string>
+    <string name="product_name">Name</string>
     <string name="product_name_edit_placeholder">Product name</string>
-    <string name="product_production_edit_prefix">Manufacturer</string>
+    <string name="product_production_capital">Manufacturer</string>
     <string name="protein_capital">Protein</string>
     <string name="fat_capital">Fat</string>
     <string name="carbohydrates_capital">Carbohydrates</string>
@@ -107,4 +107,5 @@
     <string name="gram_selector_text">100 g - per 100 grams</string>
     <string name="milliliter_selector_text">100 ml - per 0.1 liter</string>
     <string name="no_matches">No matches</string>
+    <string name="open_product_editor">Open the editing menu</string>
 </resources>

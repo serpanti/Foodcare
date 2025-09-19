@@ -31,9 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
 import ru.foodcare.foodcare.ui.composable.CardSurface
@@ -137,7 +139,7 @@ fun ProductCard(
                 offset = DpOffset(width.value.withLayoutDirection(), 0.dp)
             )
             IconButton({ visibleState.value = true }) {
-                Icon(Icons.Filled.MoreHoriz, "открыть меню редактирования")
+                Icon(Icons.Filled.MoreHoriz, stringResource(R.string.open_product_editor))
             }
         }
     }
@@ -150,15 +152,18 @@ fun DeleteProductContent(
     viewModel: ProductViewModel,
     showAlert: MutableState<Boolean>
 ) {
-
     val deleteScope = rememberCoroutineScope()
     val removeProductAction = {viewModel.removeProduct(product)}
+
+    val actionLabel = stringResource(R.string.cancel)
+    val message = stringResource(R.string.deletion_warning)
+
     val deleteAction: () -> Unit = {
         if (snackbarHostState != null) {
             deleteScope.launch {
                 val result = snackbarHostState.showSnackbar(
-                    message = "Скоро произойдет удаление",
-                    actionLabel = "Отмена",
+                    message = message,
+                    actionLabel = actionLabel,
                     duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.Dismissed) removeProductAction()
@@ -177,8 +182,8 @@ fun DeleteProductContent(
 fun AlertDeleteProductDialog(close: () -> Unit, product: Product, delete: () -> Unit) =
     AlertDeleteDialog(close, delete) {
         Column {
-            Text("Название: " + product.name)
-            Text("Производитель: " + product.production)
+            Text(stringResource(R.string.product_name) + ": " + product.name)
+            Text(stringResource(R.string.product_production_capital) + ": " + product.production)
         }
     }
 
@@ -187,11 +192,11 @@ fun ProductCardContent(product: Product) {
     Column(modifier = Modifier
         .background(Color.Transparent)
         .padding(10.dp)) {
-        Text("Название: " + product.name)
-        Text("Производитель: " + product.production)
+        Text(stringResource(R.string.product_name) + ": " + product.name)
+        Text(stringResource(R.string.product_production_capital) + ": " + product.production)
         Nutrients(product.nutrientsProperties, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
         Row(modifier = Modifier.align(Alignment.End)) {
-            Text("Кол-во: ")
+            Text(stringResource(R.string.quantity_capital) + ": ")
             Text("${product.amount} ${product.type.toStringWithLanguage()}")
         }
     }

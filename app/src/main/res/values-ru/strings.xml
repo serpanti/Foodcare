@@ -90,9 +90,9 @@
     <string name="seconds_input_instruction">Введите количество секунд</string>
     <string name="product_error_message">Продукт не выбран</string>
     <string name="product_quantity_error_message">Ошибка в кол-ве продукта</string>
-    <string name="product_name_edit_prefix">Название</string>
+    <string name="product_name">Название</string>
     <string name="product_name_edit_placeholder">Название продукта</string>
-    <string name="product_production_edit_prefix">Производитель</string>
+    <string name="product_production_capital">Производитель</string>
     <string name="protein_capital">Белок</string>
     <string name="fat_capital">Жир</string>
     <string name="carbohydrates_capital">Углеводы</string>
@@ -110,5 +110,6 @@
     <string name="gram_selector_text">100 г - на 100 грамм</string>
     <string name="milliliter_selector_text">100 мл - на 0.1 литра</string>
     <string name="no_matches">Нет совпадений</string>
+    <string name="open_product_editor">Открыть меню редактирования</string>
 
 </resources>

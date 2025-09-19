@@ -109,14 +109,14 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
 @Composable
 fun NameEdit(name: MutableState<String>) {
     ProductTextField(name.value, {name.value = it},
-        prefix = {Text(stringResource(R.string.product_name_edit_prefix) + ": ")},
+        prefix = {Text(stringResource(R.string.product_name) + ": ")},
         placeholder = {Text(stringResource(R.string.product_name_edit_placeholder))})
 }
 
 @Composable
 fun ProductionEdit(production: MutableState<String>) {
     ProductTextField(production.value, {production.value = it},
-        prefix = {Text(stringResource(R.string.product_production_edit_prefix) + ": ")},
+        prefix = {Text(stringResource(R.string.product_production_capital) + ": ")},
         placeholder = {Text(stringResource(R.string.product_production_edit_placeholder))})
 }
 
