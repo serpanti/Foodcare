@@ -87,4 +87,23 @@
     <string name="seconds_input_instruction">Enter seconds</string>
     <string name="product_error_message">No product selected</string>
     <string name="product_quantity_error_message">Error in product quantity</string>
+    <string name="product_name_edit_prefix">Name</string>
+    <string name="product_name_edit_placeholder">Product name</string>
+    <string name="product_production_edit_prefix">Manufacturer</string>
+    <string name="protein_capital">Protein</string>
+    <string name="fat_capital">Fat</string>
+    <string name="carbohydrates_capital">Carbohydrates</string>
+    <string name="product_production_edit_placeholder">Name of food manufacturer</string>
+    <string name="product_name_error_message">Name not specified</string>
+    <string name="product_production_error_message">Manufacturer not specified</string>
+    <string name="energy_error_message">Calorie Error</string>
+    <string name="fat_error_message">The fat Error</string>
+    <string name="protein_error_message">Error in proteins</string>
+    <string name="carbohydrates_error_message">Carbohydrate Error</string>
+    <string name="fibers_error_message">Error in the fibers</string>
+    <string name="and">and</string>
+    <string name="nutrient_input_instruction">Characters allowed</string>
+    <string name="piece_selector_text">1 piece - per 1 item</string>
+    <string name="gram_selector_text">100 g - per 100 grams</string>
+    <string name="milliliter_selector_text">100 ml - per 0.1 liter</string>
 </resources>

@@ -23,7 +23,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.ui.input.InputProduct
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
@@ -106,57 +109,74 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
 @Composable
 fun NameEdit(name: MutableState<String>) {
     ProductTextField(name.value, {name.value = it},
-        prefix = {Text("Название: ")},
-        placeholder = {Text("Название продукта")})
+        prefix = {Text(stringResource(R.string.product_name_edit_prefix) + ": ")},
+        placeholder = {Text(stringResource(R.string.product_name_edit_placeholder))})
 }
 
 @Composable
 fun ProductionEdit(production: MutableState<String>) {
     ProductTextField(production.value, {production.value = it},
-        prefix = {Text("Производитель: ")},
-        placeholder = {Text("Имя производителя")})
+        prefix = {Text(stringResource(R.string.product_production_edit_prefix) + ": ")},
+        placeholder = {Text(stringResource(R.string.product_production_edit_placeholder))})
 }
 
 @Composable
 fun CaloriesEdit(calories: MutableState<String>) {
-    NutrientTextField("Калорийность: ", calories.value, "ккал"
+    NutrientTextField(stringResource(R.string.caloric_content) +
+            ": ", calories.value, stringResource(R.string.calories_short)
     ) { calories.value = it }
 }
 
 @Composable
 fun ProteinEdit(protein: MutableState<String>) {
-    NutrientTextField("Белок: ", protein.value, "грамм"
+    val gramString = LocalResources.current
+        .getQuantityString(R.plurals.weight_in_grams, protein.value.toInt())
+    NutrientTextField(stringResource(R.string.protein_capital) +
+            ": ", protein.value, gramString
     ) { protein.value = it }
 }
 
 @Composable
 fun FatEdit(fat: MutableState<String>) {
-    NutrientTextField("Жир: ", fat.value, "грамм"
+    val gramString = LocalResources.current
+        .getQuantityString(R.plurals.weight_in_grams, fat.value.toInt())
+    NutrientTextField(stringResource(R.string.fat_capital) +
+            ": ", fat.value, gramString
     ) { fat.value = it }
 }
 
 @Composable
 fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
-    NutrientTextField("Углеводы: ", carbohydrates.value, "грамм"
+    val gramString = LocalResources.current
+        .getQuantityString(R.plurals.weight_in_grams, carbohydrates.value.toInt())
+    NutrientTextField(stringResource(R.string.carbohydrates_capital) +
+            ": ", carbohydrates.value, gramString
     ) { carbohydrates.value = it }
 }
 
 @Composable
 fun FiberEdit(fiber: MutableState<String>) {
-    NutrientTextField("Волокна: ", fiber.value, "грамм"
+    val gramString = LocalResources.current
+        .getQuantityString(R.plurals.weight_in_grams, fiber.value.toInt())
+    NutrientTextField(stringResource(R.string.fibers_capital) +
+            ": ", fiber.value, gramString
     ) { fiber.value = it }
 }
 
 @Composable
 fun WrongInputProductPreview(inputProduct: InputProduct) {
     Column {
-        if (inputProduct.name.isEmpty()) Text("Имя не указано")
-        if (inputProduct.production.isEmpty()) Text("Производитель не указан")
-        if (inputProduct.calories == null) Text("Ошибка в калориях")
-        if (inputProduct.protein == null) Text("Ошибка в белках")
-        if (inputProduct.fat == null) Text("Ошибка в жирах")
-        if (inputProduct.carbohydrates == null) Text("Ошибка в углеводах")
-        if (inputProduct.fiber == null) Text("Ошибка в волокнах")
+        if (inputProduct.name.isEmpty()) Text(stringResource(R.string.product_name_error_message))
+        if (inputProduct.production.isEmpty()) Text(
+            stringResource(R.string.product_production_error_message)
+        )
+        if (inputProduct.calories == null) Text(stringResource(R.string.energy_error_message))
+        if (inputProduct.protein == null) Text(stringResource(R.string.protein_error_message))
+        if (inputProduct.fat == null) Text(stringResource(R.string.fat_error_message))
+        if (inputProduct.carbohydrates == null) Text(
+            stringResource(R.string.carbohydrates_error_message)
+        )
+        if (inputProduct.fiber == null) Text(stringResource(R.string.fibers_error_message))
     }
 }
 
@@ -169,15 +189,18 @@ fun ProductTypeSelector(type: MutableState<UnitType>) {
         .clip(RoundedCornerShape(10.dp))
         .padding(horizontal = 20.dp, vertical = 15.dp)
     ) {
-        Text("Кол-во:")
+        Text(stringResource(R.string.quantity_capital) + ":")
         Column (verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.height(90.dp)) {
-            ProductTypeSelectRow("1 шт - на 1 предмет", type.value == UnitType.Piece) {
+            ProductTypeSelectRow(stringResource(R.string.piece_selector_text),
+                type.value == UnitType.Piece) {
                 type.value = UnitType.Piece
             }
-            ProductTypeSelectRow("100 г - на 100 грамм", type.value == UnitType.Gram) {
+            ProductTypeSelectRow(stringResource(R.string.gram_selector_text),
+                type.value == UnitType.Gram) {
                 type.value = UnitType.Gram
             }
-            ProductTypeSelectRow("100 мл - на 0.1 литра", type.value == UnitType.Milliliter) {
+            ProductTypeSelectRow(stringResource(R.string.milliliter_selector_text),
+                type.value == UnitType.Milliliter) {
                 type.value = UnitType.Milliliter
             }
         }
@@ -201,9 +224,11 @@ fun ProductTypeSelectRow(type: String, selected: Boolean, onSelect: () -> Unit) 
 fun NutrientTextField(description: String, value: String, type: String,
                       onValueChange: (String) -> Unit) {
     ProductTextField((value), onValueChange,
-        placeholder = {Text("Позволены символы: [0-9 и .]")},
+        placeholder = {Text(stringResource(R.string.nutrient_input_instruction) +
+                ": [0-9 ${stringResource(R.string.and)} .]")},
         prefix = {Text(description)},
-        suffix = {Text(type)})
+        suffix = {Text(type)}
+    )
 }
 
 @Composable
