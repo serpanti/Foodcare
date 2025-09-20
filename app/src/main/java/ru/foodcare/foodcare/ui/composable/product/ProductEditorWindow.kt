@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,7 +35,6 @@ import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.CheckCircle
 import ru.foodcare.foodcare.ui.composable.SaveButton
-import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
 
@@ -79,21 +79,20 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
 
     Column {
         NameEdit(name)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         ProductionEdit(production)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         CaloriesEdit(calories)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         ProteinEdit(protein)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         FatEdit(fat)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         CarbohydratesEdit(carbohydrates)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         FiberEdit(fiber)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         ProductTypeSelector(type)
-        HorizontalDivider(2.dp, Color.Black)
 
         val caloriesNum = calories.value.parseToDoubleOrNull()
         val proteinNum = protein.value.parseToDoubleOrNull()
