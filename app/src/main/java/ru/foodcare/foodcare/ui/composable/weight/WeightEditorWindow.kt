@@ -2,10 +2,9 @@ package ru.foodcare.foodcare.ui.composable.weight
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -19,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.CardSurface
+import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
 import ru.foodcare.foodcare.ui.composable.TimeEdit
-import ru.foodcare.foodcare.ui.composable.itemWithUnderLine
 import ru.foodcare.foodcare.ui.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.ui.composable.parseToIntOrNull
 import ru.foodcare.foodcare.ui.input.InputWeight
@@ -36,7 +35,7 @@ fun WeightEditWindow(viewModel: WeightViewModel,
 
     CardSurface(
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(bottom = 15.dp)
             .padding(5.dp)
             .background(Color.Transparent)
@@ -57,27 +56,29 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
     val minutes = rememberSaveable { mutableStateOf(oldWeight?.date?.minute?.toString() ?: "") }
     val seconds = rememberSaveable { mutableStateOf(oldWeight?.date?.second?.toString() ?: "") }
 
-    LazyColumn {
-        itemWithUnderLine {WeightEdit(weightValue,
-            modifier = Modifier.fillMaxWidth().padding(5.dp))}
-        itemWithUnderLine { TimeEdit(year, month, day, hours, minutes, seconds) }
-        item {
-            val weightValueNum = weightValue.value.parseToDoubleOrNull()
-            val yearNum = year.value.parseToIntOrNull()
-            val monthNum = month.value.parseToIntOrNull()
-            val dayNum = day.value.parseToIntOrNull()
-            val hoursNum = hours.value.parseToIntOrNull()
-            val minutesNum = minutes.value.parseToIntOrNull()
-            val secondsNum = seconds.value.parseToIntOrNull()
-            val inputWeight = InputWeight(id, weightValueNum,
-                yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
+    Column {
+        WeightEdit(weightValue,
+            modifier = Modifier.fillMaxWidth().height(50.dp).padding(10.dp))
+        HorizontalDivider(2.dp, Color.Black)
+        TimeEdit(year, month, day, hours, minutes, seconds,
+            Modifier.padding(bottom = 5.dp))
+        HorizontalDivider(2.dp, Color.Black)
 
-            SaveButton(
-                oldWeight == null, inputWeight, close,
-                { viewModel.add(inputWeight.toWeight()) },
-                { viewModel.update(inputWeight.toWeight()) }) {
-                WrongInputWeightPreview(inputWeight)
-            }
+        val weightValueNum = weightValue.value.parseToDoubleOrNull()
+        val yearNum = year.value.parseToIntOrNull()
+        val monthNum = month.value.parseToIntOrNull()
+        val dayNum = day.value.parseToIntOrNull()
+        val hoursNum = hours.value.parseToIntOrNull()
+        val minutesNum = minutes.value.parseToIntOrNull()
+        val secondsNum = seconds.value.parseToIntOrNull()
+        val inputWeight = InputWeight(id, weightValueNum,
+            yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
+
+        SaveButton(
+            oldWeight == null, inputWeight, close,
+            { viewModel.add(inputWeight.toWeight()) },
+            { viewModel.update(inputWeight.toWeight()) }) {
+            WrongInputWeightPreview(inputWeight)
         }
     }
 }
