@@ -301,8 +301,8 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
 
 @Composable
 fun SquareButton(value: String, modifier: Modifier = Modifier,
-                 backgroundColor: Color = MaterialTheme.colorScheme.background,
-                 color: Color = MaterialTheme.colorScheme.onBackground,
+                 backgroundColor: Color = MaterialTheme.colorScheme.primary,
+                 color: Color = MaterialTheme.colorScheme.onPrimary,
                  onClick: () -> Unit) {
     CustomButton(value, modifier.defaultMinSize(40.dp),
         backgroundColor, onClick = onClick, color = color)
@@ -310,8 +310,8 @@ fun SquareButton(value: String, modifier: Modifier = Modifier,
 
 @Composable
 fun CustomButton(value: String, modifier: Modifier = Modifier,
-                 backgroundColor: Color = MaterialTheme.colorScheme.background,
-                 color: Color = MaterialTheme.colorScheme.onBackground,
+                 backgroundColor: Color = MaterialTheme.colorScheme.primary,
+                 color: Color = MaterialTheme.colorScheme.onPrimary,
                  onClick: () -> Unit) {
     OutlinedButton(onClick = onClick,
         modifier = modifier
