@@ -94,7 +94,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
@@ -424,7 +423,7 @@ fun SaveButton(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Save, "")
-                Text(stringResource(R.string.save), fontSize = 20.sp)
+                Text(stringResource(R.string.save), style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
