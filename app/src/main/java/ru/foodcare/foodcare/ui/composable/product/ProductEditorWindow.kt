@@ -12,15 +12,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -78,21 +77,13 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
 
     Column {
         NameEdit(name)
-        HorizontalDivider()
         ProductionEdit(production)
-        HorizontalDivider()
         CaloriesEdit(calories)
-        HorizontalDivider()
         ProteinEdit(protein)
-        HorizontalDivider()
         FatEdit(fat)
-        HorizontalDivider()
         CarbohydratesEdit(carbohydrates)
-        HorizontalDivider()
         FiberEdit(fiber)
-        HorizontalDivider()
         ProductTypeSelector(type)
-        HorizontalDivider()
 
         val caloriesNum = calories.value.parseToDoubleOrNull()
         val proteinNum = protein.value.parseToDoubleOrNull()
@@ -197,12 +188,12 @@ fun WrongInputProductPreview(inputProduct: InputProduct) {
 fun ProductTypeSelector(type: MutableState<UnitType>) {
     Row (modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 7.dp, vertical = 5.dp)
-        .clip(RoundedCornerShape(10.dp))
-        .padding(horizontal = 20.dp, vertical = 15.dp)
+        .padding(horizontal = 15.dp, vertical = 15.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(stringResource(R.string.quantity_capital) + ":")
-        Column (verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.height(90.dp)) {
+        Column (verticalArrangement = Arrangement.SpaceBetween) {
             ProductTypeSelectRow(stringResource(R.string.piece_selector_text),
                 type.value == UnitType.Piece) {
                 type.value = UnitType.Piece
@@ -224,9 +215,12 @@ fun ProductTypeSelectRow(type: String, selected: Boolean, onSelect: () -> Unit) 
     Row (modifier = Modifier
         .padding(start = 50.dp)
         .fillMaxWidth()
+        .clip(RoundedCornerShape(15.dp))
         .selectable(selected) {
             onSelect()
-        }) {
+        }
+        .padding(10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,) {
         CheckCircle(selected)
         Text(type)
     }
@@ -255,13 +249,7 @@ fun ProductTextField(startText: String, onValueChange: (String) -> Unit,
         suffix = suffix,
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
+            .height(80.dp)
+            .padding(vertical = 10.dp)
     )
 }
