@@ -68,6 +68,8 @@ import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -240,35 +242,36 @@ fun SearchField(onStartSearching: () -> Unit,
                 onValueChange: (String) -> Unit,
                 modifier: Modifier = Modifier,
                 isOpened: () -> Boolean) {
-    Row(verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+    TextField(value = startValue,
+        onValueChange = onValueChange,
+        placeholder = {Text(stringResource(R.string.search))},
         modifier = modifier
             .offset(y = 2.dp)
-            .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(15.dp))
-            .clip(RoundedCornerShape(15.dp))
-            .padding(5.dp)) {
-        SearchTextField(startValue, onValueChange, Modifier.weight(1f))
-        IconButton({
-            if (isOpened()) onStopSearching() else onStartSearching()
-        }) {
-            if (isOpened()) {
-                Icon(Icons.Filled.Close, stringResource(R.string.close_search))
-            } else {
-                Icon(Icons.Filled.Search, stringResource(R.string.open_search))
+            .clip(RoundedCornerShape(15.dp)),
+        trailingIcon = {
+            IconButton({
+                if (isOpened()) onStopSearching() else onStartSearching()
+            }) {
+                if (isOpened()) {
+                    Icon(Icons.Filled.Close, stringResource(R.string.close_search))
+                } else {
+                    Icon(Icons.Filled.Search, stringResource(R.string.open_search))
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun SearchTextField(startText: String, onValueChange: (String) -> Unit,
-                    modifier: Modifier = Modifier) {
-    SimpleTextField(startText, onValueChange,
-        placeholder = {Text(stringResource(R.string.search))},
-        modifier = modifier.padding(start = 5.dp)
+        },
+        singleLine = true,
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
     )
 }
 
