@@ -108,4 +108,6 @@
     <string name="milliliter_selector_text">100 ml - per 0.1 liter</string>
     <string name="no_matches">No matches</string>
     <string name="open_product_editor">Open the editing menu</string>
+    <string name="time_capital">Time</string>
+    <string name="date_capital">Date</string>
 </resources>

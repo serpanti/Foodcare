@@ -672,13 +672,20 @@ fun TimeEdit(
         CustomButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth()) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
-        val fieldModifier = Modifier.fillMaxWidth().padding(5.dp)
-        YearTextField(year, modifier = fieldModifier)
-        MonthTextField(month, modifier = fieldModifier)
-        DayTextField(day, modifier = fieldModifier)
-        HoursTextField(hours, modifier = fieldModifier)
-        MinutesTextField(minutes, modifier = fieldModifier)
-        SecondsTextField(seconds, modifier = fieldModifier)
+        val fieldModifier = Modifier.fillMaxWidth().padding(5.dp).weight(1f)
+        val rowModifier = Modifier.padding(start = 10.dp).height(30.dp)
+        Row(modifier = rowModifier) {
+            Text(stringResource(R.string.date_capital) + ":", modifier = Modifier.weight(1f))
+            YearTextField(year, modifier = fieldModifier)
+            MonthTextField(month, modifier = fieldModifier)
+            DayTextField(day, modifier = fieldModifier)
+        }
+        Row(modifier = rowModifier) {
+            Text(stringResource(R.string.time_capital) + ":", modifier = Modifier.weight(1f))
+            HoursTextField(hours, modifier = fieldModifier)
+            MinutesTextField(minutes, modifier = fieldModifier)
+            SecondsTextField(seconds, modifier = fieldModifier)
+        }
     }
 }
 
@@ -702,9 +709,7 @@ fun YearTextField(year: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(year.value, onValueChange = { newStr ->
         year.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.year_input_instruction))
-    }, prefix = {
-        Text(stringResource(R.string.year_capital) + ": ")
+        Text("2020")
     })
 }
 
@@ -713,9 +718,7 @@ fun MonthTextField(month: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(month.value, onValueChange = { newStr ->
         month.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.month_input_instruction) + " (1-12)")
-    }, prefix = {
-        Text(stringResource(R.string.month_capital) + ": ")
+        Text("(1-12)")
     })
 }
 
@@ -724,9 +727,7 @@ fun DayTextField(day: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(day.value, onValueChange = { newStr ->
         day.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.day_input_instruction) + " (1-31)")
-    }, prefix = {
-        Text(stringResource(R.string.day_capital) + ": ")
+        Text("(1-31)")
     })
 }
 
@@ -735,9 +736,7 @@ fun HoursTextField(hour: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(hour.value, onValueChange = { newStr ->
         hour.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.hours_input_instruction) + " (0-23)")
-    }, prefix = {
-        Text(stringResource(R.string.hours_capital) + ": ")
+        Text("(0-23)")
     })
 }
 
@@ -746,9 +745,7 @@ fun MinutesTextField(minutes: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(minutes.value, onValueChange = { newStr ->
         minutes.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.minutes_input_instruction) + " (0-59)")
-    }, prefix = {
-        Text(stringResource(R.string.minutes_capital) + ": ")
+        Text("(0-59)")
     })
 }
 
@@ -757,8 +754,6 @@ fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(seconds.value, onValueChange = { newStr ->
         seconds.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.seconds_input_instruction) + " (0-59)")
-    }, prefix = {
-        Text(stringResource(R.string.seconds_capital) + ": ")
+        Text("(0-59)")
     })
 }
