@@ -1,7 +1,6 @@
 package ru.foodcare.foodcare.ui.composable.product
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -94,6 +92,7 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
         FiberEdit(fiber)
         HorizontalDivider()
         ProductTypeSelector(type)
+        HorizontalDivider()
 
         val caloriesNum = calories.value.parseToDoubleOrNull()
         val proteinNum = protein.value.parseToDoubleOrNull()
@@ -199,7 +198,6 @@ fun ProductTypeSelector(type: MutableState<UnitType>) {
     Row (modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 7.dp, vertical = 5.dp)
-        .border(1.dp, color = MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
         .clip(RoundedCornerShape(10.dp))
         .padding(horizontal = 20.dp, vertical = 15.dp)
     ) {
