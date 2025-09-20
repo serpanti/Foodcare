@@ -3,6 +3,7 @@ package ru.foodcare.foodcare
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var weightVM: WeightViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val foodcareComponent = application.foodcare.foodcareComponent
