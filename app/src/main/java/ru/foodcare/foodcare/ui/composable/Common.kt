@@ -18,13 +18,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,6 +50,7 @@ import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -58,6 +60,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
@@ -78,7 +81,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -302,7 +304,8 @@ fun SquareButton(value: String, modifier: Modifier = Modifier,
                  backgroundColor: Color = MaterialTheme.colorScheme.background,
                  color: Color = MaterialTheme.colorScheme.onBackground,
                  onClick: () -> Unit) {
-    CustomButton(value, modifier.size(40.dp), backgroundColor, onClick = onClick, color = color)
+    CustomButton(value, modifier.defaultMinSize(40.dp),
+        backgroundColor, onClick = onClick, color = color)
 }
 
 @Composable
@@ -310,16 +313,14 @@ fun CustomButton(value: String, modifier: Modifier = Modifier,
                  backgroundColor: Color = MaterialTheme.colorScheme.background,
                  color: Color = MaterialTheme.colorScheme.onBackground,
                  onClick: () -> Unit) {
-    val shape = RoundedCornerShape(5.dp)
-    Box(modifier = modifier
-        .padding(5.dp)
-        .shadow(5.dp, shape, clip = true)
-        .border(2.dp, MaterialTheme.colorScheme.outline, shape)
-        .clip(shape)
-        .background(backgroundColor)
-        .clickable { onClick() }
-        .padding(5.dp)) {
-        Text(value, modifier = Modifier.align(Alignment.Center), color = color)
+    OutlinedButton(onClick = onClick,
+        modifier = modifier
+            .padding(5.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = backgroundColor,
+            contentColor = color),
+        contentPadding = PaddingValues(10.dp)) {
+        Text(value)
     }
 }
 
