@@ -39,7 +39,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -86,7 +85,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -281,27 +279,16 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
                     placeholder: @Composable () -> Unit,
                     prefix: @Composable () -> Unit = {},
                     suffix: @Composable () -> Unit = {}) {
-    var hasFocus by remember {mutableStateOf(false)}
-
-    BasicTextField(
-        value = value,
+    TextField(value = value,
         onValueChange = onValueChange,
-        modifier = modifier.onFocusChanged { focusState ->
-            hasFocus = focusState.hasFocus
-        },
-        decorationBox = @Composable { innerTextField ->
-            Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize()) {
-                prefix()
-                if (value.isEmpty() && !hasFocus) {
-                    placeholder()
-                } else {
-                    innerTextField()
-                }
-                suffix()
-            }
-        }
+        modifier = modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(vertical = 10.dp),
+        prefix = prefix,
+        suffix = suffix,
+        placeholder = placeholder,
+        singleLine = true
     )
 }
 
@@ -622,7 +609,7 @@ fun TimeEdit(
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
         val fieldModifier = Modifier.fillMaxWidth().padding(5.dp).weight(1f)
-        val rowModifier = Modifier.padding(start = 10.dp).height(30.dp)
+        val rowModifier = Modifier.padding(start = 10.dp).wrapContentHeight()
         Row(modifier = rowModifier, verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.date_capital) + ":", modifier = Modifier.weight(1f))
             YearTextField(year, modifier = fieldModifier)
