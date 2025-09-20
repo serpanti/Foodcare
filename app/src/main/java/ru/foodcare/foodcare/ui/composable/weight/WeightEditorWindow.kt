@@ -2,8 +2,10 @@ package ru.foodcare.foodcare.ui.composable.weight
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -65,6 +67,7 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
     Column {
         WeightEdit(weightValue,
             modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         HorizontalDivider()
         TimeEdit(year, month, day, hours, minutes, seconds,
             Modifier.padding(bottom = 30.dp, top = 20.dp))

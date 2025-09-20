@@ -3,8 +3,10 @@ package ru.foodcare.foodcare.ui.composable.meal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -77,10 +79,10 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
 
     Column {
         ProductEdit(product, productCount, productViewModel)
+        Spacer(modifier = Modifier.height(30.dp))
         HorizontalDivider()
         TimeEdit(year, month, day, hours, minutes, seconds,
             Modifier.padding(bottom = 30.dp, top = 20.dp))
-        HorizontalDivider()
 
         val productCountNum = productCount.value.parseToIntOrNull()
         val yearNum = year.value.parseToIntOrNull()
