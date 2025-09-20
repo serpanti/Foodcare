@@ -674,13 +674,13 @@ fun TimeEdit(
         }
         val fieldModifier = Modifier.fillMaxWidth().padding(5.dp).weight(1f)
         val rowModifier = Modifier.padding(start = 10.dp).height(30.dp)
-        Row(modifier = rowModifier) {
+        Row(modifier = rowModifier, verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.date_capital) + ":", modifier = Modifier.weight(1f))
             YearTextField(year, modifier = fieldModifier)
             MonthTextField(month, modifier = fieldModifier)
             DayTextField(day, modifier = fieldModifier)
         }
-        Row(modifier = rowModifier) {
+        Row(modifier = rowModifier, verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.time_capital) + ":", modifier = Modifier.weight(1f))
             HoursTextField(hours, modifier = fieldModifier)
             MinutesTextField(minutes, modifier = fieldModifier)
