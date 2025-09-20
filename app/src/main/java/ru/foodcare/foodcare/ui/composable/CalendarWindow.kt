@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -386,7 +387,8 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
     Row(modifier = modifier
         .height(IntrinsicSize.Max)
         .width(160.dp)
-        .border(2.dp, Color.Black, RoundedCornerShape(10.dp))
+        .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+        .background(MaterialTheme.colorScheme.surface)
         .clip(RoundedCornerShape(10.dp))
         .padding(2.dp)
         .zIndex(1f)
@@ -420,11 +422,13 @@ fun CalendarTypeButton(text: String, selected: Boolean, modifier: Modifier = Mod
         .selectable(selected) {
             onSelect()
         }
-        .background(if (selected) Color.DarkGray else Color.Gray)
+        .background(if (selected) MaterialTheme.colorScheme.primary
+        else Color.Transparent)
         .padding(5.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = if (selected) Color.White else Color.Black)
+        Text(text, color = if (selected) MaterialTheme.colorScheme.onPrimary
+        else MaterialTheme.colorScheme.onSurface)
     }
 }
 
