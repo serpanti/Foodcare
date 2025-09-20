@@ -7,6 +7,7 @@ import dagger.multibindings.IntoMap
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
+import ru.foodcare.foodcare.ui.viewModel.theme.ThemeViewModel
 import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
 
 @Module
@@ -30,4 +31,9 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(WeightViewModel::class)
     fun bindsWeightViewModel(weightViewModel: WeightViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ThemeViewModel::class)
+    fun bindsThemeViewModel(themeViewModel: ThemeViewModel): ViewModel
 }
