@@ -5,11 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -33,7 +31,7 @@ import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.CheckCircle
 import ru.foodcare.foodcare.ui.composable.SaveButton
-import ru.foodcare.foodcare.ui.composable.itemWithUnderLine
+import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
 
@@ -43,7 +41,7 @@ fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
 
     CardSurface(
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(bottom = 15.dp)
             .padding(5.dp)
             .background(Color.Transparent)
@@ -74,34 +72,41 @@ fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: ()
         mutableStateOf(oldProduct?.nutrientsProperties?.fiber?.toString() ?: "")
     }
 
-    LazyColumn {
-        itemWithUnderLine {NameEdit(name)}
-        itemWithUnderLine {ProductionEdit(production)}
-        itemWithUnderLine {CaloriesEdit(calories)}
-        itemWithUnderLine {ProteinEdit(protein)}
-        itemWithUnderLine {FatEdit(fat)}
-        itemWithUnderLine {CarbohydratesEdit(carbohydrates)}
-        itemWithUnderLine {FiberEdit(fiber)}
-        itemWithUnderLine {ProductTypeSelector(type)}
-        item {
-            val caloriesNum = calories.value.parseToDoubleOrNull()
-            val proteinNum = protein.value.parseToDoubleOrNull()
-            val fatNum = fat.value.parseToDoubleOrNull()
-            val carbohydratesNum = carbohydrates.value.parseToDoubleOrNull()
-            val fiberNum = fiber.value.parseToDoubleOrNull()
-            val inputProduct = InputProduct(name.value, production.value,
-                if (type.value == UnitType.Piece) 1 else 100, type.value,
-                caloriesNum, proteinNum, fatNum, carbohydratesNum,
-                fiberNum)
+    Column {
+        NameEdit(name)
+        HorizontalDivider(2.dp, Color.Black)
+        ProductionEdit(production)
+        HorizontalDivider(2.dp, Color.Black)
+        CaloriesEdit(calories)
+        HorizontalDivider(2.dp, Color.Black)
+        ProteinEdit(protein)
+        HorizontalDivider(2.dp, Color.Black)
+        FatEdit(fat)
+        HorizontalDivider(2.dp, Color.Black)
+        CarbohydratesEdit(carbohydrates)
+        HorizontalDivider(2.dp, Color.Black)
+        FiberEdit(fiber)
+        HorizontalDivider(2.dp, Color.Black)
+        ProductTypeSelector(type)
+        HorizontalDivider(2.dp, Color.Black)
 
-            SaveButton(
-                oldProduct == null, inputProduct, close,
-                add = { viewModel.addProduct(inputProduct.toProduct()) },
-                update = {
-                    oldProduct?.let { viewModel.updateProduct(inputProduct.toProduct(), it) }
-                }) {
-                WrongInputProductPreview(inputProduct)
-            }
+        val caloriesNum = calories.value.parseToDoubleOrNull()
+        val proteinNum = protein.value.parseToDoubleOrNull()
+        val fatNum = fat.value.parseToDoubleOrNull()
+        val carbohydratesNum = carbohydrates.value.parseToDoubleOrNull()
+        val fiberNum = fiber.value.parseToDoubleOrNull()
+        val inputProduct = InputProduct(name.value, production.value,
+            if (type.value == UnitType.Piece) 1 else 100, type.value,
+            caloriesNum, proteinNum, fatNum, carbohydratesNum,
+            fiberNum)
+
+        SaveButton(
+            oldProduct == null, inputProduct, close,
+            add = { viewModel.addProduct(inputProduct.toProduct()) },
+            update = {
+                oldProduct?.let { viewModel.updateProduct(inputProduct.toProduct(), it) }
+            }) {
+            WrongInputProductPreview(inputProduct)
         }
     }
 }
