@@ -18,6 +18,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +60,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Snackbar
@@ -67,6 +69,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -384,6 +387,7 @@ fun SaveButton(
     Box(modifier = modifier
         .fillMaxWidth()
         .height(50.dp)
+        .background(color = MaterialTheme.colorScheme.primary)
         .clickable {
             if (!input.isCorrect()) {
                 showAlert = true
@@ -396,13 +400,15 @@ fun SaveButton(
                 close()
             }
         }) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Save, "")
-            Text(stringResource(R.string.save), fontSize = 20.sp)
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimary) {
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Save, "")
+                Text(stringResource(R.string.save), fontSize = 20.sp)
+            }
         }
     }
 }
