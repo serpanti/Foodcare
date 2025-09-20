@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -27,7 +28,6 @@ import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
-import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.product.SearchProductFieldWithList
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
@@ -75,10 +75,10 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
 
     Column {
         ProductEdit(product, productCount, productViewModel)
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
         TimeEdit(year, month, day, hours, minutes, seconds,
             Modifier.padding(bottom = 5.dp))
-        HorizontalDivider(2.dp, Color.Black)
+        HorizontalDivider()
 
         val productCountNum = productCount.value.parseToIntOrNull()
         val yearNum = year.value.parseToIntOrNull()

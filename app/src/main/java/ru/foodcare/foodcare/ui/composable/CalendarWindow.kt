@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -420,17 +421,17 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
             type.value == CalendarShowType.Years, Modifier.weight(1f)) {
             type.value = CalendarShowType.Years
         }
-        VerticalDivider(2.dp, Color.Black)
+        VerticalDivider()
         CalendarTypeButton(stringResource(R.string.month_short_capital) + ".",
             type.value == CalendarShowType.Months, Modifier.weight(1f)) {
             type.value = CalendarShowType.Months
         }
-        VerticalDivider(2.dp, Color.Black)
+        VerticalDivider()
         CalendarTypeButton(stringResource(R.string.day_short_capital) + ".",
             type.value == CalendarShowType.Days, Modifier.weight(1f)) {
             type.value = CalendarShowType.Days
         }
-        VerticalDivider(2.dp, Color.Black)
+        VerticalDivider()
         CalendarTypeButton("1" + stringResource(R.string.day_short_capital) + ".",
             type.value == CalendarShowType.Day, Modifier.weight(1f)) {
             type.value = CalendarShowType.Day

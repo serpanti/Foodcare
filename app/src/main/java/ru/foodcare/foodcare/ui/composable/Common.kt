@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -55,6 +54,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -95,22 +95,6 @@ import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.input.Input
 import java.time.LocalDate
 import java.time.LocalDateTime
-
-@Composable
-fun VerticalDivider(width: Dp, color: Color) {
-    Box(modifier = Modifier
-        .width(width)
-        .fillMaxHeight()
-        .background(color))
-}
-
-@Composable
-fun HorizontalDivider(height: Dp, color: Color) {
-    Box(modifier = Modifier
-        .height(height)
-        .fillMaxWidth()
-        .background(color))
-}
 
 @Composable
 fun CheckCircle(selected: Boolean) {
@@ -243,7 +227,7 @@ fun EditMenu(visibleState: MutableState<Boolean>,
             visibleState.value = false
             edit()
         }, trailingIcon = {Icon(Icons.Filled.Edit, null)})
-        HorizontalDivider(1.dp, Color.Gray)
+        HorizontalDivider()
         DropdownMenuItem({
             Text(stringResource(R.string.delete))
         }, {
