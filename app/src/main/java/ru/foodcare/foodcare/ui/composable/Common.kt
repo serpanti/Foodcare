@@ -246,7 +246,7 @@ fun SearchField(onStartSearching: () -> Unit,
         onValueChange = onValueChange,
         placeholder = {Text(stringResource(R.string.search))},
         modifier = modifier
-            .offset(y = 2.dp)
+            .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(15.dp))
