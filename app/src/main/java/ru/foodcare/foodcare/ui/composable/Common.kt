@@ -242,7 +242,7 @@ fun SearchField(onStartSearching: () -> Unit,
             .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
-            .border(1.dp, Color.Black, RoundedCornerShape(15.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
             .padding(5.dp)) {
         SearchTextField(startValue, onValueChange, Modifier.weight(1f))
