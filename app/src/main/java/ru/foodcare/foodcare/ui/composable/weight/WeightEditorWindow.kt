@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
@@ -96,7 +97,9 @@ fun WeightEdit(
     SimpleTextField(weightValue.value, onValueChange = { newStr ->
         weightValue.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.weight_capital))
+        Text(stringResource(R.string.weight_capital),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     }, prefix = {
         Text(stringResource(R.string.weight_capital) + ": ")
     }, suffix = {

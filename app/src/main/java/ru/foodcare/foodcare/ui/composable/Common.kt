@@ -91,6 +91,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
@@ -288,7 +289,8 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
         prefix = prefix,
         suffix = suffix,
         placeholder = placeholder,
-        singleLine = true
+        singleLine = true,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center)
     )
 }
 
@@ -676,7 +678,9 @@ fun YearTextField(year: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(year.value, onValueChange = { newStr ->
         year.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("2020")
+        Text("2020",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }
 
@@ -685,7 +689,9 @@ fun MonthTextField(month: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(month.value, onValueChange = { newStr ->
         month.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("1-12")
+        Text("1-12",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }
 
@@ -694,7 +700,9 @@ fun DayTextField(day: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(day.value, onValueChange = { newStr ->
         day.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("1-31")
+        Text("1-31",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }
 
@@ -703,7 +711,9 @@ fun HoursTextField(hour: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(hour.value, onValueChange = { newStr ->
         hour.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("0-23")
+        Text("0-23",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }
 
@@ -712,7 +722,9 @@ fun MinutesTextField(minutes: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(minutes.value, onValueChange = { newStr ->
         minutes.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("0-59")
+        Text("0-59",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }
 
@@ -721,6 +733,8 @@ fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(seconds.value, onValueChange = { newStr ->
         seconds.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("0-59")
+        Text("0-59",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     })
 }

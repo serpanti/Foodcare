@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
@@ -131,7 +132,9 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
     SimpleTextField(productCount.value, onValueChange = { newStr ->
         productCount.value = newStr
     }, modifier = modifier.padding(10.dp), placeholder = {
-        Text(stringResource(R.string.quantity_input_product_instruction))
+        Text(stringResource(R.string.quantity_input_product_instruction),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth())
     }, prefix = {
         Text("${stringResource(R.string.quantity_capital)}: ")
     }, suffix = {
