@@ -14,6 +14,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -198,7 +199,7 @@ fun ProductTypeSelector(type: MutableState<UnitType>) {
     Row (modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 7.dp, vertical = 5.dp)
-        .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+        .border(1.dp, color = MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
         .clip(RoundedCornerShape(10.dp))
         .padding(horizontal = 20.dp, vertical = 15.dp)
     ) {
