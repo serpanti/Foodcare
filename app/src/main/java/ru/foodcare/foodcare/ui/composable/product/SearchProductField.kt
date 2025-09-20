@@ -1,6 +1,5 @@
 package ru.foodcare.foodcare.ui.composable.product
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
@@ -18,7 +17,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
@@ -71,8 +69,7 @@ fun SearchProductFieldWithList(
     ExposedDropdownMenuBox(expanded = isOpened.value,
         onExpandedChange = {},
         modifier = modifier
-            .clip(RoundedCornerShape(15.dp))
-            .background(Color.White)) {
+            .clip(RoundedCornerShape(15.dp))) {
         TextField(modifier = Modifier
             .fillMaxWidth()
             .menuAnchor(MenuAnchorType.PrimaryEditable),
