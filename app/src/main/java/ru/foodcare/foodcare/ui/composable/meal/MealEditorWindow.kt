@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -141,7 +142,7 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
 @Composable
 fun SelectedProductText(product: Product?, modifier: Modifier = Modifier) {
     val innerModifier = modifier
-        .border(1.dp, Color.Black, RoundedCornerShape(10.dp))
+        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
         .clip(RoundedCornerShape(10.dp))
         .padding(10.dp)
     val text = if (product != null) {
