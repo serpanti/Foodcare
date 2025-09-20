@@ -110,4 +110,7 @@
     <string name="open_product_editor">Open the editing menu</string>
     <string name="time_capital">Time</string>
     <string name="date_capital">Date</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="light_theme">Light Theme</string>
+    <string name="system_theme">System Theme</string>
 </resources>
