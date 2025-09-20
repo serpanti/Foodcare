@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -54,6 +53,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -88,7 +88,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
@@ -118,28 +117,38 @@ fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) 
 
 @Composable
 fun FloatingAddButton(modifier: Modifier = Modifier, openEditor: () -> Unit = {}) {
-    FloatingActionButton(modifier, openEditor)
+    FloatingActionButton(modifier = modifier, onClick = openEditor) {
+        Icon(Icons.Filled.Add, contentDescription = null)
+    }
 }
 
 @Composable
-fun FloatingAddListButton(modifier: Modifier = Modifier,
-                          editList: List<(@Composable () -> Unit)> = emptyList()) {
+fun FloatingAddListButton(
+    modifier: Modifier = Modifier,
+    offset: DpOffset = DpOffset.Zero,
+    editList: List<(@Composable (Modifier) -> Unit)> = emptyList()
+) {
     var isOpened by remember { mutableStateOf(false) }
 
-    FloatingActionButton(modifier,
+    FloatingActionListButton(modifier.offset(offset.x, offset.y),
         action = {isOpened = !isOpened},
-        contentDescription = stringResource(R.string.open_the_add_menu),
         rotateAngle = 45f,
-        editList = editList,
+        actionList = editList,
         listIsOpened = isOpened
-    )
+    ) {
+        Icon(Icons.Filled.Add, stringResource(R.string.open_the_add_menu))
+    }
 }
 
 @Composable
-fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
-                         rotateAngle: Float = 0f, contentDescription: String? = null,
-                                 editList: List<(@Composable () -> Unit)> = emptyList(),
-                                 listIsOpened: Boolean = false) {
+fun FloatingActionListButton(
+    modifier: Modifier = Modifier,
+    action: () -> Unit = {},
+    rotateAngle: Float = 0f,
+    actionList: List<(@Composable (Modifier) -> Unit)> = emptyList(),
+    listIsOpened: Boolean = false,
+    content: @Composable () -> Unit = {},
+) {
     val transition = updateTransition(targetState = listIsOpened,
         label = "floatingActionButtonTransition")
 
@@ -156,44 +165,25 @@ fun FloatingActionButton(modifier: Modifier = Modifier, action: () -> Unit = {},
     }
 
     Column (modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween) {
-        editList.forEachIndexed { idx, editBlock ->
-            val targetOffset = (70 + 30 * (editList.lastIndex - idx))
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        actionList.forEachIndexed { idx, editBlock ->
+            val targetOffset = (60 + 35 * (actionList.lastIndex - idx))
 
-            val offset by transition.animateDp(
+            val animatedOffsetY by transition.animateDp(
                 transitionSpec = {
                     tween(600, easing = FastOutSlowInEasing)
                 },
                 label = "floatingActionButtonEditListItem${idx}Animation"
-            ) { state ->
-                if (state) 0.dp else targetOffset.dp
+            ) { isListOpened ->
+                if (isListOpened) (-10).dp else targetOffset.dp
             }
 
-            Box(modifier = Modifier.offset(y = offset)) {
-                editBlock()
-            }
+            editBlock(Modifier.offset(y = animatedOffsetY))
         }
 
-        val shape = CircleShape
-
-        Box(modifier = Modifier
-            .size(57.dp)
-            .clip(shape)
-            .shadow(
-                10.dp,
-                shape = shape,
-                clip = false
-            )
-            .background(Color.LightGray)
-            .zIndex(1f)
-            .rotate(rotate)
-            .clickable(onClick = action)
-            .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Filled.Add, contentDescription,
-                modifier = Modifier.fillMaxSize())
+        FloatingActionButton(modifier = Modifier.rotate(rotate),
+            onClick = action) {
+            content()
         }
     }
 }

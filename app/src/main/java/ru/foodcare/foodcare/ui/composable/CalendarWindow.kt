@@ -27,7 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ru.foodcare.foodcare.R
@@ -142,22 +143,21 @@ fun DayWindowByDate(
                 openWeightEditor, openMealEditor)
         }
         val offset = (-10).dp
-        FloatingAddListButton(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .offset(offset.withLayoutDirection(), offset),
-            listOf<@Composable () -> Unit> (
-                {
-                    IconButton(onClick = {
+        FloatingAddListButton(modifier = Modifier.align(Alignment.BottomEnd),
+            offset = DpOffset(offset.withLayoutDirection(), offset),
+            listOf<@Composable (Modifier) -> Unit> (
+                { modifier ->
+                    SmallFloatingActionButton(onClick = {
                         mealViewModel.onAddMeal()
                         openMealEditor()
-                    }) {
+                    }, modifier = modifier) {
                         Icon(Icons.Filled.RestaurantMenu, stringResource(R.string.open_meal_editor))
                     }
-                }, {
-                    IconButton(onClick = {
+                }, { modifier ->
+                    SmallFloatingActionButton(onClick = {
                         weightVM.onAddWeight()
                         openWeightEditor()
-                    }) {
+                    }, modifier = modifier) {
                         Icon(Icons.Filled.Balance, stringResource(R.string.open_weight_editor))
                     }
                 }
