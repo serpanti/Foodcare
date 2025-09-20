@@ -118,8 +118,10 @@ fun ProductCard(
     viewModel: ProductViewModel,
     openEditor: () -> Unit = {}
 ) {
-    CardSurface(modifier) {
-        ProductCardContent(product)
+    Box(modifier = modifier) {
+        CardSurface(Modifier.fillMaxWidth()) {
+            ProductCardContent(product)
+        }
 
         val width = remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
