@@ -54,7 +54,6 @@ import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -437,28 +436,28 @@ fun SaveButton(
     close: () -> Unit,
     add: () -> Unit,
     update: () -> Unit,
+    modifier: Modifier = Modifier,
     alertMessage: @Composable () -> Unit
 ) {
     var showAlert by remember { mutableStateOf(false) }
     if (showAlert) {
         AlertWrongInput (alertMessage) { showAlert = false }
     }
-    TextButton({
-        if (!input.isCorrect()) {
-            showAlert = true
-        } else {
-            if (isNewRecord) {
-                add()
-            } else {
-                update()
-            }
-            close()
-        }
-    }, modifier = Modifier
+    Box(modifier = modifier
         .fillMaxWidth()
-        .height(50.dp),
-        colors = ButtonColors(Color.Transparent, Color.Black,
-            Color.Transparent, Color.Transparent)) {
+        .height(50.dp)
+        .clickable {
+            if (!input.isCorrect()) {
+                showAlert = true
+            } else {
+                if (isNewRecord) {
+                    add()
+                } else {
+                    update()
+                }
+                close()
+            }
+        }) {
         Row (modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
@@ -666,9 +665,10 @@ fun TimeEdit(
     day: MutableState<String>,
     hours: MutableState<String>,
     minutes: MutableState<String>,
-    seconds: MutableState<String>
+    seconds: MutableState<String>,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier) {
         CustomButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth()) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }

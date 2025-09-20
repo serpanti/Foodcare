@@ -3,10 +3,8 @@ package ru.foodcare.foodcare.ui.composable.meal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +24,11 @@ import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
+import ru.foodcare.foodcare.ui.composable.HorizontalDivider
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.product.SearchProductFieldWithList
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
 import ru.foodcare.foodcare.ui.composable.TimeEdit
-import ru.foodcare.foodcare.ui.composable.itemWithUnderLine
 import ru.foodcare.foodcare.ui.composable.parseToIntOrNull
 import ru.foodcare.foodcare.ui.composable.toStringWithLanguage
 import ru.foodcare.foodcare.ui.input.InputMeal
@@ -45,7 +43,7 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
 
     CardSurface(
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(bottom = 15.dp)
             .padding(5.dp)
             .background(Color.Transparent)
@@ -70,26 +68,28 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
     val minutes = rememberSaveable { mutableStateOf(oldMeal?.date?.minute?.toString() ?: "") }
     val seconds = rememberSaveable { mutableStateOf(oldMeal?.date?.second?.toString() ?: "") }
 
-    LazyColumn {
-        itemWithUnderLine {ProductEdit(product, productCount, productViewModel)}
-        itemWithUnderLine {TimeEdit(year, month, day, hours, minutes, seconds)}
-        item {
-            val productCountNum = productCount.value.parseToIntOrNull()
-            val yearNum = year.value.parseToIntOrNull()
-            val monthNum = month.value.parseToIntOrNull()
-            val dayNum = day.value.parseToIntOrNull()
-            val hoursNum = hours.value.parseToIntOrNull()
-            val minutesNum = minutes.value.parseToIntOrNull()
-            val secondsNum = seconds.value.parseToIntOrNull()
-            val inputMeal = InputMeal(id, product.value, productCountNum,
-                yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
+    Column {
+        ProductEdit(product, productCount, productViewModel)
+        HorizontalDivider(2.dp, Color.Black)
+        TimeEdit(year, month, day, hours, minutes, seconds,
+            Modifier.padding(bottom = 5.dp))
+        HorizontalDivider(2.dp, Color.Black)
 
-            SaveButton(
-                oldMeal == null, inputMeal, close,
-                { viewModel.addMeal(inputMeal.toMeal()) },
-                { viewModel.updateMeal(inputMeal.toMeal()) }) {
-                WrongInputMealPreview(inputMeal)
-            }
+        val productCountNum = productCount.value.parseToIntOrNull()
+        val yearNum = year.value.parseToIntOrNull()
+        val monthNum = month.value.parseToIntOrNull()
+        val dayNum = day.value.parseToIntOrNull()
+        val hoursNum = hours.value.parseToIntOrNull()
+        val minutesNum = minutes.value.parseToIntOrNull()
+        val secondsNum = seconds.value.parseToIntOrNull()
+        val inputMeal = InputMeal(id, product.value, productCountNum,
+            yearNum, monthNum, dayNum, hoursNum, minutesNum, secondsNum)
+
+        SaveButton(
+            oldMeal == null, inputMeal, close,
+            { viewModel.addMeal(inputMeal.toMeal()) },
+            { viewModel.updateMeal(inputMeal.toMeal()) }) {
+            WrongInputMealPreview(inputMeal)
         }
     }
 }
