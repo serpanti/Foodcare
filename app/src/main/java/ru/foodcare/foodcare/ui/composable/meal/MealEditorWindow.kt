@@ -118,8 +118,7 @@ fun ProductEdit(
                 .padding(horizontal = 10.dp).padding(top = 10.dp))
 
             SearchProductFieldWithList(productViewModel, Modifier.fillMaxWidth()
-                .padding(horizontal = 10.dp).padding(vertical = 5.dp)
-                , product)
+                .padding(10.dp),product)
         }
 
         if (productConst != null) {
