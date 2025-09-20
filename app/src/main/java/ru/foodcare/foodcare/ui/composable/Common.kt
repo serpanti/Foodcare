@@ -34,11 +34,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,7 +67,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -84,8 +80,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -237,26 +231,6 @@ fun SwipeToStartButton(modifier: Modifier = Modifier, lazyListState: LazyListSta
 }
 
 @Composable
-fun InfiniteLoading() {
-    var indicatorSize by remember {mutableStateOf(40.dp)}
-    val density = LocalDensity.current
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(70.dp)
-        .onGloballyPositioned { coordinates ->
-            with(density) {
-                val minSize = minOf(coordinates.size.width, coordinates.size.height).toDp()
-                if (minSize != indicatorSize) indicatorSize = minSize
-            }
-        },
-        contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(modifier = Modifier
-            .size(indicatorSize), strokeWidth = 20.dp)
-    }
-}
-
-@Composable
 fun EditMenu(visibleState: MutableState<Boolean>,
              edit: () -> Unit, remove: () -> Unit, modifier: Modifier = Modifier, offset: DpOffset) {
     DropdownMenu(visibleState.value, {visibleState.value = false}, modifier = modifier,
@@ -374,17 +348,6 @@ fun Dp.withLayoutDirection(): Dp {
 }
 
 @Composable
-fun AdviceButton(advice: String, onCLick: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        TextButton(onCLick,
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Text(advice)
-        }
-    }
-}
-
-@Composable
 fun ElementWithHeader(header: @Composable () -> Unit, modifier: Modifier = Modifier,
                       content: @Composable () -> Unit) {
     Column(modifier = modifier
@@ -402,13 +365,6 @@ fun Header(text: String) {
         .height(50.dp),
         contentAlignment = Alignment.Center) {
         Text(text, fontSize = 32.sp)
-    }
-}
-
-fun LazyListScope.itemWithUnderLine(content: @Composable (LazyItemScope.() -> Unit)) {
-    item {
-        content()
-        HorizontalDivider(2.dp, Color.Black)
     }
 }
 
@@ -508,37 +464,6 @@ fun AlertAboutActionDialog(close: () -> Unit, action: () -> Unit, question: Stri
 fun AlertDeleteDialog(close: () -> Unit, delete: () -> Unit,
                       preview: @Composable () -> Unit = {}) {
     AlertAboutActionDialog(close, delete, stringResource(R.string.delete_question), preview)
-}
-
-@Composable
-fun InfinitePager(modifier: Modifier = Modifier,
-                  increase: () -> Unit,
-                  decrease: () -> Unit,
-                  content: @Composable PagerScope.(Int) -> Unit) {
-    val center = Int.MAX_VALUE / 2
-    val pagerState = rememberPagerState(initialPage = center) { Int.MAX_VALUE }
-    var lastPage by remember{ mutableIntStateOf(pagerState.currentPage) }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow { pagerState.currentPage }
-            .collect { currentPage ->
-                when {
-                    lastPage < currentPage -> increase()
-                    lastPage > currentPage -> decrease()
-                }
-
-                if (currentPage == 0 || currentPage == Int.MAX_VALUE) {
-                    lastPage = center
-                    pagerState.scrollToPage(center)
-                } else {
-                    lastPage = currentPage
-                }
-            }
-    }
-
-    HorizontalPager(pagerState, modifier = modifier) { page ->
-        content(page)
-    }
 }
 
 @Composable
