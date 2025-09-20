@@ -51,15 +51,16 @@ import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -124,8 +125,9 @@ fun CheckCircle(selected: Boolean) {
 
 @Composable
 fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(modifier = modifier, shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(2.dp, Color.Black), shadowElevation = 5.dp) {
+    Card(modifier = modifier,
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
         content()
     }
 }
