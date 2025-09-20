@@ -60,6 +60,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.google.dagger)
     kapt(libs.google.dagger.compiler)
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.google.android.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
