@@ -96,7 +96,7 @@ fun WeightEdit(
     SimpleTextField(weightValue.value, onValueChange = { newStr ->
         weightValue.value = newStr
     }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.weight_edit_placeholder))
+        Text(stringResource(R.string.weight_capital))
     }, prefix = {
         Text(stringResource(R.string.weight_capital) + ": ")
     }, suffix = {

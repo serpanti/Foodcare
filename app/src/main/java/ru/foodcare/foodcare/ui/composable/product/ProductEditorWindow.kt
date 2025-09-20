@@ -117,7 +117,7 @@ fun NameEdit(name: MutableState<String>) {
 fun ProductionEdit(production: MutableState<String>) {
     ProductTextField(production.value, {production.value = it},
         prefix = {Text(stringResource(R.string.product_production_capital) + ": ")},
-        placeholder = {Text(stringResource(R.string.product_production_edit_placeholder))})
+        placeholder = {Text(stringResource(R.string.product_production_capital))})
 }
 
 @Composable
@@ -230,8 +230,7 @@ fun ProductTypeSelectRow(type: String, selected: Boolean, onSelect: () -> Unit) 
 fun NutrientTextField(description: String, value: String, type: String,
                       onValueChange: (String) -> Unit) {
     ProductTextField((value), onValueChange,
-        placeholder = {Text(stringResource(R.string.nutrient_input_instruction) +
-                ": [0-9 ${stringResource(R.string.and)} .]")},
+        placeholder = {Text("[0-9 ${stringResource(R.string.and)} .]")},
         prefix = {Text(description)},
         suffix = {Text(type)}
     )

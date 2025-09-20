@@ -682,7 +682,7 @@ fun MonthTextField(month: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(month.value, onValueChange = { newStr ->
         month.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("(1-12)")
+        Text("1-12")
     })
 }
 
@@ -691,7 +691,7 @@ fun DayTextField(day: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(day.value, onValueChange = { newStr ->
         day.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("(1-31)")
+        Text("1-31")
     })
 }
 
@@ -700,7 +700,7 @@ fun HoursTextField(hour: MutableState<String>, modifier: Modifier = Modifier) {
     SimpleTextField(hour.value, onValueChange = { newStr ->
         hour.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("(0-23)")
+        Text("0-23")
     })
 }
 
@@ -709,7 +709,7 @@ fun MinutesTextField(minutes: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(minutes.value, onValueChange = { newStr ->
         minutes.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("(0-59)")
+        Text("0-59")
     })
 }
 
@@ -718,6 +718,6 @@ fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifie
     SimpleTextField(seconds.value, onValueChange = { newStr ->
         seconds.value = newStr
     }, modifier = modifier, placeholder = {
-        Text("(0-59)")
+        Text("0-59")
     })
 }
