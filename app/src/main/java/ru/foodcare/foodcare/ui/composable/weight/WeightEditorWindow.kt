@@ -2,9 +2,12 @@ package ru.foodcare.foodcare.ui.composable.weight
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -33,15 +36,17 @@ fun WeightEditWindow(viewModel: WeightViewModel,
                    close: () -> Unit) {
     val weight = viewModel.weightObserved.collectAsState()
 
-    CardSurface(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 15.dp)
-            .padding(5.dp)
-            .background(Color.Transparent)
-            .padding(10.dp)
-    ) {
-        WeightEditCard(weight.value, viewModel, close)
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        CardSurface(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
+                .padding(5.dp)
+                .background(Color.Transparent)
+                .padding(10.dp)
+        ) {
+            WeightEditCard(weight.value, viewModel, close)
+        }
     }
 }
 

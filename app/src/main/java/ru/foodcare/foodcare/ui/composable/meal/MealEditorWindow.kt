@@ -3,9 +3,12 @@ package ru.foodcare.foodcare.ui.composable.meal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -41,15 +44,17 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
                    close: () -> Unit) {
     val meal = viewModel.mealObserved.collectAsState()
 
-    CardSurface(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 15.dp)
-            .padding(5.dp)
-            .background(Color.Transparent)
-            .padding(10.dp)
-    ) {
-        MealEditCard(meal.value, viewModel, productViewModel, close)
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        CardSurface(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
+                .padding(5.dp)
+                .background(Color.Transparent)
+                .padding(10.dp)
+        ) {
+            MealEditCard(meal.value, viewModel, productViewModel, close)
+        }
     }
 }
 

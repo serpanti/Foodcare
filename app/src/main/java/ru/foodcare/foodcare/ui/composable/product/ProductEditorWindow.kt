@@ -5,11 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,15 +42,17 @@ import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
 fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
     val product = viewModel.lastChosenProduct.collectAsState().value
 
-    CardSurface(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 15.dp)
-            .padding(5.dp)
-            .background(Color.Transparent)
-            .padding(10.dp)
-    ) {
-        ProductEditCard(product, viewModel, close)
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        CardSurface(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
+                .padding(5.dp)
+                .background(Color.Transparent)
+                .padding(10.dp)
+        ) {
+            ProductEditCard(product, viewModel, close)
+        }
     }
 }
 
