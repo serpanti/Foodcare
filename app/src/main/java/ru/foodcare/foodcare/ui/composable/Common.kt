@@ -66,6 +66,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -298,23 +299,27 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
 
 @Composable
 fun SquareButton(value: String, modifier: Modifier = Modifier,
-                 backgroundColor: Color = Color.White, onClick: () -> Unit) {
-    CustomButton(value, modifier.size(40.dp), backgroundColor, onClick = onClick)
+                 backgroundColor: Color = MaterialTheme.colorScheme.background,
+                 color: Color = MaterialTheme.colorScheme.onBackground,
+                 onClick: () -> Unit) {
+    CustomButton(value, modifier.size(40.dp), backgroundColor, onClick = onClick, color = color)
 }
 
 @Composable
 fun CustomButton(value: String, modifier: Modifier = Modifier,
-                 backgroundColor: Color = Color.White, onClick: () -> Unit) {
+                 backgroundColor: Color = MaterialTheme.colorScheme.background,
+                 color: Color = MaterialTheme.colorScheme.onBackground,
+                 onClick: () -> Unit) {
     val shape = RoundedCornerShape(5.dp)
     Box(modifier = modifier
         .padding(5.dp)
         .shadow(5.dp, shape, clip = true)
-        .border(2.dp, Color.Black, shape)
+        .border(2.dp, MaterialTheme.colorScheme.outline, shape)
         .clip(shape)
         .background(backgroundColor)
         .clickable { onClick() }
         .padding(5.dp)) {
-        Text(value, modifier = Modifier.align(Alignment.Center))
+        Text(value, modifier = Modifier.align(Alignment.Center), color = color)
     }
 }
 
@@ -540,10 +545,41 @@ fun CommonSnackbarProgressIndicator(
 }
 
 @Composable
-fun blinkColorAsState(color1: Color = Color.White,
-                      color2: Color = Color.Cyan,
-                      durationMillis: Int = 500): MutableState<Color> {
-    val animatedColor = remember { mutableStateOf(color1) }
+fun blinkColorButtonAsState(isPainted: Boolean,
+                            isDynamicColor: Boolean): Pair<State<Color>, State<Color>> {
+    val defaultColor1 = MaterialTheme.colorScheme.surface
+    val defaultColor2 = MaterialTheme.colorScheme.onSurface
+    val paintedColor1 = MaterialTheme.colorScheme.primary
+    val paintedColor2 = MaterialTheme.colorScheme.onPrimary
+    val blinkColor1 = MaterialTheme.colorScheme.secondary
+    val blinkColor2 = MaterialTheme.colorScheme.onSecondary
+
+    var staticColorState1 = remember {
+        derivedStateOf { if (isPainted) paintedColor1 else defaultColor1 }
+    }
+    var staticColorState2 = remember {
+        derivedStateOf { if (isPainted) paintedColor2 else defaultColor2 }
+    }
+
+    return if (isDynamicColor) {
+        blinkColorAsState(durationMillis = 1000,
+            color1 = staticColorState1.value, color2 = blinkColor1,
+            onColor1 = staticColorState2.value, onColor2 = blinkColor2)
+    } else {
+        Pair(staticColorState1, staticColorState2)
+    }
+
+}
+
+@Composable
+fun blinkColorAsState(color1: Color,
+                      color2: Color,
+                      onColor1: Color,
+                      onColor2: Color,
+                      durationMillis: Int = 500): Pair<State<Color>, State<Color>> {
+    val animatedColor1 = remember { mutableStateOf(color1) }
+    val animatedColor2 = remember { mutableStateOf(onColor1) }
+
     val transition = rememberInfiniteTransition(label = "blink")
     val fraction by transition.animateFloat(
         initialValue = 0f,
@@ -555,8 +591,10 @@ fun blinkColorAsState(color1: Color = Color.White,
         label = "blinkFraction"
     )
 
-    animatedColor.value = lerp(color1, color2, fraction)
-    return animatedColor
+    animatedColor1.value = lerp(color1, color2, fraction)
+    animatedColor2.value = lerp(onColor1, onColor2, fraction)
+
+    return Pair(animatedColor1, animatedColor2)
 }
 
 @Composable

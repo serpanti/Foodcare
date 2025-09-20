@@ -263,22 +263,12 @@ fun DaysTable(
     LazyVerticalGrid(GridCells.Fixed(5),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(days.size) { idx ->
-            val defaultColor = Color.White
-            val selectedDateColor = Color.Red
-            var staticColor = if (days[idx] == date.dayOfMonth) selectedDateColor
-            else defaultColor
-            val backgroundColor = if (
-                date.year == now.year &&
-                date.month == now.month &&
-                days[idx] == now.dayOfMonth) {
-                blinkColorAsState(durationMillis = 1000,
-                    color1 = staticColor,
-                    color2 = Color.Magenta).value
-            } else {
-                staticColor
-            }
+            val colors = blinkColorButtonAsState(days[idx] == date.dayOfMonth,
+                date.year == now.year && date.month == now.month && days[idx] == now.dayOfMonth)
 
-            SquareButton(days[idx].toString(), backgroundColor = backgroundColor) {
+            SquareButton(days[idx].toString(),
+                backgroundColor = colors.first.value,
+                color = colors.second.value) {
                 val newDate = if (days[idx] in (1 .. date.lengthOfMonth())) {
                     date.withDayOfMonth(days[idx])
                 } else {
@@ -329,21 +319,12 @@ fun MonthsTable(
     LazyVerticalGrid(GridCells.Fixed(3),
         contentPadding = PaddingValues(bottom = 50.dp)) {
         items(months.size) { idx ->
-            val defaultColor = Color.White
-            val selectedDateColor = Color.Red
-            var staticColor = if (months[idx] == date.monthValue) selectedDateColor
-            else defaultColor
-            val backgroundColor = if (
-                date.year == now.year &&
-                months[idx] == now.monthValue) {
-                blinkColorAsState(durationMillis = 1000,
-                    color1 = staticColor,
-                    color2 = Color.Magenta).value
-            } else {
-                staticColor
-            }
+            val colors = blinkColorButtonAsState(months[idx] == date.monthValue,
+                date.year == now.year && months[idx] == now.monthValue)
 
-            SquareButton(months[idx].toMonth(), backgroundColor = backgroundColor) {
+            SquareButton(months[idx].toMonth(),
+                backgroundColor = colors.first.value,
+                color = colors.second.value) {
                 if (months[idx] in (1 .. date.lengthOfMonth())) {
                     val newMonthLength = YearMonth.of(date.year, months[idx]).lengthOfMonth()
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
@@ -381,19 +362,12 @@ fun YearsTable(
     LazyVerticalGrid(GridCells.Fixed(5),
     contentPadding = PaddingValues(bottom = 50.dp)) {
         items(years.size) { idx ->
-            val defaultColor = Color.White
-            val selectedDateColor = Color.Red
-            var staticColor = if (years[idx] == date.year) selectedDateColor
-            else defaultColor
-            val backgroundColor = if (years[idx] == now.year) {
-                blinkColorAsState(durationMillis = 1000,
-                    color1 = staticColor,
-                    color2 = Color.Magenta).value
-            } else {
-                staticColor
-            }
+            val colors = blinkColorButtonAsState(years[idx] == date.year,
+                years[idx] == now.year)
 
-            SquareButton(years[idx].toString(), backgroundColor = backgroundColor) {
+            SquareButton(years[idx].toString(),
+                backgroundColor = colors.first.value,
+                color = colors.second.value) {
                 if (years[idx] in (Year.MIN_VALUE .. Year.MAX_VALUE)) {
                     val newMonthLength = YearMonth.of(years[idx], date.month).lengthOfMonth()
                     val newDay = minOf(date.dayOfMonth, newMonthLength)
