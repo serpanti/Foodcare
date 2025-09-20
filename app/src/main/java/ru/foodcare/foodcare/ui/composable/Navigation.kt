@@ -1,13 +1,29 @@
 package ru.foodcare.foodcare.ui.composable
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import ru.foodcare.foodcare.R
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -19,11 +35,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,6 +50,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
+import ru.foodcare.foodcare.data.store.ThemePreferences
 import ru.foodcare.foodcare.ui.composable.meal.MealEditWindow
 import ru.foodcare.foodcare.ui.composable.product.ProductEditWindow
 import ru.foodcare.foodcare.ui.composable.product.ProductsWindow
@@ -39,6 +59,7 @@ import ru.foodcare.foodcare.ui.composable.weight.WeightEditWindow
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
+import ru.foodcare.foodcare.ui.viewModel.theme.ThemeViewModel
 import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
 
 sealed class Route(val route: String) {
@@ -51,12 +72,18 @@ sealed class Route(val route: String) {
 }
 
 @Composable
-fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController, content: @Composable () -> Unit) {
+fun NavigationPanel(
+    navPanelState: DrawerState,
+    navController: NavHostController,
+    themeVM: ThemeViewModel,
+    content: @Composable () -> Unit
+) {
     val drawerContent = @Composable {
         ModalDrawerSheet {
             val navPanelScope = rememberCoroutineScope()
             val closeNavPanel = {navPanelScope.launch { navPanelState.close() }}
-            val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+            val currentRoute =
+                navController.currentBackStackEntryAsState().value?.destination?.route
             val startRoute = Route.Main.route
 
             NavigationDrawerItem({Text(stringResource(R.string.main_page))},
@@ -75,11 +102,56 @@ fun NavigationPanel(navPanelState: DrawerState, navController: NavHostController
                     closeNavPanel()
                 }
             )
+            Box(Modifier.fillMaxSize()) {
+                Column(Modifier.align(Alignment.BottomCenter)) {
+                    HorizontalDivider()
+                    ThemeSwitcher(themeVM)
+                }
+            }
         }
     }
 
     ModalNavigationDrawer(drawerContent, drawerState = navPanelState) {
         content()
+    }
+}
+
+@Composable
+fun ThemeSwitcher(themeVM: ThemeViewModel, modifier: Modifier = Modifier) {
+    val theme = themeVM.theme.collectAsState()
+
+    AnimatedContent(modifier = modifier.fillMaxWidth().wrapContentHeight(),
+        transitionSpec = {
+            fadeIn() togetherWith fadeOut()
+        },
+        label = "themeSwitcherContent",
+        targetState = theme.value) { state ->
+
+        when (state) {
+            ThemePreferences.Companion.Themes.DARK.toString() -> {
+                ThemeSwitchButton({themeVM.setLightTheme()}, Icons.Filled.DarkMode,
+                    stringResource(R.string.dark_theme))
+            }
+            ThemePreferences.Companion.Themes.LIGHT.toString() -> {
+                ThemeSwitchButton({themeVM.setSystemTheme()}, Icons.Filled.LightMode,
+                    stringResource(R.string.light_theme))
+            }
+            else -> {
+                ThemeSwitchButton({themeVM.setDarkTheme()}, Icons.Filled.Build,
+                    stringResource(R.string.system_theme))
+            }
+        }
+    }
+}
+
+@Composable
+fun ThemeSwitchButton(onClick: () -> Unit,
+                      icon: ImageVector, text: String, modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth().clickable{onClick()}.padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween) {
+        Icon(icon, null)
+        Text(text)
     }
 }
 
