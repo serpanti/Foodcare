@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -293,27 +294,52 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
 }
 
 @Composable
+fun OutlinedSquareButton(value: String, modifier: Modifier = Modifier,
+                         backgroundColor: Color = MaterialTheme.colorScheme.primary,
+                         color: Color = MaterialTheme.colorScheme.onPrimary,
+                         onClick: () -> Unit) {
+    CustomButton(value, modifier.defaultMinSize(40.dp),
+        backgroundColor, onClick = onClick, color = color, outlined = true)
+}
+
+@Composable
 fun SquareButton(value: String, modifier: Modifier = Modifier,
                  backgroundColor: Color = MaterialTheme.colorScheme.primary,
                  color: Color = MaterialTheme.colorScheme.onPrimary,
                  onClick: () -> Unit) {
     CustomButton(value, modifier.defaultMinSize(40.dp),
-        backgroundColor, onClick = onClick, color = color)
+        backgroundColor, onClick = onClick, color = color, outlined = false)
 }
 
 @Composable
 fun CustomButton(value: String, modifier: Modifier = Modifier,
                  backgroundColor: Color = MaterialTheme.colorScheme.primary,
                  color: Color = MaterialTheme.colorScheme.onPrimary,
+                 outlined: Boolean = true,
                  onClick: () -> Unit) {
-    OutlinedButton(onClick = onClick,
-        modifier = modifier
-            .padding(5.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = backgroundColor,
-            contentColor = color),
-        contentPadding = PaddingValues(10.dp)) {
-        Text(value)
+    val modifier = modifier
+        .padding(5.dp)
+    val contentPadding = PaddingValues(10.dp)
+    val content: @Composable (RowScope.() -> Unit) = {Text(value)}
+
+    if (outlined) {
+        OutlinedButton(onClick = onClick,
+            modifier = modifier,
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = backgroundColor,
+                contentColor = color),
+            contentPadding = contentPadding,
+            content = content
+        )
+    } else {
+        TextButton(onClick = onClick,
+            modifier = modifier,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = color),
+            contentPadding = contentPadding,
+            content = content
+        )
     }
 }
 
@@ -605,7 +631,9 @@ fun TimeEdit(
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
-        CustomButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth()) {
+        SquareButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth(),
+            backgroundColor = MaterialTheme.colorScheme.secondary,
+            color = MaterialTheme.colorScheme.onSecondary) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
         val fieldModifier = Modifier.fillMaxWidth().padding(5.dp).weight(1f)

@@ -267,7 +267,7 @@ fun DaysTable(
             val colors = blinkColorButtonAsState(days[idx] == date.dayOfMonth,
                 date.year == now.year && date.month == now.month && days[idx] == now.dayOfMonth)
 
-            SquareButton(days[idx].toString(),
+            OutlinedSquareButton(days[idx].toString(),
                 backgroundColor = colors.first.value,
                 color = colors.second.value) {
                 val newDate = if (days[idx] in (1 .. date.lengthOfMonth())) {
@@ -323,7 +323,7 @@ fun MonthsTable(
             val colors = blinkColorButtonAsState(months[idx] == date.monthValue,
                 date.year == now.year && months[idx] == now.monthValue)
 
-            SquareButton(months[idx].toMonth(),
+            OutlinedSquareButton(months[idx].toMonth(),
                 backgroundColor = colors.first.value,
                 color = colors.second.value) {
                 if (months[idx] in (1 .. date.lengthOfMonth())) {
@@ -366,7 +366,7 @@ fun YearsTable(
             val colors = blinkColorButtonAsState(years[idx] == date.year,
                 years[idx] == now.year)
 
-            SquareButton(years[idx].toString(),
+            OutlinedSquareButton(years[idx].toString(),
                 backgroundColor = colors.first.value,
                 color = colors.second.value) {
                 if (years[idx] in (Year.MIN_VALUE .. Year.MAX_VALUE)) {
