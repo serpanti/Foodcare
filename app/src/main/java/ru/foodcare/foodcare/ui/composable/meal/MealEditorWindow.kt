@@ -26,10 +26,10 @@ import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.composable.CardSurface
-import ru.foodcare.foodcare.ui.composable.CustomButton
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.product.SearchProductFieldWithList
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
+import ru.foodcare.foodcare.ui.composable.TimeEdit
 import ru.foodcare.foodcare.ui.composable.itemWithUnderLine
 import ru.foodcare.foodcare.ui.composable.parseToIntOrNull
 import ru.foodcare.foodcare.ui.composable.toStringWithLanguage
@@ -145,110 +145,6 @@ fun SelectedProductText(product: Product?, modifier: Modifier = Modifier) {
         stringResource(R.string.select_product_status)
     }
     Text(text, innerModifier)
-}
-
-@Composable
-fun TimeEdit(
-    year: MutableState<String>,
-    month: MutableState<String>,
-    day: MutableState<String>,
-    hours: MutableState<String>,
-    minutes: MutableState<String>,
-    seconds: MutableState<String>
-) {
-    Column {
-        CustomButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth()) {
-            setSystemTime(year, month, day, hours, minutes, seconds)
-        }
-        val fieldModifier = Modifier.fillMaxWidth().padding(5.dp)
-        YearTextField(year, modifier = fieldModifier)
-        MonthTextField(month, modifier = fieldModifier)
-        DayTextField(day, modifier = fieldModifier)
-        HoursTextField(hours, modifier = fieldModifier)
-        MinutesTextField(minutes, modifier = fieldModifier)
-        SecondsTextField(seconds, modifier = fieldModifier)
-    }
-}
-
-@Composable
-fun YearTextField(year: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(year.value, onValueChange = { newStr ->
-        year.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.year_input_instruction))
-    }, prefix = {
-        Text(stringResource(R.string.year_capital) + ": ")
-    })
-}
-
-@Composable
-fun MonthTextField(month: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(month.value, onValueChange = { newStr ->
-        month.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.month_input_instruction) + " (1-12)")
-    }, prefix = {
-        Text(stringResource(R.string.month_capital) + ": ")
-    })
-}
-
-@Composable
-fun DayTextField(day: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(day.value, onValueChange = { newStr ->
-        day.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.day_input_instruction) + " (1-31)")
-    }, prefix = {
-        Text(stringResource(R.string.day_capital) + ": ")
-    })
-}
-
-@Composable
-fun HoursTextField(hour: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(hour.value, onValueChange = { newStr ->
-        hour.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.hours_input_instruction) + " (0-23)")
-    }, prefix = {
-        Text(stringResource(R.string.hours_capital) + ": ")
-    })
-}
-
-@Composable
-fun MinutesTextField(minutes: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(minutes.value, onValueChange = { newStr ->
-        minutes.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.minutes_input_instruction) + " (0-59)")
-    }, prefix = {
-        Text(stringResource(R.string.minutes_capital) + ": ")
-    })
-}
-
-@Composable
-fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifier) {
-    SimpleTextField(seconds.value, onValueChange = { newStr ->
-        seconds.value = newStr
-    }, modifier = modifier, placeholder = {
-        Text(stringResource(R.string.seconds_input_instruction) + " (0-59)")
-    }, prefix = {
-        Text(stringResource(R.string.seconds_capital) + ": ")
-    })
-}
-
-private fun setSystemTime(year: MutableState<String>,
-                  month: MutableState<String>,
-                  day: MutableState<String>,
-                  hours: MutableState<String>,
-                  minutes: MutableState<String>,
-                  seconds: MutableState<String>) {
-    val time = LocalDateTime.now()
-    year.value = time.year.toString()
-    month.value = time.monthValue.toString()
-    day.value = time.dayOfMonth.toString()
-    hours.value = time.hour.toString()
-    minutes.value = time.minute.toString()
-    seconds.value = time.second.toString()
 }
 
 @Composable

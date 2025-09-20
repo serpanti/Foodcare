@@ -21,7 +21,7 @@ import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
-import ru.foodcare.foodcare.ui.composable.meal.TimeEdit
+import ru.foodcare.foodcare.ui.composable.TimeEdit
 import ru.foodcare.foodcare.ui.composable.itemWithUnderLine
 import ru.foodcare.foodcare.ui.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.ui.composable.parseToIntOrNull
