@@ -66,7 +66,7 @@ fun WeightEditCard(oldWeight: Weight?, viewModel: WeightViewModel, close: () -> 
             modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp))
         HorizontalDivider()
         TimeEdit(year, month, day, hours, minutes, seconds,
-            Modifier.padding(bottom = 5.dp))
+            Modifier.padding(bottom = 30.dp, top = 20.dp))
         HorizontalDivider()
 
         val weightValueNum = weightValue.value.parseToDoubleOrNull()

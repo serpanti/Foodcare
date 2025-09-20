@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -283,8 +284,7 @@ fun SimpleTextField(value: String, onValueChange: (String) -> Unit,
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
-            .padding(vertical = 10.dp),
+            .wrapContentHeight(),
         prefix = prefix,
         suffix = suffix,
         placeholder = placeholder,
@@ -630,22 +630,25 @@ fun TimeEdit(
     seconds: MutableState<String>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier) {
+    Column(modifier,
+        horizontalAlignment = Alignment.CenterHorizontally) {
         SquareButton(stringResource(R.string.set_current_time), Modifier.fillMaxWidth(),
             backgroundColor = MaterialTheme.colorScheme.secondary,
             color = MaterialTheme.colorScheme.onSecondary) {
             setSystemTime(year, month, day, hours, minutes, seconds)
         }
+        Spacer(Modifier.height(20.dp))
         val fieldModifier = Modifier.fillMaxWidth().padding(5.dp).weight(1f)
         val rowModifier = Modifier.padding(start = 10.dp).wrapContentHeight()
+        Text(stringResource(R.string.date_capital))
         Row(modifier = rowModifier, verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.date_capital) + ":", modifier = Modifier.weight(1f))
             YearTextField(year, modifier = fieldModifier)
             MonthTextField(month, modifier = fieldModifier)
             DayTextField(day, modifier = fieldModifier)
         }
+        Spacer(Modifier.height(40.dp))
+        Text(stringResource(R.string.time_capital))
         Row(modifier = rowModifier, verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.time_capital) + ":", modifier = Modifier.weight(1f))
             HoursTextField(hours, modifier = fieldModifier)
             MinutesTextField(minutes, modifier = fieldModifier)
             SecondsTextField(seconds, modifier = fieldModifier)

@@ -78,7 +78,7 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
         ProductEdit(product, productCount, productViewModel)
         HorizontalDivider()
         TimeEdit(year, month, day, hours, minutes, seconds,
-            Modifier.padding(bottom = 5.dp))
+            Modifier.padding(bottom = 30.dp, top = 20.dp))
         HorizontalDivider()
 
         val productCountNum = productCount.value.parseToIntOrNull()
