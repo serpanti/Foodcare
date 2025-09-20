@@ -362,10 +362,11 @@ fun ElementWithHeader(header: @Composable () -> Unit, modifier: Modifier = Modif
 @Composable
 fun Header(text: String) {
     Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp),
+        .fillMaxWidth(),
         contentAlignment = Alignment.Center) {
-        Text(text, fontSize = 32.sp)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text, style = MaterialTheme.typography.headlineMedium)
+        }
     }
 }
 
