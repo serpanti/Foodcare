@@ -6,10 +6,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,10 +25,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.RestaurantMenu
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
@@ -58,6 +63,7 @@ import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.meal.MealCard
 import ru.foodcare.foodcare.ui.composable.nutrients.NutrientsPropertiesCard
 import ru.foodcare.foodcare.ui.composable.weight.WeightCard
+import ru.foodcare.foodcare.ui.model.DatedItem
 import ru.foodcare.foodcare.ui.model.MealItem
 import ru.foodcare.foodcare.ui.model.WeightItem
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
@@ -170,19 +176,87 @@ fun DayWindowByDateContent(mealViewModel: MealViewModel,
                            openMealEditor: () -> Unit) {
     val observedMeals = mealViewModel.observeDay(date).collectAsState()
     val observedWeights = weightVM.observeDay(date).collectAsState()
+    val weightIsPicked = rememberSaveable { mutableStateOf(true) }
+    val mealIsPicked = rememberSaveable { mutableStateOf(true) }
 
     ElementWithHeader({
-        DayHeader(date)
+        DayHeader(
+            date, modifier = Modifier.fillMaxWidth(),
+            weightChecked = weightIsPicked.value,
+            onWeightCheckedChange = { weightIsPicked.value = it },
+            mealChecked = mealIsPicked.value,
+            onMealCheckedChange = { mealIsPicked.value = it },
+        )
     }) {
         DayCards(observedMeals, observedWeights, mealViewModel, weightVM, snackbarHostState,
-            openWeightEditor, openMealEditor)
+            openWeightEditor, openMealEditor, mealIsPicked.value, weightIsPicked.value)
     }
 }
 
 @Composable
-fun DayHeader(date: LocalDate) {
-    Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year),
-        modifier = Modifier.padding(bottom = 10.dp))
+fun DayHeader(date: LocalDate, modifier: Modifier = Modifier,
+              weightChecked: Boolean,
+              onWeightCheckedChange: ((Boolean) -> Unit),
+              mealChecked: Boolean,
+              onMealCheckedChange: ((Boolean) -> Unit)) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.height(IntrinsicSize.Max)
+            .padding(horizontal = 20.dp)) {
+        Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year),
+            modifier = Modifier.width(IntrinsicSize.Max).padding(bottom = 10.dp, start = 10.dp))
+        CardsFilters(modifier = Modifier,
+            weightChecked = weightChecked, onWeightCheckedChange = onWeightCheckedChange,
+            mealChecked = mealChecked, onMealCheckedChange = onMealCheckedChange)
+    }
+}
+
+@Composable
+fun CardsFilters(modifier: Modifier = Modifier,
+                 weightChecked: Boolean,
+                 onWeightCheckedChange: ((Boolean) -> Unit),
+                 mealChecked: Boolean,
+                 onMealCheckedChange: ((Boolean) -> Unit)) {
+    Row(modifier = modifier.height(IntrinsicSize.Max),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically) {
+        MealFilter(mealChecked, onCheckedChange = onMealCheckedChange,
+            Modifier.fillMaxHeight())
+        Spacer(Modifier.width(10.dp))
+        WeightFilter(weightChecked, onCheckedChange = onWeightCheckedChange,
+            Modifier.fillMaxHeight())
+    }
+}
+
+@Composable
+fun MealFilter(checked: Boolean,
+               onCheckedChange: ((Boolean) -> Unit),
+               modifier: Modifier = Modifier) {
+    Filter(checked, onCheckedChange, stringResource(R.string.meal_capital), modifier)
+}
+
+@Composable
+fun WeightFilter(checked: Boolean,
+                 onCheckedChange: ((Boolean) -> Unit),
+                 modifier: Modifier = Modifier) {
+    Filter(checked, onCheckedChange, stringResource(R.string.weight_capital), modifier)
+}
+
+@Composable
+fun Filter(
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit),
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier.clip(RoundedCornerShape(10.dp))
+        .toggleable(value = checked, onValueChange = onCheckedChange)
+        .padding(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround) {
+        Checkbox(checked = checked, onCheckedChange = null)
+        Text(text)
+    }
 }
 
 @Composable
@@ -193,13 +267,17 @@ fun DayCards(
     weightVM: WeightViewModel,
     snackbarHostState: SnackbarHostState? = null,
     openWeightEditor: () -> Unit,
-    openMealEditor: () -> Unit
+    openMealEditor: () -> Unit,
+    showMealCards: Boolean,
+    showWeightCards: Boolean
 ) {
     val listState = rememberLazyListState()
-    val dayList by remember {
+    val dayList by remember(showMealCards, showWeightCards) {
         derivedStateOf {
-            (meals.value.map{MealItem(it)} + weights.value.map{WeightItem(it)})
-                .sortedByDescending  { it.date }
+            val dayList = emptyList<DatedItem>().toMutableList()
+            if (showMealCards) dayList += meals.value.map{MealItem(it)}
+            if (showWeightCards) dayList += weights.value.map{WeightItem(it)}
+            dayList.sortedByDescending  { it.date }
         }
     }
 
