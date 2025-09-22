@@ -756,7 +756,7 @@ fun CardContent(modifier: Modifier = Modifier,
                 content: @Composable (Modifier) -> Unit) {
     Row(modifier.height(IntrinsicSize.Max)) {
         content(Modifier.weight(1f))
-        Spacer(Modifier.width(10.dp))
+        Spacer(Modifier.width(15.dp))
         Column (Modifier.fillMaxHeight().width(IntrinsicSize.Max),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween) {

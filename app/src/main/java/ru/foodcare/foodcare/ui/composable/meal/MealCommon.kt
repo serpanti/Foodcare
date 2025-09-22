@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -100,8 +101,10 @@ fun MealCardContentInfo(meal: Meal, modifier: Modifier = Modifier) {
         (product.amount * meal.productRatio).toInt(), product.type.toStringWithLanguage())
     Column(modifier, horizontalAlignment = Alignment.Start) {
         Text(stringResource(R.string.name_capital) + ": " + product.name)
+        Spacer(modifier = Modifier.padding(1.dp))
         Text(stringResource(R.string.supplier_capital) + ": " + product.production)
-        Text(productCount)
+        Spacer(modifier = Modifier.padding(1.dp))
+        Text(productCount, modifier = Modifier.align(Alignment.End))
     }
 }
 
