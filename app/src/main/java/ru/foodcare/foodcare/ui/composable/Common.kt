@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -441,7 +442,12 @@ fun UnitType.toStringWithLanguage(): String {
 }
 
 @Composable
-fun IconWithAction(action: () -> Unit, modifier: Modifier = Modifier) {
+fun RoundDeleteIconButton(action: () -> Unit, modifier: Modifier = Modifier) {
+    DeleteIconButton(action, modifier.clip(CircleShape))
+}
+
+@Composable
+fun DeleteIconButton(action: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.clickable(onClick = action), contentAlignment = Alignment.Center) {
         Icon(Icons.Filled.Delete, stringResource(R.string.delete_record))
     }
