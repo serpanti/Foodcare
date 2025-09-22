@@ -115,6 +115,6 @@
     <string name="dark_theme">Темная тема</string>
     <string name="light_theme">Светлая тема</string>
     <string name="system_theme">Системная тема</string>
-    <string name="meal_capital">Прием пищи</string>
+    <string name="meal_capital">Пища</string>
 
 </resources>
