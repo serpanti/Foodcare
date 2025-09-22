@@ -758,7 +758,7 @@ fun CardContent(modifier: Modifier = Modifier,
         content(Modifier.weight(1f))
         Spacer(Modifier.width(10.dp))
         Column (Modifier.fillMaxHeight().width(IntrinsicSize.Max),
-            horizontalAlignment = Alignment.End,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween) {
             RoundDeleteIconButton(delete, Modifier.size(50.dp))
             Text("%02d:%02d".format(time.hour, time.minute),
