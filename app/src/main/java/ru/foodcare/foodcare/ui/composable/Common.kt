@@ -366,8 +366,8 @@ fun ElementWithHeader(header: @Composable () -> Unit, modifier: Modifier = Modif
 }
 
 @Composable
-fun Header(text: String) {
-    Box(modifier = Modifier
+fun Header(text: String, modifier: Modifier = Modifier) {
+    Box(modifier = modifier
         .fillMaxWidth(),
         contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
