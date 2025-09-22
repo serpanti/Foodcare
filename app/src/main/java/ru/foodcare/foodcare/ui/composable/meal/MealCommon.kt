@@ -3,13 +3,17 @@ package ru.foodcare.foodcare.ui.composable.meal
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -25,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.R
@@ -77,14 +82,18 @@ fun MealCard(meal: Meal, mealViewModel: MealViewModel,
 @Composable
 fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
                     delete: () -> Unit = {}) {
-    Row(modifier, horizontalArrangement = Arrangement.SpaceBetween) {
-        MealCardContentInfo(meal)
-        Column (Modifier.wrapContentSize()) {
+    Row(modifier.height(IntrinsicSize.Max)) {
+        MealCardContentInfo(meal, Modifier.weight(1f))
+        Spacer(Modifier.width(10.dp))
+        Column (Modifier.fillMaxHeight().width(IntrinsicSize.Max),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.SpaceBetween) {
             IconWithAction(
                 delete, Modifier
                     .size(50.dp).clip(CircleShape)
             )
-            Text("%02d:%02d".format(meal.date.hour, meal.date.minute))
+            Text("%02d:%02d".format(meal.date.hour, meal.date.minute),
+                softWrap = false, overflow = TextOverflow.Visible, maxLines = 1)
         }
     }
 }
@@ -109,7 +118,7 @@ fun MealCardContentInfo(meal: Meal, modifier: Modifier = Modifier) {
     val productCount = "%s: %d %s".format(
         stringResource(R.string.quantity_capital),
         (product.amount * meal.productRatio).toInt(), product.type.toStringWithLanguage())
-    Column(modifier.wrapContentSize()) {
+    Column(modifier, horizontalAlignment = Alignment.Start) {
         Text(stringResource(R.string.name_capital) + ": " + product.name)
         Text(stringResource(R.string.supplier_capital) + ": " + product.production)
         Text(productCount)
