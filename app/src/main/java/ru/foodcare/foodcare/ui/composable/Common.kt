@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -93,6 +95,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
@@ -103,6 +106,7 @@ import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
 import ru.foodcare.foodcare.ui.input.Input
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @Composable
 fun CheckCircle(selected: Boolean) {
@@ -743,4 +747,22 @@ fun SecondsTextField(seconds: MutableState<String>, modifier: Modifier = Modifie
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
     })
+}
+
+@Composable
+fun CardContent(modifier: Modifier = Modifier,
+                delete: () -> Unit = {},
+                time: LocalTime,
+                content: @Composable (Modifier) -> Unit) {
+    Row(modifier.height(IntrinsicSize.Max)) {
+        content(Modifier.weight(1f))
+        Spacer(Modifier.width(10.dp))
+        Column (Modifier.fillMaxHeight().width(IntrinsicSize.Max),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.SpaceBetween) {
+            RoundDeleteIconButton(delete, Modifier.size(50.dp))
+            Text("%02d:%02d".format(time.hour, time.minute),
+                softWrap = false, overflow = TextOverflow.Visible, maxLines = 1)
+        }
+    }
 }

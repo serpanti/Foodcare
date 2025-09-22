@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -28,18 +26,14 @@ import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
-import ru.foodcare.foodcare.ui.composable.RoundDeleteIconButton
+import ru.foodcare.foodcare.ui.composable.CardContent
 import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
 
 @Composable
 fun WeightCardContent(weight: Weight, modifier: Modifier = Modifier,
                     delete: () -> Unit = {}) {
-    Row(modifier, horizontalArrangement = Arrangement.SpaceBetween) {
-        WeightCardContentInfo(weight)
-        Column (Modifier.wrapContentSize()) {
-            RoundDeleteIconButton(delete, Modifier.size(50.dp))
-            Text("%02d:%02d".format(weight.date.hour, weight.date.minute))
-        }
+    CardContent(modifier = modifier, time = weight.date.toLocalTime(), delete = delete) { modifier ->
+        WeightCardContentInfo(weight, modifier)
     }
 }
 

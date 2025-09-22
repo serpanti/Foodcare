@@ -3,16 +3,10 @@ package ru.foodcare.foodcare.ui.composable.meal
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -27,13 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.ui.composable.AlertDeleteDialog
-import ru.foodcare.foodcare.ui.composable.RoundDeleteIconButton
+import ru.foodcare.foodcare.ui.composable.CardContent
 import ru.foodcare.foodcare.ui.composable.toStringWithLanguage
 import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 
@@ -80,16 +73,8 @@ fun MealCard(meal: Meal, mealViewModel: MealViewModel,
 @Composable
 fun MealCardContent(meal: Meal, modifier: Modifier = Modifier,
                     delete: () -> Unit = {}) {
-    Row(modifier.height(IntrinsicSize.Max)) {
-        MealCardContentInfo(meal, Modifier.weight(1f))
-        Spacer(Modifier.width(10.dp))
-        Column (Modifier.fillMaxHeight().width(IntrinsicSize.Max),
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.SpaceBetween) {
-            RoundDeleteIconButton(delete, Modifier.size(50.dp))
-            Text("%02d:%02d".format(meal.date.hour, meal.date.minute),
-                softWrap = false, overflow = TextOverflow.Visible, maxLines = 1)
-        }
+    CardContent(modifier = modifier, time = meal.date.toLocalTime(), delete = delete) { modifier ->
+        MealCardContentInfo(meal, modifier)
     }
 }
 
