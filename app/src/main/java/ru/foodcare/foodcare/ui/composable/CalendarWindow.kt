@@ -26,7 +26,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Balance
 import androidx.compose.material.icons.filled.RestaurantMenu
@@ -249,7 +248,7 @@ fun Filter(
     text: String,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier.clip(RoundedCornerShape(10.dp))
+    Row(modifier.clip(MaterialTheme.shapes.small)
         .toggleable(value = checked, onValueChange = onCheckedChange)
         .padding(5.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -483,9 +482,9 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
     Row(modifier = modifier
         .height(IntrinsicSize.Max)
         .width(160.dp)
-        .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+        .border(2.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
         .background(MaterialTheme.colorScheme.surface)
-        .clip(RoundedCornerShape(10.dp))
+        .clip(MaterialTheme.shapes.small)
         .padding(2.dp)
         .zIndex(1f)
     ) {

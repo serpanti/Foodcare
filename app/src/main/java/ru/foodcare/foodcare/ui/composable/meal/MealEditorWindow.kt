@@ -1,6 +1,5 @@
 package ru.foodcare.foodcare.ui.composable.meal
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +28,7 @@ import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
-import ru.foodcare.foodcare.ui.composable.CardSurface
+import ru.foodcare.foodcare.ui.composable.EditCardSurface
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.product.SearchProductFieldWithList
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
@@ -49,14 +46,7 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
     val meal = viewModel.mealObserved.collectAsState()
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CardSurface(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-                .padding(5.dp)
-                .background(Color.Transparent)
-                .padding(10.dp)
-        ) {
+        EditCardSurface {
             MealEditCard(meal.value, viewModel, productViewModel, close)
         }
     }
@@ -146,8 +136,8 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
 @Composable
 fun SelectedProductText(product: Product?, modifier: Modifier = Modifier) {
     val innerModifier = modifier
-        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
-        .clip(RoundedCornerShape(10.dp))
+        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
+        .clip(MaterialTheme.shapes.small)
         .padding(10.dp)
     val text = if (product != null) {
         "%s %s".format(product.name, product.production)

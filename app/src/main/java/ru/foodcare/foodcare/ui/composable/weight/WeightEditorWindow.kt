@@ -1,6 +1,5 @@
 package ru.foodcare.foodcare.ui.composable.weight
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +17,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.weight.Weight
-import ru.foodcare.foodcare.ui.composable.CardSurface
+import ru.foodcare.foodcare.ui.composable.EditCardSurface
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.SimpleTextField
 import ru.foodcare.foodcare.ui.composable.TimeEdit
@@ -40,14 +38,7 @@ fun WeightEditWindow(viewModel: WeightViewModel,
     val weight = viewModel.weightObserved.collectAsState()
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CardSurface(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-                .padding(5.dp)
-                .background(Color.Transparent)
-                .padding(10.dp)
-        ) {
+        EditCardSurface {
             WeightEditCard(weight.value, viewModel, close)
         }
     }

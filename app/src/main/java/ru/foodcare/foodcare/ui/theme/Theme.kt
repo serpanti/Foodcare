@@ -266,6 +266,7 @@ fun FoodcareTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        shapes = AppShapes,
         typography = AppTypography,
         content = content
     )

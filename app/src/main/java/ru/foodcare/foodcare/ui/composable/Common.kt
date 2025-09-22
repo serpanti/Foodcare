@@ -43,7 +43,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -91,6 +90,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -120,9 +120,21 @@ fun CheckCircle(selected: Boolean) {
 }
 
 @Composable
-fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun EditCardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    CardSurface(modifier = modifier.fillMaxWidth()
+        .padding(10.dp)
+        .background(Color.Transparent),
+        shape = MaterialTheme.shapes.large) {
+        content()
+    }
+}
+
+@Composable
+fun CardSurface(modifier: Modifier = Modifier,
+                shape: Shape = MaterialTheme.shapes.medium,
+                content: @Composable () -> Unit) {
     Card(modifier = modifier,
-        shape = RoundedCornerShape(10.dp),
+        shape = shape,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
         content()
     }
@@ -254,8 +266,8 @@ fun SearchField(onStartSearching: () -> Unit,
             .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(15.dp))
-            .clip(RoundedCornerShape(15.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
+            .clip(MaterialTheme.shapes.small),
         trailingIcon = {
             IconButton({
                 if (isOpened()) onStopSearching() else onStartSearching()

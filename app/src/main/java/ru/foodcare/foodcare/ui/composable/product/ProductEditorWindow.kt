@@ -1,6 +1,5 @@
 package ru.foodcare.foodcare.ui.composable.product
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -22,7 +21,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,8 +28,8 @@ import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.ui.input.InputProduct
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.product.Product.Companion.UnitType
-import ru.foodcare.foodcare.ui.composable.CardSurface
 import ru.foodcare.foodcare.ui.composable.CheckCircle
+import ru.foodcare.foodcare.ui.composable.EditCardSurface
 import ru.foodcare.foodcare.ui.composable.SaveButton
 import ru.foodcare.foodcare.ui.composable.parseToDoubleOrNull
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
@@ -41,14 +39,7 @@ fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
     val product = viewModel.lastChosenProduct.collectAsState().value
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        CardSurface(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-                .padding(5.dp)
-                .background(Color.Transparent)
-                .padding(10.dp)
-        ) {
+        EditCardSurface {
             ProductEditCard(product, viewModel, close)
         }
     }
@@ -215,7 +206,7 @@ fun ProductTypeSelectRow(type: String, selected: Boolean, onSelect: () -> Unit) 
     Row (modifier = Modifier
         .padding(start = 50.dp)
         .fillMaxWidth()
-        .clip(RoundedCornerShape(15.dp))
+        .clip(MaterialTheme.shapes.small)
         .selectable(selected) {
             onSelect()
         }
