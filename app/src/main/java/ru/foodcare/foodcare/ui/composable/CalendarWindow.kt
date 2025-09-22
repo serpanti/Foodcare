@@ -138,7 +138,8 @@ fun DayWindowByDate(
     val observedWeights = weightVM.observeDay(date).collectAsState()
     Box(Modifier.fillMaxSize()) {
         ElementWithHeader({
-            Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year))
+            Header("%02d/%02d/%d".format(date.dayOfMonth, date.monthValue, date.year),
+                modifier = Modifier.padding(bottom = 10.dp))
         }) {
             DayCards(observedMeals, observedWeights, mealViewModel, weightVM, snackbarHostState,
                 openWeightEditor, openMealEditor)
