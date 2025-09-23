@@ -2,5 +2,6 @@
 <resources>
     <style name="Theme.Foodcare" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
     </style>
 </resources>
