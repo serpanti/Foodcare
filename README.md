@@ -6,15 +6,24 @@ Foodcare – это Android-приложение для осознанного �
 
 ## Демонстрация
 
-- ![🚀 Запуск приложения (со светлой темой)](GIF/LightThemeOpening.gif)
-- ![🚀 Запуск приложения (с тёмной темой)](GIF/DarkThemeOpening.gif)
-- ![🌗 Переключение темы (светлая/темная/системная)](GIF/ThemesСhanging.gif)
-- ![🧭 Навигация по приложению](GIF/Navigation.gif)
-- ![🔍 Поиск продукта](GIF/SearchingProduct.gif)
-- ![❌ Удаление продукта](GIF/Removal.gif)
-- ![📅 Просмотр даты](GIF/CheckingDate.gif)
-- ![🍽 Добавление приёма пищи](GIF/AdditionMeal.gif)
-- ![⚖️ Добавление веса](GIF/AdditionWeight.gif)
+- Запуск приложения (со светлой темой)
+![](GIF/LightThemeOpening.gif)
+- Запуск приложения (с тёмной темой)
+![](GIF/DarkThemeOpening.gif)
+- Переключение темы (светлая/темная/системная)
+![](GIF/ThemesСhanging.gif)
+- Навигация по приложению
+![](GIF/Navigation.gif)
+- Поиск продукта
+![](GIF/SearchingProduct.gif)
+- Удаление продукта
+![](GIF/Removal.gif)
+- Просмотр даты
+![](GIF/CheckingDate.gif)
+- Добавление приёма пищи
+![](GIF/AdditionMeal.gif)
+- Добавление веса
+![](GIF/AdditionWeight.gif)
 
 ## Ключевые функции
 
