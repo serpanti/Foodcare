@@ -483,8 +483,8 @@ fun CalendarTypeSelector(type: MutableState<CalendarShowType>, modifier: Modifie
         .height(IntrinsicSize.Max)
         .width(160.dp)
         .border(2.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
-        .background(MaterialTheme.colorScheme.surface)
         .clip(MaterialTheme.shapes.small)
+        .background(MaterialTheme.colorScheme.surface)
         .padding(2.dp)
         .zIndex(1f)
     ) {
