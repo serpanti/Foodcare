@@ -114,4 +114,6 @@
     <string name="light_theme">Light Theme</string>
     <string name="system_theme">System Theme</string>
     <string name="meal_capital">Meal</string>
+    <string name="import_db">Import DB</string>
+    <string name="export_db">Export DB</string>
 </resources>

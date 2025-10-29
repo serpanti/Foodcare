@@ -116,5 +116,7 @@
     <string name="light_theme">Светлая тема</string>
     <string name="system_theme">Системная тема</string>
     <string name="meal_capital">Пища</string>
+    <string name="import_db">Скачать БД</string>
+    <string name="export_db">Сохранить БД</string>
 
 </resources>
