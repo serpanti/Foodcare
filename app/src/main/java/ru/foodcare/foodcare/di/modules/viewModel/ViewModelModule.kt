@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import ru.foodcare.foodcare.ui.viewModel.backup.BackupViewModel
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
@@ -36,4 +37,9 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(ThemeViewModel::class)
     fun bindsThemeViewModel(themeViewModel: ThemeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BackupViewModel::class)
+    fun bindsBackupViewModel(backupViewModel: BackupViewModel): ViewModel
 }
