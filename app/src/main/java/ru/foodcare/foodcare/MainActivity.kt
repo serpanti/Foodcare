@@ -19,6 +19,7 @@ import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
 import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
 import ru.foodcare.foodcare.ui.theme.FoodcareTheme
+import ru.foodcare.foodcare.ui.viewModel.backup.BackupViewModel
 import ru.foodcare.foodcare.ui.viewModel.theme.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var dateVM: DateViewModel
     private lateinit var weightVM: WeightViewModel
     private lateinit var themeVM: ThemeViewModel
+    private lateinit var backupVM: BackupViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
         dateVM = ViewModelProvider(this, viewModelFactory)[DateViewModel::class.java]
         weightVM = ViewModelProvider(this, viewModelFactory)[WeightViewModel::class.java]
         themeVM = ViewModelProvider(this, viewModelFactory)[ThemeViewModel::class.java]
+        backupVM = ViewModelProvider(this, viewModelFactory)[BackupViewModel::class.java]
 
         setContent {
             val theme = themeVM.theme.collectAsState()
@@ -51,7 +54,7 @@ class MainActivity : ComponentActivity() {
             }
 
             FoodcareTheme(darkTheme = darkTheme) {
-                UI(productVM, mealVM, dateVM, weightVM, themeVM)
+                UI(productVM, mealVM, dateVM, weightVM, themeVM, backupVM)
             }
         }
     }
@@ -63,12 +66,13 @@ fun UI(
     mealViewModel: MealViewModel,
     dateVM: DateViewModel,
     weightVM: WeightViewModel,
-    themeVM: ThemeViewModel
+    themeVM: ThemeViewModel,
+    backupVM: BackupViewModel
 ) {
     val navPanelState = rememberDrawerState (DrawerValue.Closed)
     val navigationController = rememberNavController()
 
-    NavigationPanel(navPanelState, navigationController, themeVM) {
+    NavigationPanel(navPanelState, navigationController, themeVM, backupVM) {
         Content(navPanelState, navigationController,
             productViewModel, mealViewModel, dateVM, weightVM)
     }

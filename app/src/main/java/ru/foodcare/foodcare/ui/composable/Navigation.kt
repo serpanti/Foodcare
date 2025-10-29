@@ -1,5 +1,7 @@
 package ru.foodcare.foodcare.ui.composable
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,9 +10,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import ru.foodcare.foodcare.R
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -34,6 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -43,7 +49,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -56,11 +64,14 @@ import ru.foodcare.foodcare.ui.composable.product.ProductEditWindow
 import ru.foodcare.foodcare.ui.composable.product.ProductsWindow
 import ru.foodcare.foodcare.ui.composable.product.SearchProductField
 import ru.foodcare.foodcare.ui.composable.weight.WeightEditWindow
+import ru.foodcare.foodcare.ui.viewModel.backup.BackupViewModel
 import ru.foodcare.foodcare.ui.viewModel.date.DateViewModel
 import ru.foodcare.foodcare.ui.viewModel.meal.MealViewModel
 import ru.foodcare.foodcare.ui.viewModel.product.ProductViewModel
 import ru.foodcare.foodcare.ui.viewModel.theme.ThemeViewModel
 import ru.foodcare.foodcare.ui.viewModel.weight.WeightViewModel
+import java.io.File
+import android.net.Uri
 
 sealed class Route(val route: String) {
     object Main: Route("main")
@@ -76,6 +87,7 @@ fun NavigationPanel(
     navPanelState: DrawerState,
     navController: NavHostController,
     themeVM: ThemeViewModel,
+    backupVM: BackupViewModel,
     content: @Composable () -> Unit
 ) {
     val drawerContent = @Composable {
@@ -102,8 +114,13 @@ fun NavigationPanel(
                     closeNavPanel()
                 }
             )
-            Box(Modifier.fillMaxSize()) {
-                Column(Modifier.align(Alignment.BottomCenter)) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Column {
+                    HorizontalDivider()
+                    BackupBox(backupVM)
                     HorizontalDivider()
                     ThemeSwitcher(themeVM)
                 }
@@ -113,6 +130,55 @@ fun NavigationPanel(
 
     ModalNavigationDrawer(drawerContent, drawerState = navPanelState) {
         content()
+    }
+}
+
+@Composable
+fun BackupBox(backupVM: BackupViewModel) {
+    val dbName = "foodcare.db"
+    val context = LocalContext.current
+    val dbDir: File = context.getDatabasePath(dbName).parentFile!!
+
+    val createBackupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/zip")
+    ) { uri: Uri? ->
+        uri?.let {
+            context.contentResolver.openOutputStream(it)?.let { output ->
+                backupVM.backup(dbDir, dbName, output)
+            }
+        }
+    }
+
+    val restoreBackupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        uri?.let {
+            context.contentResolver.openInputStream(it)?.let { input ->
+                backupVM.restore(dbDir, input)
+            }
+        }
+    }
+
+    Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max)) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .clickable(onClick = {restoreBackupLauncher.launch(arrayOf("application/zip"))})
+                .padding(20.dp)
+            , contentAlignment = Alignment.Center
+        ) {
+            Text(stringResource(R.string.import_db), textAlign = TextAlign.Center)
+        }
+        VerticalDivider(modifier = Modifier.fillMaxHeight())
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .clickable(onClick = {createBackupLauncher.launch("backup.zip")})
+                .padding(20.dp)
+            , contentAlignment = Alignment.Center
+        ) {
+            Text(stringResource(R.string.export_db), textAlign = TextAlign.Center)
+        }
     }
 }
 
