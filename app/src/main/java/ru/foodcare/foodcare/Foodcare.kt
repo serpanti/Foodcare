@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import ru.foodcare.foodcare.di.components.DaggerFoodcareComponent
 import ru.foodcare.foodcare.di.components.FoodcareComponent
-import kotlin.system.exitProcess
 
 class Foodcare: Application() {
     lateinit var foodcareComponent: FoodcareComponent
@@ -35,8 +34,6 @@ class Foodcare: Application() {
             System.currentTimeMillis() + 100,
             pendingIntent
         )
-
-        exitProcess(0)
     }
 }
 
