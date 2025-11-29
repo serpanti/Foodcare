@@ -49,7 +49,7 @@ fun ProductEditWindow(viewModel: ProductViewModel, close: () -> Unit) {
 fun ProductEditCard(oldProduct: Product?, viewModel: ProductViewModel, close: () -> Unit) {
     val name = rememberSaveable { mutableStateOf(oldProduct?.name ?: "") }
     val production = rememberSaveable { mutableStateOf(oldProduct?.production ?: "") }
-    val type = rememberSaveable { mutableStateOf(UnitType.Piece) }
+    val type = rememberSaveable { mutableStateOf(oldProduct?.type ?: UnitType.Piece) }
     val calories = rememberSaveable {
         mutableStateOf(oldProduct?.nutrientsProperties?.calories?.toString() ?: "")
     }
