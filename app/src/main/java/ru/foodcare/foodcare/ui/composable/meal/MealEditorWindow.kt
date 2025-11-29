@@ -56,7 +56,7 @@ fun MealEditWindow(viewModel: MealViewModel, productViewModel: ProductViewModel,
 fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
                  productViewModel: ProductViewModel, close: () -> Unit) {
     val id = rememberSaveable { oldMeal?.id ?: 0 }
-    val product = rememberSaveable { mutableStateOf<Product?>(oldMeal?.product) }
+    val product = rememberSaveable { mutableStateOf(oldMeal?.product) }
     val productCount = rememberSaveable {
         mutableStateOf(
             oldMeal?.run {
