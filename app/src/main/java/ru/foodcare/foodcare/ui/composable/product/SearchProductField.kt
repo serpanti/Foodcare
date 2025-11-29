@@ -77,8 +77,10 @@ fun SearchProductFieldWithList(
         ExposedDropdownMenu(expanded = isOpened.value, onDismissRequest = {}) {
             productsByQuery.value.forEach { productItem ->
                 DropdownMenuItem(
-                    text = { Text(productItem.name,
-                        style = MaterialTheme.typography.bodyLarge)
+                    text = { Text(
+                        text = "${productItem.name} | ${productItem.production}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     }, onClick = {
                         product.value = productItem
                         onStopSearching()
