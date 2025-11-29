@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import ru.foodcare.foodcare.R
 import ru.foodcare.foodcare.domain.product.Product
 import ru.foodcare.foodcare.domain.meal.Meal
@@ -122,7 +123,7 @@ fun ProductEdit(
 }
 
 @Composable
-fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
+fun ProductCountTextField(productCount: MutableState<String>, type: UnitType,
                           modifier: Modifier = Modifier) {
     SimpleTextField(productCount.value, onValueChange = { newStr ->
         productCount.value = newStr
@@ -133,7 +134,13 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
     }, prefix = {
         Text("${stringResource(R.string.quantity_capital)}: ")
     }, suffix = {
-        Text(type.toStringWithLanguage(productCount.value.toInt()))
+        val suffixText = if (type == UnitType.Piece && productCount.value.isDigitsOnly()) {
+            type.toStringWithLanguage(productCount.value.toInt())
+        } else {
+            type.toStringWithLanguage()
+        }
+
+        Text(suffixText)
     })
 }
 
