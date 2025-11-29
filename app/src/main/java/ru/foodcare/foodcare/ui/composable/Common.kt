@@ -93,6 +93,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -449,11 +450,13 @@ fun SaveButton(
 }
 
 @Composable
-fun UnitType.toStringWithLanguage(): String {
+fun UnitType.toStringWithLanguage(pieces: Int = 1): String {
+    val res = LocalResources.current
+
     return when (this) {
         UnitType.Milliliter -> stringResource(R.string.ml)
         UnitType.Gram -> stringResource(R.string.g)
-        UnitType.Piece -> stringResource(R.string.piece)
+        UnitType.Piece -> res.getQuantityString(R.plurals.piece, pieces)
     }
 }
 

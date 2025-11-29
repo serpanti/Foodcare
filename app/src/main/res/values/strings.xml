@@ -16,7 +16,10 @@
     <string name="error_in_the_input">Error in the input</string>
     <string name="save">Save</string>
     <string name="ml">ml</string>
-    <string name="piece">piece</string>
+    <plurals name="piece">
+        <item quantity="one">piece</item>
+        <item quantity="other">pieces</item>
+    </plurals>
     <string name="g">g</string>
     <string name="delete_record">Delete record</string>
     <string name="cancel">Cancel</string>

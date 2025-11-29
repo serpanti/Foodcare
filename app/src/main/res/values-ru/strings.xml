@@ -16,7 +16,9 @@
     <string name="error_in_the_input">В вводе ошибки</string>
     <string name="save">Сохранить</string>
     <string name="ml">мл</string>
-    <string name="piece">шт</string>
+    <plurals name="piece">
+        <item quantity="other">шт</item>
+    </plurals>
     <string name="g">г</string>
     <string name="delete_record">Удалить запись</string>
     <string name="cancel">Отмена</string>

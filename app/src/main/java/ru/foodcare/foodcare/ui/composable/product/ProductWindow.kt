@@ -199,7 +199,7 @@ fun ProductCardContent(product: Product) {
         Nutrients(product.nutrientsProperties, Modifier.padding(horizontal = 2.dp, vertical = 5.dp))
         Row(modifier = Modifier.align(Alignment.End)) {
             Text(stringResource(R.string.quantity_capital) + ": ")
-            Text("${product.amount} ${product.type.toStringWithLanguage()}")
+            Text("${product.amount} ${product.type.toStringWithLanguage(product.amount)}")
         }
     }
 }

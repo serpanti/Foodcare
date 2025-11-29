@@ -133,7 +133,7 @@ fun ProductCountTextField(productCount: MutableState<String>, type :UnitType,
     }, prefix = {
         Text("${stringResource(R.string.quantity_capital)}: ")
     }, suffix = {
-        Text(type.toStringWithLanguage())
+        Text(type.toStringWithLanguage(productCount.value.toInt()))
     })
 }
 

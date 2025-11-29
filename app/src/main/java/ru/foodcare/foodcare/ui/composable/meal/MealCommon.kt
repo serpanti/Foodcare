@@ -96,9 +96,10 @@ fun MealCardContentInfoWithTime(meal: Meal, modifier: Modifier = Modifier,
 @Composable
 fun MealCardContentInfo(meal: Meal, modifier: Modifier = Modifier) {
     val product = meal.product
+    val productNumber = (product.amount * meal.productRatio).toInt()
     val productCount = "%s: %d %s".format(
         stringResource(R.string.quantity_capital),
-        (product.amount * meal.productRatio).toInt(), product.type.toStringWithLanguage())
+        productNumber, product.type.toStringWithLanguage(productNumber))
     Column(modifier, horizontalAlignment = Alignment.Start) {
         Text(stringResource(R.string.name_capital) + ": " + product.name)
         Spacer(modifier = Modifier.padding(1.dp))
