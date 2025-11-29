@@ -58,7 +58,11 @@ fun MealEditCard(oldMeal: Meal?, viewModel: MealViewModel,
     val id = rememberSaveable { oldMeal?.id ?: 0 }
     val product = rememberSaveable { mutableStateOf<Product?>(oldMeal?.product) }
     val productCount = rememberSaveable {
-        mutableStateOf(oldMeal?.product?.amount?.toString() ?: "")
+        mutableStateOf(
+            oldMeal?.run {
+                this.productRatio * this.product.amount
+            }?.toInt()?.toString() ?: ""
+        )
     }
     val year = rememberSaveable { mutableStateOf(oldMeal?.date?.year?.toString() ?: "") }
     val month = rememberSaveable { mutableStateOf(oldMeal?.date?.monthValue?.toString() ?: "") }
