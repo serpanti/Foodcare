@@ -29,6 +29,12 @@ interface ProductDAO {
     suspend fun getProduct(name: String, production: String): List<Product>
 
     @Query("SELECT * FROM products WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
+    fun observeProductsByName(name: String): Flow<List<Product>>
+
+    @Query("SELECT * FROM products WHERE production LIKE '%' || :production || '%' COLLATE NOCASE")
+    fun observeProductsByProduction(production: String): Flow<List<Product>>
+
+    @Query("SELECT * FROM products WHERE name LIKE '%' || :name || '%' COLLATE NOCASE")
     suspend fun getProductByName(name: String): List<Product>
 
     @Query("SELECT * FROM products WHERE production LIKE '%' || :production || '%' COLLATE NOCASE")
