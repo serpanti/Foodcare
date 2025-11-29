@@ -41,6 +41,18 @@ class ProductRepositoryImpl @Inject constructor(private val dao: ProductDAO) : P
         return dao.getProduct(name, production).map{ProductMapper.toDomain(it)}
     }
 
+    override fun observeProductsByName(name: String): Flow<List<Product>> {
+        return dao.observeProductsByName(name).map{ list ->
+            list.map{ProductMapper.toDomain(it)}
+        }
+    }
+
+    override fun observeProductsByProduction(production: String): Flow<List<Product>> {
+        return dao.observeProductsByProduction(production).map{ list ->
+            list.map{ProductMapper.toDomain(it)}
+        }
+    }
+
     override suspend fun getProductByName(name: String): List<Product> {
         return dao.getProductByName(name).map{ProductMapper.toDomain(it)}
     }
