@@ -524,7 +524,10 @@ fun InfiniteDatePager(modifier: Modifier = Modifier,
     }
 
     HorizontalPager(pagerState, modifier = modifier) { page ->
-        val pageDate = fixedStartDate.getChangedDate((page - center).toLong())
+        val pageDate = remember(page) {
+            fixedStartDate.getChangedDate((page - center).toLong())
+        }
+
         content(pageDate)
     }
 }
