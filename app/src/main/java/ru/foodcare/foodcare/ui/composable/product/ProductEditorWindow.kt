@@ -120,7 +120,7 @@ fun CaloriesEdit(calories: MutableState<String>) {
 
 @Composable
 fun ProteinEdit(protein: MutableState<String>) {
-    var proteinNumber = protein.value.toDoubleOrNull()
+    val proteinNumber = protein.value.toDoubleOrNull()
     val gramString = LocalResources.current
         .getQuantityString(R.plurals.weight_in_grams, proteinNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.protein_capital) +
@@ -130,7 +130,7 @@ fun ProteinEdit(protein: MutableState<String>) {
 
 @Composable
 fun FatEdit(fat: MutableState<String>) {
-    var fatNumber = fat.value.toDoubleOrNull()
+    val fatNumber = fat.value.toDoubleOrNull()
     val gramString = LocalResources.current
         .getQuantityString(R.plurals.weight_in_grams, fatNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.fat_capital) +
@@ -140,7 +140,7 @@ fun FatEdit(fat: MutableState<String>) {
 
 @Composable
 fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
-    var carbohydratesNumber = carbohydrates.value.toDoubleOrNull()
+    val carbohydratesNumber = carbohydrates.value.toDoubleOrNull()
     val gramString = LocalResources.current
         .getQuantityString(R.plurals.weight_in_grams, carbohydratesNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.carbohydrates_capital) +
@@ -150,7 +150,7 @@ fun CarbohydratesEdit(carbohydrates: MutableState<String>) {
 
 @Composable
 fun FiberEdit(fiber: MutableState<String>) {
-    var fiberNumber = fiber.value.toDoubleOrNull()
+    val fiberNumber = fiber.value.toDoubleOrNull()
     val gramString = LocalResources.current
         .getQuantityString(R.plurals.weight_in_grams, fiberNumber?.toInt() ?: 1)
     NutrientTextField(stringResource(R.string.fibers_capital) +
