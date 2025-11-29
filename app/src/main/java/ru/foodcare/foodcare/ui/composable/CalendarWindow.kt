@@ -82,7 +82,7 @@ fun CalendarWindow(
     openMealEditor: () -> Unit
 ) {
     val formatType = rememberSaveable(stateSaver = CalendarShowTypeSaver) {
-        mutableStateOf<CalendarShowType>(CalendarShowType.Years)
+        mutableStateOf(CalendarShowType.Years)
     }
     val yOffset = (-15).dp
     val xOffset = 15.dp
