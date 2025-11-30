@@ -134,14 +134,20 @@ fun ProductCountTextField(productCount: MutableState<String>, type: UnitType,
     }, prefix = {
         Text("${stringResource(R.string.quantity_capital)}: ")
     }, suffix = {
-        val suffixText = if (type == UnitType.Piece && productCount.value.isDigitsOnly()) {
-            type.toStringWithLanguage(productCount.value.toInt())
-        } else {
-            type.toStringWithLanguage()
-        }
-
-        Text(suffixText)
+        Text(type.toSuffixText(productCount.value))
     })
+}
+
+@Composable
+private fun UnitType.toSuffixText(productCount: String): String {
+    return if (this == UnitType.Piece &&
+        productCount.isNotEmpty() &&
+        productCount.isDigitsOnly()
+    ) {
+        this.toStringWithLanguage(productCount.toInt())
+    } else {
+        this.toStringWithLanguage()
+    }
 }
 
 @Composable
